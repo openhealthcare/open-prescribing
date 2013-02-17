@@ -63,7 +63,7 @@ a:hover {color: #f1532f;}
 }
 
 #map {
-			width: 960px;
+			width: 920px;
 			height: 600px;
 		}
 
@@ -125,8 +125,18 @@ body #header {
 #content {
     max-width: 1400px;
 }
+
+
+
 #explore-container {
     min-height: 1200px;
+}
+
+#explore-controls {
+    box-shadow: 2px 2px 5px #ccc;
+    margin: 4px;
+    border: 1px #ccc solid;
+    border-radius: 3px;
 }
 
 #explore-controls div.bucket {
@@ -142,16 +152,18 @@ body #header {
 }
 #drugs ul {
     margin: 3px;
-    width: 340px;
+    width: 740px;
     height: 200px;
     overflow-y: scroll;
 }
 #drugs li {
     list-style-type: none;
     border: 1px solid red;
+    display: block;
+    float: left;
     width: 300px;
-    margin: 0px;
     padding: 3px;
+    margin-left: 10px;
 }
 #drugs li:hover {
     background: black;

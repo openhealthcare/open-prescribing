@@ -20,13 +20,42 @@
         debug: _debuglog
     }
 
+    // The purpose of a question layout is to listen for events and
+    // construct a human-understandable headline for the current
+    // visualisation of our data.
+    var ExQuestionView = Backbone.Marionette.ItemView.extend({
+
+        template: function(model){
+            log.debug('this is a template');
+            t =  _.template(
+                '<h1><% if (name) { %><%= name.replace("_", " ") %><% }else{ %>Drug <% } %> prescription per capita per CCG</h1>');
+            return t(model)
+        },
+
+        initialize: function(opts){
+            log.debug('question started');
+            ExploreDrugApp.on('exploring', this.exploring, this);
+        },
+
+        exploring: function(model){
+            log.debug(model);
+            log.debug('exploringit');
+            this.model = model;
+            this.render();
+        }
+
+    });
+
     var ExLayout = Backbone.Marionette.Layout.extend({
         template: '#explore-layout-template',
 
         regions: {
+            question: '#explore-question',
             controls: '#explore-controls',
             results: '#explore-results'
-        }
+        },
+
+
     });
 
     var ExControlLayout = Backbone.Marionette.Layout.extend({
@@ -39,6 +68,10 @@
         events: {
             'click button': 'resultise',
             'keyup #filter': 'filter'
+        },
+
+        initialize: function(opts){
+            ExploreDrugApp.on('controls:toggle', this.toggle, this);
         },
 
         // Show the results
@@ -58,6 +91,15 @@
             var val = this.$('#filter').attr('value');
             log.debug(val);
             this.drugs.currentView.filter(val);
+        },
+
+        // Toggle the visibility of the controls
+        toggle: function(){
+            if(this.$el.is(':visible')){
+                this.$el.slideUp();
+            }else{
+                this.$el.slideDown();
+            }
         }
 
     })
@@ -90,6 +132,8 @@
                 bnf_code: bnf_code
             });
             log.debug(mapview);
+            ExploreDrugApp.trigger('exploring', this.model);
+            ExploreDrugApp.trigger('controls:toggle');
             ExploreDrugApp.trigger('results:new_view', mapview);
         },
 
@@ -129,6 +173,7 @@
     ExploreDrugApp.addInitializer(function(options){
         var layout = new ExLayout();
         ExploreDrugApp.container.show(layout);
+        questions = new ExQuestionView();
         controls = new ExControlLayout();
         results = new ExResultLayout();
         ExploreDrugApp.on('results:new_view', results.new_result, results);
@@ -142,6 +187,7 @@
             collection: all_drugs
         });
 
+        layout.question.show(questions);
         layout.controls.show(controls);
         controls.drugs.show(drugs);
         layout.results.show(results);

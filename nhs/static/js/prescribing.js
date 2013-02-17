@@ -266,7 +266,11 @@
 
     // Define our models
     Practice     = Backbone.Model.extend({});
-    Drug         = Backbone.Model.extend({});
+    Drug         = Backbone.Model.extend({
+        display_name: function(){
+            return this.get('name').replace('_', ' ');
+        }
+    });
     Ccg          = Backbone.Model.extend({});
     Bucket       = Backbone.Model.extend({});
     Prescription = Backbone.Model.extend({});
@@ -554,7 +558,6 @@
                     feature.properties.total_items_month = data.count;
                     var scrips_per_capita = data.count/ccg.get('population');
                     feature.properties.ccg_problem = scrips_per_capita;
-                    log.debug(scrips_per_capita)
                     percap.push(scrips_per_capita)
                     return feature
                 }
