@@ -4,10 +4,10 @@ from fabric.api import *
 from fabric.colors import red, green
 import requests
 
-web = ['openhealthcare.org.uk']
+web = ['ohc@horsell.scraperwiki.com']
+
 serves = [
-    'http://openhealthcare.org.uk',
-    'http://prescriptions.openhealthcare.org.uk'
+    'http://localhost:4567',
     ]
 
 def manage(what):
@@ -17,8 +17,8 @@ def manage(what):
     Return: None
     Exceptions: None
     """
-    with cd('/var/apps/nhs-prescriptions/nhs-prescriptions/nhs'):
-        run('./venv/bin/python manage.py {0}'.format(what))
+    with cd('/usr/local/ohc/scrip/nhs-prescriptions/nhs'):
+        run('/home/ohc/.virtualenvs/scrip/bin/python manage.py {0}'.format(what))
 
 
 @hosts(web)
@@ -30,10 +30,11 @@ def deploy():
     Exceptions: None
     """
     # FIXME stop deploying out of git for atomicity.
-    with cd('/var/apps/nhs-prescriptions/nhs-prescriptions'):
-        sudo('git pull github master') #not ssh - key stuff
-        sudo('chown ross:ross .') # !!! FIXME
-        sudo('/etc/init.d/apache2 reload')
+    with cd('/usr/local/ohc/nhs-prescriptions/nhs-prescriptions'):
+        run('git pull ohc master') #not ssh - key stuff
+        run('pkill gunicorn')
+    with cd('/usr/local/ohc/nhs-prescriptions/nhs-prescriptions/nhs'):
+        run('/home/ohc/.virtualenvs/scrip/bin/gunicorn_django -D -c gunicorn_conf.py')
     for site in serves:
         req = requests.get(site)
         if req.status_code != 200:
