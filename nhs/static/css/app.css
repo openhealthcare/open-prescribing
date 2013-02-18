@@ -170,3 +170,7 @@ body #header {
     color: white;
     cursor: pointer;
 }
+
+#explore-affordance {
+    margin: 20px;
+}

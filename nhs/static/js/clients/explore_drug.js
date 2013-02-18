@@ -82,7 +82,6 @@
                 bnf_code: bnf_code
             });
             log.debug(mapview);
-            ExploreDrugApp.trigger('results:new_view', mapview);
         },
 
         // Filter the visible drugs
@@ -95,25 +94,11 @@
 
         // Toggle the visibility of the controls
         toggle: function(){
-            if(this.$el.is(':visible')){
-                this.$el.slideUp();
-            }else{
-                this.$el.slideDown();
-            }
-        }
-
-    })
-
-    var ExResultLayout = Backbone.Marionette.Layout.extend({
-        template: '#explore-results-template',
-
-        regions: {
-            results: '#explore-results'
-        },
-
-        new_result: function(view){
-            log.debug(view);
-            this.results.show(view);
+            // if(this.$el.is(':visible')){
+            //     this.$el.slideUp();
+            // }else{
+            //     this.$el.slideDown();
+            // }
         }
 
     })
@@ -134,7 +119,6 @@
             log.debug(mapview);
             ExploreDrugApp.trigger('exploring', this.model);
             ExploreDrugApp.trigger('controls:toggle');
-            ExploreDrugApp.trigger('results:new_view', mapview);
         },
 
         onRender: function(){
@@ -175,8 +159,7 @@
         ExploreDrugApp.container.show(layout);
         questions = new ExQuestionView();
         controls = new ExControlLayout();
-        results = new ExResultLayout();
-        ExploreDrugApp.on('results:new_view', results.new_result, results);
+        results = new OP.views.ResultLayout();
 
         all_drugs = OP.get({
             resource: 'product',

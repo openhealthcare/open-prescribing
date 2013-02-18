@@ -256,10 +256,10 @@
         search: function(letters){
             if(letters == "") return this;
 
-	    var pattern = new RegExp(letters,"gi");
-	    return this.filter(function(data) {
-		return pattern.test(data.get("name"));
-	    });
+            var pattern = new RegExp(letters,"gi");
+            return this.filter(function(data) {
+                return pattern.test(data.get("name"));
+            });
         }
 
     });
@@ -274,6 +274,7 @@
     Ccg          = Backbone.Model.extend({});
     Bucket       = Backbone.Model.extend({});
     Prescription = Backbone.Model.extend({});
+    Affordance   = Backbone.Model.extend({})
 
     // Define Collections
     Pharmacy = ScripCollection.extend({
@@ -333,8 +334,11 @@
             this.ccgs.fetch({
                 data: {
                     'limit': 0
-                }
+                },
+                success: function(){App.trigger('affordance:done', 'Fetching CCG metadata')}
             });
+            // Inform the UX layer that we're doing stuff. Don't panic.
+            App.trigger('affordance:add', 'Fetching CCG metadata');
         },
 
         // Are we ready to render yet?
@@ -368,6 +372,8 @@
         heatmap_layers: function(view){
             log.debug('BucketMap collection got items');
             log.debug(view);
+            // Inform the UX that we're doing some work
+            App.trigger('affordance:add', 'Calculating Hetmap')
             var feature_collection = view.make_features();
             if(!this.color_fun){
                 style_fun = mapping.style;
@@ -388,6 +394,7 @@
             );
             geoJSON.addTo(view.map);
             mapping.geojson = geoJSON;
+            App.trigger('affordance:done', 'Calculating Hetmap')
         },
 
         // Figure out the heatmap colorings for this data range
@@ -571,6 +578,76 @@
 
     });
 
+
+    // General purpose Marionette views that will be useful in
+    // many clients
+
+    var Views =  {}
+
+    Views.Affordance =  Backbone.Marionette.ItemView.extend({
+
+        template: function(serialised){
+            tpl = _.template('<%= name %> <img src="/static/tastypie_swagger/images/throbber.gif" / >');
+            return tpl(serialised)
+        }
+
+    });
+
+
+    // Capture results and display affordances on trigger
+    // functions
+    Views.ResultLayout = Backbone.Marionette.Layout.extend({
+
+        template: function(serialised){
+            tpl = _.template('<div id="explore-affordance"></div><div id="explore-results"></div>');
+            return tpl(serialised)
+        },
+
+        regions: {
+            results:    '#explore-results',
+            affordance: '#explore-affordance'
+        },
+
+        // Listen for events
+        initialize: function(opts){
+            this.affordances = []
+            App.on('results:new_view', this.new_result, this);
+            App.on('affordance:add', this.add_affordance, this);
+            App.on('affordance:done', this.done_affordance, this)
+        },
+
+        new_result: function(view){
+            log.debug(view);
+            this.results.show(view);
+        },
+
+        // We've decided to do something that could take some time.
+        // Make sure we remind the user that we're doing something
+        add_affordance: function(affordance){
+            this.affordances.push(affordance);
+            log.debug(this.affordances)
+            var affview = new Views.Affordance({model: new Affordance({name: affordance})});
+            this.affordance.show(affview);
+            return;
+        },
+
+        // We've finished doing something, so let's remove this from the
+        // Queue of affordances
+        done_affordance: function(affordance){
+            this.affordances =  _.without(this.affordances, affordance);
+            if(this.affordances.length == 0){
+                this.affordance.close();
+            }else{
+                var aff =  new Affordance({name: _.first(this.affordances)});
+                var affview = new Views.Affordance({model: aff});
+                this.affordance.show(affview);
+            }
+            return;
+        }
+
+    });
+
+
     // GET Api calls
 
     var Api = {
@@ -600,8 +677,12 @@
                 data: {
                     'query_type': opts['query_type'] || 'ccg',
                     'bnf_code':   opts.bnf_code
-                }
+                },
+                success: function(){App.trigger('affordance:done', 'Fetching Prescription Aggregate')}
             });
+            // Inform the UX layer that we're doing something
+            // that could take some time
+            App.trigger('affordance:add', 'Fetching Prescription Aggregate')
             return scrips;
         }
 
@@ -634,6 +715,7 @@
                 collection: scrips,
                 x: 'total_items'
             });
+            App.trigger('results:new_view', percapitamap);
             return percapitamap;
         }
 
@@ -647,6 +729,7 @@
 
     App.get = GET;
     App.maps = Maps;
+    App.views = Views;
 
     // Deal with configuration options passed in to the start method.
     App.addInitializer(function(opts){
