@@ -1,4 +1,5 @@
 import sys
+import time
 
 from fabric.api import *
 from fabric.colors import red, green
@@ -30,11 +31,12 @@ def deploy():
     Exceptions: None
     """
     # FIXME stop deploying out of git for atomicity.
-    with cd('/usr/local/ohc/nhs-prescriptions/nhs-prescriptions'):
+    with cd('/usr/local/ohc/scrip/nhs-prescriptions'):
         run('git pull ohc master') #not ssh - key stuff
         run('pkill gunicorn')
-    with cd('/usr/local/ohc/nhs-prescriptions/nhs-prescriptions/nhs'):
+    with cd('/usr/local/ohc/scrip/nhs-prescriptions/nhs'):
         run('/home/ohc/.virtualenvs/scrip/bin/gunicorn_django -D -c gunicorn_conf.py')
+    time.sleep(1) # Give it a second to start up
     for site in serves:
         req = requests.get(site)
         if req.status_code != 200:
