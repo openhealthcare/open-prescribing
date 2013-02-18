@@ -1,5 +1,5 @@
 //
-// explore.js
+// explore_drug.js
 
 (function(context, namespace){
 
@@ -145,15 +145,41 @@
         }
     });
 
-    var ExploreDrugApp = context[namespace] = new Backbone.Marionette.Application();
-    var OP = new Scrip({
-            api_host: window.location.host
-        })
+    // Handle callbacks on routes
+    var ExploreDrugController = Backbone.Marionette.Controller.extend({
 
+        per_capita_map: function(granularity, bnf_code){
+
+        }
+
+    });
+
+    // This gives us unique URLs for our visualisations
+    var ExploreDrugRouter = Backbone.Marionette.AppRouter.extend({
+
+        appRoutes: {
+             'percapitamap/:granularity/:bnf_code': 'per_capita_map'
+        },
+
+        controller: ExploreDrugController
+
+    });
+
+    // Set up our client application
+    var ExploreDrugApp = context[namespace] = new Backbone.Marionette.Application();
+
+    // We want access to our prescribing.js application everywhere in this scope
+    var OP = new Scrip({
+        // Currently we'll only ever serve this from the main site
+        api_host: window.location.host
+    })
+
+    // Create a region to contain the main application
     ExploreDrugApp.addRegions({
         container: '#explore-container'
     });
 
+    // On startup, create the initial views for controls, results, etc
     ExploreDrugApp.addInitializer(function(options){
         var layout = new ExLayout();
         ExploreDrugApp.container.show(layout);
@@ -175,5 +201,12 @@
         controls.drugs.show(drugs);
         layout.results.show(results);
     });
+
+    // On startup, let's have a router and controller
+    ExploreDrugApp.addInitializer(function(options){
+        new ExploreDrugRouter();
+        Backbone.history.start();
+    });
+
 
 })(this.window||exports, "ExploreDrug")
