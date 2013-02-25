@@ -35,7 +35,7 @@ def deploy():
         run('git pull ohc master') #not ssh - key stuff
         run('pkill gunicorn')
     with cd('/usr/local/ohc/scrip/nhs-prescriptions/nhs'):
-        run('/home/ohc/.virtualenvs/scrip/bin/python manage.py migrate'
+        run('/home/ohc/.virtualenvs/scrip/bin/python manage.py migrate')
         run('/home/ohc/.virtualenvs/scrip/bin/gunicorn_django -D -c gunicorn_conf.py')
     time.sleep(1) # Give it a second to start up
     for site in serves:
