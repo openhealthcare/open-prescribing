@@ -8,7 +8,7 @@ import requests
 web = ['ohc@horsell.scraperwiki.com']
 
 serves = [
-    'http://localhost:4567',
+    'http://www.openprescribing.org',
     ]
 
 def manage(what):
@@ -35,11 +35,12 @@ def deploy():
         run('git pull ohc master') #not ssh - key stuff
         run('pkill gunicorn')
     with cd('/usr/local/ohc/scrip/nhs-prescriptions/nhs'):
+        run('/home/ohc/.virtualenvs/scrip/bin/python manage.py migrate'
         run('/home/ohc/.virtualenvs/scrip/bin/gunicorn_django -D -c gunicorn_conf.py')
     time.sleep(1) # Give it a second to start up
     for site in serves:
         req = requests.get(site)
-        if req.status_code != 200:
+        if req.status_code not in [200, 401]:
             print red("Cripes! something just blew up Larry! ({0})".format(site))
             sys.exit(1)
     print green("Deploy-o-rama!")
