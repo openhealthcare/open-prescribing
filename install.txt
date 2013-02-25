@@ -10,6 +10,7 @@ fetch.sh for prescriptions
 fetch.sh for practices
 www.theinformationlab.co.uk/2011/03/14/hopefully-the-last-word-on-uk-postcode-mapping-in-tableau/ for postcodes
 ccgs.kml from fusion table
+dispensing.practices.csv comes from http://www.nhsbsa.nhs.uk/PrescriptionServices/3198.aspx via some cleanup in R at the moment.
 
 Install database:
 
@@ -21,7 +22,7 @@ sudo -u postgres createuser --createdb ohc
 (as user ohc from here on)
 createdb -T template_postgis scrip
 
-Check it out: 
+Check it out:
 
 git clone http://github.com/symroe/nhs-prescriptions
 
@@ -48,6 +49,7 @@ find /var/data/practices/*.CSV -print0 | while read -d $'\0' file; do python man
 python manage.py load_ccgs < /var/data/ccgs/ccg.kml.csv
 python manage.py convert_practice_datamodel
 python manage.py bind_practices
+python manage.py import_dispensing -f /var/data/dispensing/dispensing.practices.csv
 
 ******* MOARE STUFFS HERE !
 
@@ -58,15 +60,15 @@ echo "deb http://repo.varnish-cache.org/ubuntu/ precise varnish-3.0" | sudo tee 
 sudo apt-get update
 sudo apt-get install varnish
 
-Webserver configs: 
+Webserver configs:
 
 Nginx points /api/v1 at varnish, which looks for Gunicorn
              everything else to Gunicorn
 
-Make sure to set proxy pass headers for Nginx: 
+Make sure to set proxy pass headers for Nginx:
 
     proxy_set_header X-Forwarded-Host $host;
     proxy_set_header X-Forwarded-Server $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
 Make sure that USE_X_FORWARDED_HOST = True is set in local_settings.py
