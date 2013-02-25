@@ -8,9 +8,9 @@ from nhs.explore.views import Ratio, ExploreDrug
 
 urlpatterns = patterns(
     '',
-    url(r'/ratio/?$', Ratio.as_view(template_name='explore_compare.html'),
+    url(r'/ratio/?', Ratio.as_view(template_name='explore_compare.html'),
         name='explorecompare'),
-    url(r'/drug/?$', ExploreDrug.as_view(template_name='explore_drug.html'),
+    url(r'/drug/?', ExploreDrug.as_view(template_name='explore_drug.html'),
         name='exploredrug'),
     url(r'/?$', TemplateView.as_view(template_name='explore.html'), name='explore'),
     )

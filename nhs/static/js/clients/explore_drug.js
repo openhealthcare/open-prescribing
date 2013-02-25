@@ -28,32 +28,6 @@
         debug: _debuglog
     }
 
-    // The purpose of a question layout is to listen for events and
-    // construct a human-understandable headline for the current
-    // visualisation of our data.
-    var ExQuestionView = Backbone.Marionette.ItemView.extend({
-
-        template: function(model){
-            log.debug('this is a template');
-            t =  _.template(
-                '<h1><% if (name) { %><%= name.replace("_", " ") %><% }else{ %>Drug <% } %> prescription per capita per CCG</h1>');
-            return t(model)
-        },
-
-        initialize: function(opts){
-            log.debug('question started');
-            ExploreDrugApp.on('exploring', this.exploring, this);
-        },
-
-        exploring: function(model){
-            log.debug(model);
-            log.debug('exploringit');
-            this.model = model;
-            this.render();
-        }
-
-    });
-
     var ExLayout = Backbone.Marionette.Layout.extend({
         template: '#explore-layout-template',
 
@@ -74,22 +48,11 @@
         },
 
         events: {
-            'click button': 'resultise',
             'keyup #filter': 'filter'
         },
 
         initialize: function(opts){
             ExploreDrugApp.on('controls:toggle', this.toggle, this);
-        },
-
-        // Show the results
-        resultise: function(){
-            log.debug('Make Heatmap!');
-            var bnf_code = jQuery('#drugs select').attr('value');
-            var mapview = OP.maps.scrips_per_capita({
-                bnf_code: bnf_code
-            });
-            log.debug(mapview);
         },
 
         // Filter the visible drugs
@@ -121,12 +84,8 @@
         resultise: function(event){
             log.debug('Make Heatmap!');
             var bnf_code = this.model.get('bnf_code');
-            var mapview = OP.maps.scrips_per_capita({
-                bnf_code: bnf_code
-            });
-            log.debug(mapview);
-            ExploreDrugApp.trigger('exploring', this.model);
-            ExploreDrugApp.trigger('controls:toggle');
+            var url = 'explore/drug/percapitamap/ccg/' + bnf_code
+            ExploreDrugApp.router.navigate(url, {trigger: true});
         },
 
         onRender: function(){
@@ -154,19 +113,43 @@
     });
 
     // Handle callbacks on routes
-    var ExploreDrugController = Backbone.Marionette.Controller.extend({
+    var ExploreDrugController = {
+
+        pong: function(){ log.debug('ping -> pong') },
 
         per_capita_map: function(granularity, bnf_code){
+            var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
+            log.debug('In a per capita map for ' + bnf_code + ' from a url');
+            var mapview = OP.maps.scrips_per_capita({
+                bnf_code: bnf_code
+            });
+            log.debug(mapview);
+            ExploreDrugApp.trigger('controls:toggle');
+
+            // Check to see if we have a model to update the question
+            var explore = function(model){OP.trigger('exploring', model);}
+
+            if(_.isUndefined(model)){
+                log.debug('No model yet');
+                ExploreDrugApp.all_drugs.once('reset', function(){
+                    log.debug('Got the drug list. Updataing the question with metatada');
+                    var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
+                    explore(model);
+                });
+            }else{
+                explore(model);
+            }
 
         }
 
-    });
+    };
 
     // This gives us unique URLs for our visualisations
     var ExploreDrugRouter = Backbone.Marionette.AppRouter.extend({
 
         appRoutes: {
-             'percapitamap/:granularity/:bnf_code': 'per_capita_map'
+            'explore/drug/ping': 'pong',
+            'explore/drug/percapitamap/:granularity/:bnf_code': 'per_capita_map'
         },
 
         controller: ExploreDrugController
@@ -191,14 +174,26 @@
     ExploreDrugApp.addInitializer(function(options){
         var layout = new ExLayout();
         ExploreDrugApp.container.show(layout);
-        questions = new ExQuestionView();
+        questions = new OP.views.QuestionView({
+
+            template: function(model){
+                log.debug('this is a template');
+                t =  _.template(
+                    '<h1><% if (name) { %><%= name.replace("_", " ") %><% }else{ %>drug <% } %> prescription per capita per ccg</h1>');
+                return t(model)
+            }
+
+        });
+
         controls = new ExControlLayout();
         results = new OP.views.ResultLayout();
 
         all_drugs = OP.get({
             resource: 'product',
             data: { limit: 0 }
-        })
+        });
+
+        ExploreDrugApp.all_drugs = all_drugs;
 
         drugs = new DrugSelectView({
             collection: all_drugs
@@ -212,8 +207,8 @@
 
     // On startup, let's have a router and controller
     ExploreDrugApp.addInitializer(function(options){
-        new ExploreDrugRouter();
-        Backbone.history.start();
+        ExploreDrugApp.router = new ExploreDrugRouter();
+        Backbone.history.start({pushState: true});
     });
 
 

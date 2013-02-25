@@ -265,6 +265,8 @@
     });
 
     // Define our models
+    var Models = {}
+
     Practice     = Backbone.Model.extend({});
     Drug         = Backbone.Model.extend({
         display_name: function(){
@@ -273,6 +275,7 @@
     });
     Ccg          = Backbone.Model.extend({});
     Bucket       = Backbone.Model.extend({});
+    Ratio        = Models.Ratio = Backbone.Model.extend({});
     Prescription = Backbone.Model.extend({});
     Affordance   = Backbone.Model.extend({})
 
@@ -593,6 +596,26 @@
 
     });
 
+    // The purpose of a question layout is to listen for events and
+    // construct a human-understandable headline for the current
+    // visualisation of our data.
+    Views.QuestionView = Backbone.Marionette.ItemView.extend({
+
+        initialize: function(opts){
+            log.debug('question started');
+            this.template = opts.template;
+            App.on('exploring', this.exploring, this);
+        },
+
+        exploring: function(model){
+            log.debug(model);
+            log.debug('exploringit');
+            this.model = model;
+            this.render();
+        }
+
+    });
+
 
     // Capture results and display affordances on trigger
     // functions
@@ -730,6 +753,7 @@
     App.get = GET;
     App.maps = Maps;
     App.views = Views;
+    App.models = Models
 
     // Deal with configuration options passed in to the start method.
     App.addInitializer(function(opts){

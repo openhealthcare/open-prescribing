@@ -174,3 +174,8 @@ body #header {
 #explore-affordance {
     margin: 20px;
 }
+
+#explore-question h3 i,
+#explore-question h1 i {
+    padding-right: 6px;
+}
