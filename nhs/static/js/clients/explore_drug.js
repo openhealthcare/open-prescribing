@@ -1,6 +1,14 @@
 //
 // explore.js
 
+// Open Prescribing API Client example application
+//
+//
+// The drug explorer allows a user to investigate an individual
+// Drug in more detail.
+
+// Coding Begins
+
 (function(context, namespace){
 
     // Setup logging
