@@ -19,3 +19,4 @@ class PracticeResource(GeoModelResource):
         model = Practice
         queryset = Practice.objects.all()
         cache = SimpleCache(timeout=10)
+        allowed_methods = ['get']
