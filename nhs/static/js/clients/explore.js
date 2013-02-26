@@ -130,7 +130,8 @@ prescription ratios per ccg</h3>');
         ExApp.on('results:new_view', results.new_result, results);
 
         all_drugs = OP.get({
-            resource: 'product'
+            resource: 'product',
+            data: { limit: 0 }
         })
 
         bucket1 = new DrugSelectView({
