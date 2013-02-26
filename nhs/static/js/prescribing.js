@@ -63,9 +63,8 @@
                     ccg_code: null,
                     Name: null,
                     ccg_name: null,
-                    total_items_month: null,
+                    total_items: null,
                     Description: null,
-                    ccg_problem: null,
                     pop_per_surgery: null,
                     no_of_practices: null,
                     no_of_lsoas: null,
@@ -88,6 +87,7 @@
         },
 
         // get color depending on the value we're heatmapping
+        // This is a base implementation suitable for % ranges.
         getColor: function(d) {
             return d > 80  ? '#990000' :
                 d > 70  ? '#D7301F' :
@@ -99,17 +99,6 @@
                 '#FFF7EC';
         },
 
-        // getColor: function(d) {
-        //     return d > 27  ? '#990000' :
-        //         d > 25  ? '#D7301F' :
-        //         d > 24  ? '#EF6548' :
-        //         d > 23  ? '#FC8D59' :
-        //         d > 22  ? '#FDBB84' :
-        //         d > 21  ? '#FDD49E' :
-        //         d > 19  ? '#FEE8C8' :
-        //         '#FFF7EC';
-        // },
-
         // Style of an individual layer
         style: function(feature) {
             return {
@@ -118,7 +107,7 @@
                 color: 'white',
                 dashArray: '3',
                 fillOpacity: 0.7,
-                fillColor: mapping.getColor(feature.properties.ccg_problem)
+                fillColor: mapping.getColor(feature.properties.heatmap_property)
             };
         },
 
@@ -158,56 +147,31 @@
             });
         },
 
-        // control that shows state info on hover
-        make_hoverinfo: function(map){
-            var info = L.control();
-            mapping.info = info;
+        // Add a color legent to our map.
+        // This is a base implementation suitable for percentage based
+        // heatmaps. Other ranges must implement their own.
+        make_legend: function(steps, color_fn){
 
-            // Create a DOM element
-            info.onAdd = function (map) {
-                this._div = L.DomUtil.create('div', 'info');
-                this.update();
-                return this._div;
-            };
-
-            // Fill our DOM element
-            info.update = function (props) {
-                this._div.innerHTML = '<h4>Drug Explorer</h4>'
-                    +  (props ? '<b>CCG: ' + props.ccg_name + '</b><br />'
-                        + props.ccg_problem.toFixed(2) + '%'
-                        + '<br />' + props.total_items_month + ''
-                        + '<br />' + props.population + ' population'
-                        + '<br />' + props.no_of_practices + ' GP Practices'
-                        : 'Hover over a CCG');
-            };
-            info.addTo(map);
-        },
-
-        // Add legends and metadata to our map
-        make_legend: function(map){
-            var geojson;
             var legend = L.control({position: 'bottomright'});
             legend.onAdd = function (map) {
                 var div = L.DomUtil.create('div', 'info legend'),
-                // grades = [0, 19, 21, 22, 23, 24, 25, 27, 35],
-                grades = [0, 20, 30, 40, 50, 60, 70, 80],
+
                 labels = [],
                 from, to;
 
-                for (var i = 0; i < grades.length; i++) {
-                    from = grades[i];
-                    to = grades[i + 1];
+                for (var i = 0; i < steps.length; i++) {
+                    from = steps[i];
+                    to = steps[i + 1];
 
                     labels.push(
-                        '<i style="background:' + mapping.getColor(from + 1) + '"></i> ' +
+                        '<i style="background:' + color_fn(from) + '"></i> ' +
                             from + (to ? '&ndash;' + to : '+'));
                 }
 
             div.innerHTML = labels.join('<br>');
                 return div;
             };
-            legend.addTo(map);
-
+            return legend
         }
     }
 
@@ -306,7 +270,14 @@
     // Views
     OPMap = Backbone.Marionette.ItemView.extend({
 
+        // The function we'll use to set colours
         color_fun: null,
+
+        // The steps we'll be using in our heatmapping
+        steps: null,
+
+        // The default legend maker
+        make_legend: mapping.make_legend,
 
         constructor: function(options){
             var args = Array.prototype.slice.apply(arguments);
@@ -365,8 +336,7 @@
         render_map: function(){
             log.debug('render_map called')
             map = mapping.initialize('map')
-            mapping.make_hoverinfo(map)
-            mapping.make_legend(map)
+            // mapping.make_hoverinfo(map)
             this.map = map;
         },
 
@@ -377,17 +347,29 @@
             log.debug(view);
             // Inform the UX that we're doing some work
             App.trigger('affordance:add', 'Calculating Hetmap')
+
+            // Allow the view to define it's own feature set and
+            // The relevant contextual hover information
             var feature_collection = view.make_features();
+            var contextual = view.make_contextual();
+
             if(!this.color_fun){
-                style_fun = mapping.style;
+                var style_fun = mapping.style;
+                var colouring = mapping.getColor;
             }else{
-                getColor = this.color_fun;
+                var colouring = this.color_fun;
+
                 style_fun = function(feature){
                     var base = mapping.style(feature)
-                    base.fillColor = getColor(feature.properties.ccg_problem)
+                    base.fillColor = colouring(feature.properties.heatmap_property)
                     return base;
                 }
             }
+
+            legend = this.make_legend(this.steps, colouring)
+
+
+            // Format the way Leaflet wants heatmap layers
             var geoJSON = L.geoJson(
                 feature_collection,
                 {
@@ -395,13 +377,19 @@
                     onEachFeature: mapping.onEachFeature
                 }
             );
+
+
+            // Finally, add our components to the map.
+            legend.addTo(view.map);
+            contextual.addTo(view.map);
             geoJSON.addTo(view.map);
             mapping.geojson = geoJSON;
             App.trigger('affordance:done', 'Calculating Hetmap')
         },
 
         // Figure out the heatmap colorings for this data range
-        make_color_fun: function(range){
+        // Pass this explicitly so we have a known reference to the view
+        make_color_fun: function(range, view){
             var min = _.min(range), max = _.max(range);
             var step = (max - min) / 8
             var steps = []
@@ -410,14 +398,22 @@
                 val += step
                 steps.push(val);
             }
-            var colours = ['#990000',
-                           '#D7301F',
-                           '#EF6548',
-                           '#FC8D59',
-                           '#FDBB84',
-                           '#FDD49E',
-                           '#FEE8C8',
-                           '#FFF7EC']
+
+            // Set the steps on the view so that we can create
+            // our heatmap appropriately
+            view.steps = steps;
+
+            var colours = [
+                '#FFF7EC',
+                '#FEE8C8',
+                '#FDD49E',
+                '#FDBB84',
+                '#FC8D59',
+                '#EF6548',
+                '#D7301F',
+                '#990000',
+            ]
+
             var coloursteps = _.zip(steps, colours);
 
             fn = function(d){
@@ -434,6 +430,10 @@
     });
 
     BucketMap = OPMap.extend({
+
+        // We know ahead of time that we're dealing with percentages, so
+        // let's just set our steps statically.
+        steps: [0, 20, 30, 40, 50, 60, 70, 80],
 
         // Add extra setup to the Open Prescribing Map
         initialize: function(opts){
@@ -454,6 +454,32 @@
                 this.heatmap_layers(this);
             };
             return;
+        },
+
+        // What should we do when we hover over a geometry
+        make_contextual: function(map){
+            var info = L.control();
+            mapping.info = info;
+
+            // Create a DOM element
+            info.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+
+            // Fill our DOM element
+            info.update = function (props) {
+                this._div.innerHTML = '<h4>Drug Explorer</h4>'
+                    +  (props ? '<b>CCG: ' + props.ccg_name + '</b><br />'
+                        // + props.heatmap_property.toFixed(2) + '%'
+                        + props.heatmap_property + '% of prescriptions in bucket 1'
+                        + '<br />' + props.total_items + ' total prescription items'
+                        + '<br />' + props.population + ' population'
+                        + '<br />' + props.no_of_practices + ' GP Practices'
+                        : 'Hover over a CCG');
+            };
+            return info;
         },
 
         // Given our buckets from the API. parse these into map Features,
@@ -487,14 +513,14 @@
 
                     // No prescriptions, no ratio to show
                     if(!data){
-                        feature.properties.total_items_month = 0;
-                        feature.properties.ccg_problem = 0;
+                        feature.properties.total_items = 0;
+                        feature.properties.heatmap_property = 0;
                         return feature;
                     }
 
                     var tot =  data.group1.items + data.group2.items;
-                    feature.properties.total_items_month = tot;
-                    feature.properties.ccg_problem = data.group1.proportion;
+                    feature.properties.total_items = tot;
+                    feature.properties.heatmap_property = data.group1.proportion;
                     return feature
                 }
             );
@@ -525,6 +551,33 @@
             if(this.ready()){
                 this.heatmap_layers(this)
             }
+        },
+
+
+        // What should we do when we hover over a geometry
+        make_contextual: function(map){
+            var info = L.control();
+            mapping.info = info;
+
+            // Create a DOM element
+            info.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+
+            // Fill our DOM element
+            info.update = function (props) {
+                this._div.innerHTML = '<h4>Drug Explorer</h4>'
+                    +  (props ? '<b>CCG: ' + props.ccg_name + '</b><br />'
+                        // + props.heatmap_property.toFixed(2) + '%'
+                        + props.heatmap_property + ' prescriptions per capita'
+                        + '<br />' + props.total_items + ' total prescription items'
+                        + '<br />' + props.population + ' population'
+                        + '<br />' + props.no_of_practices + ' GP Practices'
+                        : 'Hover over a CCG');
+            };
+            return info;
         },
 
         // We've got our data, let's create the heatmap features
@@ -560,20 +613,20 @@
 
                     // No prescriptions, no ratio to show
                     if(!data){
-                        feature.properties.total_items_month = 0;
-                        feature.properties.ccg_problem = 0;
+                        feature.properties.total_items = 0;
+                        feature.properties.heatmap_property = 0;
                         return feature;
                     }
 
-                    feature.properties.total_items_month = data.count;
+                    feature.properties.total_items = data.count;
                     var scrips_per_capita = data.count/ccg.get('population');
-                    feature.properties.ccg_problem = scrips_per_capita;
+                    feature.properties.heatmap_property = scrips_per_capita;
                     percap.push(scrips_per_capita)
                     return feature
                 }
             );
 
-            this.make_color_fun(percap);
+            this.make_color_fun(percap, this);
 
             fc.features = features;
             return fc;

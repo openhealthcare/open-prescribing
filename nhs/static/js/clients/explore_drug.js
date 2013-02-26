@@ -179,7 +179,7 @@
             template: function(model){
                 log.debug('this is a template');
                 t =  _.template(
-                    '<h1><% if (name) { %><%= name.replace("_", " ") %><% }else{ %>drug <% } %> prescription per capita per ccg</h1>');
+                    '<h3><% if (name) { %><%= name.replace("_", " ") %><% }else{ %>drug <% } %> prescription per capita per ccg</h3>');
                 return t(model)
             }
 
