@@ -24,6 +24,5 @@ v1_api.register(CCGMetadataResource())
 urlpatterns = patterns(
     '',
     url(r'doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),
-    # include(v1_api.urls), #both needed, not sure why.  Leaving for now. :/
     url('', include(v1_api.urls)),
     )

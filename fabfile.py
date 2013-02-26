@@ -33,6 +33,7 @@ def deploy():
     # FIXME stop deploying out of git for atomicity.
     with cd('/usr/local/ohc/scrip/nhs-prescriptions'):
         run('git pull ohc master') #not ssh - key stuff
+        run('/home/ohc/.virtualenvs/scrip/bin/pip install -r requirements.txt')
         run('pkill gunicorn')
     with cd('/usr/local/ohc/scrip/nhs-prescriptions/nhs'):
         run('/home/ohc/.virtualenvs/scrip/bin/python manage.py migrate')
