@@ -13,6 +13,7 @@ urlpatterns = patterns(
     url(r'^about/?$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^data/?$', TemplateView.as_view(template_name='data.html'), name='data'),
     url(r'^explore', include('nhs.explore.urls')),
+    url(r'^raw', include('nhs.raw.urls')),
 
     url('^research/inhaler/?$', TemplateView.as_view(template_name='inhaler.html'), name='inhaler'),
 

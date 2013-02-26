@@ -1,5 +1,5 @@
 """
-Urls for the APIs we propose to expose to the outside world
+Urls for the interactive exploration pages
 """
 from django.conf.urls.defaults import patterns, url
 from django.views.generic import TemplateView

@@ -94,6 +94,7 @@ INSTALLED_APPS = (
     'nice',
     'api',
     'ccgs',
+    'raw',
 )
 
 # 27700
@@ -101,6 +102,10 @@ MAPIT_AREA_SRID = 27700
 MAPIT_COUNTRY = 'GB'
 
 TASTYPIE_SWAGGER_API_MODULE = 'nhs.api.urls.v1_api';
+
+# Application specific settings
+DOWNLOAD_STORAGE_DIR = '/tmp'
+
 
 try:
     from local_settings import *
