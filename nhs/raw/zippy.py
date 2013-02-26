@@ -55,7 +55,7 @@ def drug(bnf_code):
     ccgscrips = ffs.Path.newfile()
     with ccgscrips.csv() as csv:
 
-        csv.writeros([['ccg_id', 'count']] + rows)
+        csv.writerows([['ccg_id', 'count']] + rows)
 
     ccgmeta = ccgdata()
 

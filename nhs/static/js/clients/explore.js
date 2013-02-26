@@ -117,6 +117,8 @@
                 model.bucket1 = model.bucket1 || false;
                 t =  _.template(
                     '<h3>\
+<a href="<%= window.location.href.replace("explore", "raw") %>/ratio.zip"> \
+<i class="icon-download"></i></a>\
 <i class="icon-question-sign"></i>\
 <% if (bucket1 && bucket2) { %>\
 <%= bucket1 %> vs <%= bucket2 %> \

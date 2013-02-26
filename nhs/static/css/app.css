@@ -176,6 +176,8 @@ body #header {
 }
 
 #explore-question h3 i,
+#explore-question h3 a i,
 #explore-question h1 i {
+    color: orange;
     padding-right: 6px;
 }
