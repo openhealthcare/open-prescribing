@@ -290,6 +290,7 @@
         },
 
         initialize: function(opts){
+
             // Store boolean fetched flags
             this.dataflags = {
                 ccg: false
@@ -311,8 +312,8 @@
                 },
                 success: function(){App.trigger('affordance:done', 'Fetching CCG metadata')}
             });
-            // Inform the UX layer that we're doing stuff. Don't panic.
             App.trigger('affordance:add', 'Fetching CCG metadata');
+            // Inform the UX layer that we're doing stuff. Don't panic.
         },
 
         // Are we ready to render yet?
@@ -540,7 +541,7 @@
 
             // Add our data reference
             this.collection = opts.collection;
-            this.dataflags.collection = true;
+            this.dataflags.collection = false;
             this.x = opts.x;
             this.collection.on('reset', this.got_collection, this);
         },
