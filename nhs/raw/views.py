@@ -7,27 +7,17 @@ from django.views.generic import View
 
 from nhs.raw import zippy
 
-class Ratio(View):
+def serve_maybe(meth):
     """
-    Build a file to contain the ratio of two buckets.
+    Decorator to figure out if we want to serve files
+    ourselves (DEBUG) or hand off to Nginx
     """
-    def get(self, request, bucket1, bucket2):
-        return HttpResponse(' '.join(['got', bucket1, bucket2]))
-
-class Drug(View):
-    """
-    Build a file to contain the prescribing of a particular drug
-    """
-    def get(self, request, bnf_code):
+    def handoff(self, *args, **kwargs):
         """
-        Django boilerplate for serving a Zipfile that we're creating on
-        the fly.
-
-        Let the zippy module do the file creation, then figure out
-        whether we serve through Django or jus let Nginx know where
-        we've put the file.
+        Internal wrapper function to figure out
+        the logic
         """
-        filename = zippy.drug(bnf_code)
+        filename = meth(self, *args, **kwargs)
 
         # When we're running locally, just take the hit, otherwise
         # offload the serving of the datafile to Nginx
@@ -44,3 +34,40 @@ class Drug(View):
         resp['Content-Type']=""
         resp['X-Accel-Redirect'] = url
         return resp
+
+    return handoff
+
+class Ratio(View):
+    """
+    Build a file to contain the ratio of two buckets.
+    """
+
+    @serve_maybe
+    def get(self, request, bucket1, bucket2):
+        """
+        Django boilerplate for serving a Zipfile containing the
+        raw data for a ratio visualisation.
+
+        Let the zippy module handle zipfile business logic, then
+        either serve directly or hand off to Nginx.
+        """
+        filename = zippy.ratio(bucket1.split(','), bucket2.split(','))
+        return filename
+
+class Drug(View):
+    """
+    Build a file to contain the prescribing of a particular drug
+    """
+
+    @serve_maybe
+    def get(self, request, bnf_code):
+        """
+        Django boilerplate for serving a Zipfile that we're creating on
+        the fly.
+
+        Let the zippy module do the file creation, then figure out
+        whether we serve through Django or jus let Nginx know where
+        we've put the file.
+        """
+        filename = zippy.drug(bnf_code)
+        return filename

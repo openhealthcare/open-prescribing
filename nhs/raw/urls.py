@@ -8,7 +8,7 @@ from nhs.raw.views import Ratio, Drug
 
 urlpatterns = patterns(
     '',
-    url(r'/ratio/(?P<bucket1>[0-9A-Z]+)/(?P<bucket2>[0-9A-Z]+)/ratiodata.zip$',
+    url(r'/ratio/(?P<bucket1>[0-9A-Z]+)/(?P<bucket2>[0-9A-Z]+)/ratio.zip$',
         Ratio.as_view(), name='rawcompare'),
 
     url(r'/drug/percapitamap/ccg/(?P<bnf_code>[0-9A-Z]+)/raw.zip$',
