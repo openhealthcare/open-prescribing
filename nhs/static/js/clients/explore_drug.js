@@ -121,7 +121,8 @@
             var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
             log.debug('In a per capita map for ' + bnf_code + ' from a url');
             var mapview = OP.maps.scrips_per_capita({
-                bnf_code: bnf_code
+                bnf_code: bnf_code,
+                practices: true
             });
             log.debug(mapview);
             ExploreDrugApp.trigger('controls:toggle');
@@ -180,7 +181,10 @@
                 log.debug('this is a template');
                 t =  _.template(
                     '<h3>\
-<a href="<%= window.location.href.replace("explore", "raw") %>/raw.zip"> \
+<a href="<%= window.location.href.replace("explore", "raw") %>/raw.zip" \
+   data-toggle="tooltip" \
+   title="Download raw data" \
+   class="downloader"> \
 <i class="icon-download"></i></a>\
 <i class="icon-question-sign"></i>\
 <% if (name) { %><%= name.replace("_", " ") %><% }else{ %>drug <% } %> prescription per capita per ccg</h3>');

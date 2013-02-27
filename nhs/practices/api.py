@@ -20,3 +20,20 @@ class PracticeResource(GeoModelResource):
         queryset = Practice.objects.all()
         cache = SimpleCache(timeout=10)
         allowed_methods = ['get']
+
+
+    def dehydrate(self, bundle):
+        """
+        Add extra metadata to the practice.
+
+        We'd like to add the postcode coordinates to facilitate
+        easy "Put this on a map somewhere plausible please", and
+        a name value that strips the frist line of the address.
+        """
+        bundle.data['display_name'] = bundle.obj.address.splitlines()[0]
+        if bundle.obj.pc:
+            # Y is lat, x is lon
+            bundle.data['coords'] = [bundle.obj.pc.location.y, bundle.obj.pc.location.x]
+        else:
+            bundle.data['coords'] = None
+        return bundle

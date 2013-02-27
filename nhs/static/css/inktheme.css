@@ -400,7 +400,7 @@ input[type="text"], textarea, input[type="email"] {
 	border-radius: 2px;
 	color: #6a6a6a;
 	border: 1px solid #ddd;
-	background:	#fafafa url(images/field_bkg.png) repeat-x;
+	/* background:	#fafafa url(images/field_bkg.png) repeat-x; */
 	font-size: 1.1em;
 }
 

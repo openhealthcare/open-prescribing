@@ -267,6 +267,11 @@
         resource: 'ccgmetadata'
     });
 
+    Practices = ScripCollection.extend({
+        model: Practice,
+        resource: 'practice'
+    });
+
     PrescriptionAggs = ScripCollection.extend({
         model: Prescription,
         resource: 'prescriptionaggregates'
@@ -301,40 +306,65 @@
                 ccg: false
             };
 
-            // Store references to our data containers
+            // CCG level data
             this.ccgs = new Ccgs({
                 limit: 0
             });
-
-            // Set up event handlers
-            this.on('show', this.render_map,  this);
             this.ccgs.on('reset', this.got_ccgs_cb, this);
-
-            // Get the data we're not already asking for
+            // Fetch the data
             this.ccgs.fetch({
                 data: {
                     'limit': 0
                 },
                 success: function(){App.trigger('affordance:done', 'Fetching CCG metadata')}
             });
-            App.trigger('affordance:add', 'Fetching CCG metadata');
             // Inform the UX layer that we're doing stuff. Don't panic.
+            App.trigger('affordance:add', 'Fetching CCG metadata');
+
+            // Do we want practices?
+            if(opts.practices){
+                this.dataflags.practices = false;
+                this.practices = new Practices({
+                    limit: 0
+                });
+                this.practices.on('reset', this.got_practices_cb, this);
+                // Fetch the data
+                this.practices.fetch({
+                    data: {
+                        'limit': 0
+                    },
+                    success: function(){App.trigger('affordance:done', 'Fetching Practice metadata')}
+                });
+                // Inform the UX layer that we're doing stuff. Don't panic.
+                App.trigger('affordance:add', 'Fetching Practice metadata');
+            }
+
+            // Set up event handlers
+            this.on('show', this.render_map,  this);
+
         },
 
         // Are we ready to render yet?
         ready: function(){
-            return _.every(
+            var readyp =  _.every(
                 _.values(this.dataflags),
                 function(x){ return x === true });
+            if(readyp){
+                this.heatmap_layers(this);
+                this.marker_layers(this);
+            }
         },
 
         // We've got the metadata - render if we're good to go
         got_ccgs_cb: function(){
             this.dataflags.ccg = true;
-            if(this.ready()){
-                this.heatmap_layers(this);
-            };
-            return;
+            this.ready()
+        },
+
+        // We've got the metadata - render if we're good to go
+        got_practices_cb: function(){
+            this.dataflags.practices = true;
+            this.ready()
         },
 
         // The View's markup has been rendered into the view, so
@@ -352,7 +382,7 @@
             log.debug('BucketMap collection got items');
             log.debug(view);
             // Inform the UX that we're doing some work
-            App.trigger('affordance:add', 'Calculating Hetmap')
+            App.trigger('affordance:add', 'Calculating Heatmap')
 
             // Allow the view to define it's own feature set and
             // The relevant contextual hover information
@@ -374,7 +404,6 @@
 
             legend = this.make_legend(this.steps, colouring)
 
-
             // Format the way Leaflet wants heatmap layers
             var geoJSON = L.geoJson(
                 feature_collection,
@@ -390,7 +419,30 @@
             contextual.addTo(view.map);
             geoJSON.addTo(view.map);
             mapping.geojson = geoJSON;
-            App.trigger('affordance:done', 'Calculating Hetmap')
+            App.trigger('affordance:done', 'Calculating Heatmap')
+        },
+
+        // We're working with a map that wants to put some markers
+        // on the map - let's take care of that.
+        marker_layers: function(view){
+            // Make sure the UX layer knows we're still doing something
+            var affordance = 'Calculating Markers';
+            App.trigger('affordance:add', affordance);
+
+            // Set up a clustered marker group
+            var marker_group = new L.MarkerClusterGroup({disableClusterAtZoom: 14});
+            if(view.make_markers){
+                var markers = view.make_markers(marker_group);
+
+                // Only make the clusters visible at a defined Zoom level
+                function onZoomend(){
+                    if(map.getZoom()>=7){map.addLayer(marker_group)};
+                    if(map.getZoom()<7){map.removeLayer(marker_group);};
+                };
+                view.map.on('zoomend', onZoomend);
+
+            }
+            App.trigger('affordance:done', affordance);
         },
 
         // Figure out the heatmap colorings for this data range
@@ -537,28 +589,40 @@
 
     });
 
+    // Map prescriptions per capita of an individual drug.
     PerCapitaMap = OPMap.extend({
 
         // Add extra setup for the percapita map
         initialize: function(opts){
-            // Base class initialisatin
+            // Base class initialisation
             OPMap.prototype.initialize.call(this, opts);
 
             // Add our data reference
-            this.collection = opts.collection;
-            this.dataflags.collection = false;
+            this.ccg_scrips = opts.ccgs;
+            this.dataflags.ccg_scrips = false;
             this.x = opts.x;
-            this.collection.on('reset', this.got_collection, this);
-        },
+            this.ccg_scrips.on('reset', this.got_ccgs, this);
 
-        // Check for readiness having got our collection
-        got_collection: function(){
-            this.dataflags.collection = true;
-            if(this.ready()){
-                this.heatmap_layers(this)
+            // Do we want practice level data?
+            if(opts.practices){
+                this.practice_scrips = opts.practices;
+                this.dataflags.practice_scrips = false;
+                this.practice_scrips.on('reset', this.got_practices, this);
             }
+
         },
 
+        // Check for readiness having got the CCG data
+        got_ccgs: function(){
+            this.dataflags.ccg_scrips = true;
+            this.ready()
+        },
+
+        // We have practice_level data - plot it on a map
+        got_practices: function(){
+            this.dataflags.practice_scrips = true;
+            this.ready()
+        },
 
         // What should we do when we hover over a geometry
         make_contextual: function(map){
@@ -592,7 +656,7 @@
             var fc = {
                 type: 'FeatureCollection'
             };
-            var aggs = this.collection.models[0].attributes;
+            var aggs = this.ccg_scrips.models[0].attributes;
             var ccgs = this.ccgs;
 
             var percap = [];
@@ -636,6 +700,40 @@
 
             fc.features = features;
             return fc;
+        },
+
+        // Parse the practice level data to plot on the map
+        make_markers: function(group){
+            log.debug('Making practice level markers');
+
+            var aggs = this.practice_scrips.models[0].attributes;
+            var practice_tpl = _.template(
+                "<b><%= name %></b> <%= count %> items presctribed"
+            )
+
+            this.practices.map(function(practice){
+                var coords = practice.get('coords');
+                // Some practices aren't linked to a Mapit postcode
+                if(!coords){
+                    return
+                }
+                var marker = L.marker(coords);
+                var name = practice.get('display_name');
+                var aggregate = aggs[practice.get('practice')];
+                if(!aggregate){
+                    // Sometimes the valid answer will be not to
+                    // return a practice aggregate.
+                    // Deal with this for practices that exist, but cannot
+                    // Answer this question.
+                    return
+                }
+                var count = aggregate.count;
+                marker.bindPopup(practice_tpl({
+                    name: name, count: count
+                }));
+                group.addLayer(marker);
+            });
+
         }
 
     });
@@ -671,7 +769,8 @@
             log.debug('exploringit');
             this.model = model;
             this.render();
-        }
+            this.$('.downloader').tooltip()
+        },
 
     });
 
@@ -755,16 +854,18 @@
         //Prescription aggregate API
         prescriptionaggregate: function(opts){
             var scrips = new PrescriptionAggs();
+            var granularity = opts['granularity'] || 'ccg';
+            var affordance = 'Fetching ' + granularity + ' Aggregate';
             scrips.fetch({
                 data: {
-                    'query_type': opts['query_type'] || 'ccg',
+                    'query_type': granularity,
                     'bnf_code':   opts.bnf_code
                 },
-                success: function(){App.trigger('affordance:done', 'Fetching Prescription Aggregate')}
+                success: function(){App.trigger('affordance:done', affordance)}
             });
             // Inform the UX layer that we're doing something
             // that could take some time
-            App.trigger('affordance:add', 'Fetching Prescription Aggregate')
+            App.trigger('affordance:add', affordance)
             return scrips;
         }
 
@@ -789,14 +890,26 @@
         // Return a view that displays a map representing
         // the number of prescriptions per capita
         scrips_per_capita: function(opts){
-            var scrips = Api.prescriptionaggregate({
+            var ccg_scrips = Api.prescriptionaggregate({
                 bnf_code: opts.bnf_code,
                 granularity: 'ccg'
             });
+
+            // Do we want practice-level data on the map? Default to No.
+            var practice_scrips = false
+            if(opts.practices){
+                practice_scrips = Api.prescriptionaggregate({
+                    bnf_code: opts.bnf_code,
+                    granularity: 'practice'
+                });
+            }
+
             var percapitamap = new PerCapitaMap({
-                collection: scrips,
+                ccgs: ccg_scrips,
+                practices: practice_scrips,
                 x: 'total_items'
             });
+
             App.trigger('results:new_view', percapitamap);
             return percapitamap;
         }
