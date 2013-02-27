@@ -208,7 +208,6 @@
     // Define our own generic collection
     ScripCollection = Backbone.Collection.extend({
 
-
         // Build this from the options hash
         url: function(){
             return App.config.api_uri() + this.resource + '/'
@@ -229,6 +228,26 @@
             return this.filter(function(data) {
                 return pattern.test(data.get("name"));
             });
+        },
+
+        // Fetch the complete set of this item from the API
+        // with appropriate UX events fired.
+        fetchall: function(affordance){
+            // Inform the UX layer that we're doing stuff. Don't panic.
+            App.trigger('affordance:add', 'Fetching CCG metadata');
+
+            // Fetch the data
+            this.fetch({
+                data: {
+                    'limit': 0
+                },
+                success: function(){App.trigger('affordance:done', affordance)}
+                error: function(){
+                    App.trigger('affordance:done', affordance);
+                    App.trigger('affordance:error', affordance);
+                }
+            });
+
         }
 
     });
@@ -310,16 +329,9 @@
             this.ccgs = new Ccgs({
                 limit: 0
             });
+
             this.ccgs.on('reset', this.got_ccgs_cb, this);
-            // Fetch the data
-            this.ccgs.fetch({
-                data: {
-                    'limit': 0
-                },
-                success: function(){App.trigger('affordance:done', 'Fetching CCG metadata')}
-            });
-            // Inform the UX layer that we're doing stuff. Don't panic.
-            App.trigger('affordance:add', 'Fetching CCG metadata');
+            this.ccgs.fetchall('Fetching CCG metadata')
 
             // Do we want practices?
             if(opts.practices){
