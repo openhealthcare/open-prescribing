@@ -84,7 +84,8 @@
 
             var mapview = OP.maps.bucket({
                 bucket1: [bucket1],
-                bucket2: [bucket2]
+                bucket2: [bucket2],
+                practices: true
             });
             log.debug(mapview);
             ExApp.trigger('results:new_view', mapview);

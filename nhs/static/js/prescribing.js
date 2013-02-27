@@ -499,19 +499,28 @@
             OPMap.prototype.initialize.call(this, opts);
 
             // Add our bucket references
-            this.dataflags.buckets = false;
-            this.buckets = opts.buckets;
-            this.buckets.on('reset', this.got_buckets_cb, this);
+            this.dataflags.ccg_buckets = false;
+            this.ccg_buckets = opts.ccg_buckets;
+            this.ccg_buckets.on('reset', this.got_ccg_buckets_cb, this);
+
+            // Do we want practice level data?
+            if(opts.practice_buckets){
+                this.practice_buckets = opts.practice_buckets;
+                this.dataflags.practice_buckets = false;
+                this.practice_buckets.on('reset', this.got_practice_buckets_cb, this);
+            }
 
         },
 
         // We've got the buckets - render if we're good to go
-        got_buckets_cb: function(){
-            this.dataflags.buckets = true;
-            if(this.ready()){
-                this.heatmap_layers(this);
-            };
-            return;
+        got_ccg_buckets_cb: function(){
+            this.dataflags.ccg_buckets = true;
+            this.ready()
+        },
+
+        got_practice_buckets_cb: function(){
+            this.dataflags.practice_buckets = true;
+            this.ready()
         },
 
         // What should we do when we hover over a geometry
@@ -547,7 +556,7 @@
             var fc = {
                 type: 'FeatureCollection'
             };
-            var brigade = this.buckets.models[0].attributes;
+            var brigade = this.ccg_buckets.models[0].attributes;
             var ccgs = this.ccgs;
 
             // Loop through the Geometries, assigning characteristics
@@ -585,6 +594,48 @@
 
             fc.features = features;
             return fc;
+        },
+
+        // Parse the practice level data to plot on the map
+        make_markers: function(group){
+            log.debug('Making practice level markers');
+
+            var aggs = this.practice_buckets.models[0].attributes;
+            var practice_tpl = _.template(
+                "<b><%= name %></b> <%= prop1 %>% in bucket 1\
+<br><%= total_items %> total prescription items"
+            )
+
+            var found = 0;
+            var missed = 0;
+
+            this.practices.map(function(practice){
+                var coords = practice.get('coords');
+                // Some practices aren't linked to a Mapit postcode
+                if(!coords){
+                    return
+                }
+                var marker = L.marker(coords);
+                var name = practice.get('display_name');
+                var aggregate = aggs[practice.get('practice')];
+                if(!aggregate){
+                    missed +=1
+                    // Valid cases exist where there will be no aggregate
+                    // for this existant practice.
+                    return;
+                }
+                found += 1;
+                var prop1 = aggregate.group1.proportion;
+                var total_items = aggregate.group1.items + aggregate.group2.items;
+
+                marker.bindPopup(practice_tpl({
+                    name: name, prop1: prop1, total_items: total_items
+                }));
+                group.addLayer(marker);
+            });
+
+            log.debug('found ' + found + ' missed ' + missed)
+
         },
 
     });
@@ -844,7 +895,7 @@
         prescriptioncomparison: function(opts){
             brigade = new Brigade();
             brigade.fetch({data: {
-                'query_type': opts['query_type'] || 'ccg',
+                'query_type': opts['granularity'] || 'ccg',
                 'group1': opts['group1'].join(','),
                 'group2': opts['group2'].join(','),
             }})
@@ -877,12 +928,29 @@
         // Return a view that displays the ratio of prescibing
         // different buckets of drugs per CCG
         bucket: function(opts){
-            var comparison = Api.prescriptioncomparison({
-                group1:  opts.bucket1 || [],
-                group2:  opts.bucket2 || []
+            var group1 = opts.bucket1 || [];
+            var group2 = opts.bucket2 || [];
+
+            var ccg_comparison = Api.prescriptioncomparison({
+                granularity: 'ccg',
+                group1: group1,
+                group2: group2
             });
+
+            // Do we want practice-level data?
+            var practice_comparison = false;
+            if(opts.practices){
+                practice_comparison = Api.prescriptioncomparison({
+                    granularity: 'practice',
+                    group1: group1,
+                    group2: group2
+                });
+            }
+
             var bucketmap = new BucketMap({
-                buckets: comparison
+                ccg_buckets: ccg_comparison,
+                practice_buckets: practice_comparison,
+                practices: true
             });
             return bucketmap;
         },

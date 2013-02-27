@@ -20,6 +20,7 @@ class PracticeResource(GeoModelResource):
         queryset = Practice.objects.all()
         cache = SimpleCache(timeout=10)
         allowed_methods = ['get']
+        max_limit = None
 
 
     def dehydrate(self, bundle):
