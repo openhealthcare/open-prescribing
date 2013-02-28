@@ -124,10 +124,7 @@
    class="tt"> \
 <i class="icon-download"></i></a>\
 <i class="icon-question-sign"></i>\
-<% if (bucket1 && bucket2) { %>\
-<%= bucket1 %> vs <%= bucket2 %> \
-<% }else{ %>Drug <% } %>\
-prescription ratios per ccg</h3>');
+Bucket 1 vs Bucket 2 prescription ratios per ccg</h3>');
                 return t(model)
             }
 
