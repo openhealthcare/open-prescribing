@@ -1006,7 +1006,10 @@ Failed fetching data from the API: <%= name %>'
         // Chuck it into the collection please.
         url_add: function(model){
             log.debug(model);
-            this.collection.add(model);
+            exists = this.collection.where({bnf_code: model.get('bnf_code')});
+            if(exists.length == 0){ // Collection doesn't know bnf_code is unique
+                this.collection.add(model);
+            }
         },
 
         // Drug buckets should be inherently droppable
