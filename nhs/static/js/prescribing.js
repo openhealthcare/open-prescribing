@@ -259,10 +259,20 @@
     var Models = {}
 
     Practice     = Backbone.Model.extend({});
-    Drug         = Backbone.Model.extend({
+    Drug         = Models.Drug = Backbone.Model.extend({
+
+        url: function(){
+            return App.config.api_uri() + 'product/' + this.get('bnf_code');
+        },
+
+        parse: function(response, options){
+            return response;
+        },
+
         display_name: function(){
             return this.get('name').replace('_', ' ');
         }
+
     });
     Ccg          = Backbone.Model.extend({});
     Bucket       = Backbone.Model.extend({});
@@ -270,8 +280,10 @@
     Prescription = Backbone.Model.extend({});
     Affordance   = Backbone.Model.extend({})
 
+    var Collections = {}
+
     // Define Collections
-    Pharmacy = ScripCollection.extend({
+    Pharmacy = Collections.Pharmacy = ScripCollection.extend({
         model: Drug,
         resource: 'product'
     });
@@ -835,6 +847,7 @@ Failed fetching data from the API: <%= name %>'
             log.debug('question started');
             this.template = opts.template;
             App.on('exploring', this.exploring, this);
+
         },
 
         exploring: function(model){
@@ -842,7 +855,6 @@ Failed fetching data from the API: <%= name %>'
             log.debug('exploringit');
             this.model = model;
             this.render();
-            this.$('.downloader').tooltip()
         },
 
     });
@@ -917,6 +929,165 @@ Failed fetching data from the API: <%= name %>'
     });
 
 
+    Views.DrugListItemView = Backbone.Marionette.ItemView.extend({
+
+        template: _.template("<%= name.replace('_', ' ') %>"),
+        tagName: 'li',
+        events: {
+            'click': 'on_click'
+        },
+
+        on_click: function(event){
+            log.debug('Make Heatmap!');
+            var bnf_code = this.model.get('bnf_code');
+            App.trigger('drugitem:click', bnf_code);
+        },
+
+        onRender: function(){
+            this.$el.attr('data-bnf-code', this.model.get('bnf_code'));
+            return
+        }
+    });
+
+    Views.DrugSelectView = Backbone.Marionette.CollectionView.extend({
+        itemView: Views.DrugListItemView,
+        tagName: 'ul',
+
+        events: {
+            'keyup #filter': 'filter'
+        },
+
+        // When we render, check to see if we want to make the individual
+        // elements draggable
+        onRender: function(){
+            log.debug('Drug select view rendered');
+            log.debug(this.el);
+            this.$el.children('li').draggable({
+                containment: '#explore-controls',
+                revert:      false,
+                helper:      'clone',
+            });
+            return
+        },
+
+        // We'd like to hide any drugs that don't match VAL
+        filter: function(val){
+            log.debug(val);
+            var matches = _(this.collection.search(val)).pluck('cid');
+            this.$('li').toggle(false);
+
+            _.each(
+                matches, function(x){
+                    this.children._views[this.children._indexByModel[x]].$el.toggle(true);
+                },
+                this);
+        }
+    });
+
+    Views.DrugBucketItemView = Backbone.Marionette.ItemView.extend({
+
+        template: _.template("<%= name.replace('_', ' ') %>"),
+        tagName: 'li',
+
+    });
+
+    Views.DrugBucketView = Backbone.Marionette.CollectionView.extend({
+
+        tagName: 'ul',
+        itemView: Views.DrugBucketItemView,
+
+        // Listen for items added to buckets in URLs
+        initialize: function(opts){
+            _.bindAll(this, "url_add");
+            App.on(opts.bucket_name + ':add', this.url_add)
+        },
+
+        // We've got a drug that was added to the bucket by a URL.
+        // Chuck it into the collection please.
+        url_add: function(model){
+            log.debug(model);
+            this.collection.add(model);
+        },
+
+        // Drug buckets should be inherently droppable
+        onRender: function(){
+            var view = this;
+            log.debug('making ourself droppable')
+            this.$el.append('<li class="target">Drop drugs on me to add them!')
+            this.$el.droppable({
+                drop: function(event, ui){view.on_drop(event, ui, view)}
+            });
+        },
+
+        on_drop: function(event, ui, that){
+            var name = ui.draggable.text();
+            var code = ui.draggable.data('bnf-code');
+            var exists = that.collection.where({bnf_code: code});
+            if(exists.length == 0){
+                var drug = new Drug({name:name, bnf_code: code});
+                that.collection.add(drug);
+            }
+        }
+
+    })
+
+    // Re-usable layouts
+    var Layouts = {}
+
+    Layouts.ExLayout = Backbone.Marionette.Layout.extend({
+        template: '#explore-layout-template',
+
+        regions: {
+            question: '#explore-question',
+            controls: '#explore-controls',
+            results: '#explore-results'
+        }
+    });
+
+    Layouts.DrugFilter = Backbone.Marionette.Layout.extend({
+
+        template: _.template('\
+<input type="text" placeholder="type here to filter" id="filter">\
+<div id="drugs"></div>'),
+
+        regions: {
+            drugs: '#drugs'
+        },
+
+        events: {
+            'keyup #filter': 'filter'
+        },
+
+        // Constructor for the filter layout
+        initialize: function(opts){
+            // Do we want to be draggable?
+            var draggable = opts.draggable || false;
+            var collection = opts.collection;
+            var that = this;
+
+            // Make sure we re-render when we get results back from the API
+            collection.once('reset', function(){
+                var druglist = new Views.DrugSelectView({
+                    collection: collection,
+                    draggable:  true
+                });
+                _.bind(that.drugs.show, that);
+                that.drugs.show(druglist);
+            });
+
+
+        },
+
+        // Filter the visible drugs
+        filter: function(event){;
+            var val = this.$('#filter').attr('value');
+            log.debug('filtering ' + val)
+            // log.debug(val);
+            this.drugs.currentView.filter(val);
+        },
+
+    });
+
     // GET Api calls
 
     var Api = {
@@ -933,8 +1104,8 @@ Failed fetching data from the API: <%= name %>'
             brigade = new Brigade();
             brigade.fetch({data: {
                 'query_type': opts['granularity'] || 'ccg',
-                'group1': opts['group1'].join(','),
-                'group2': opts['group2'].join(','),
+                'group1': opts['group1'],
+                'group2': opts['group2'],
             }})
             return brigade
         },
@@ -1021,10 +1192,12 @@ Failed fetching data from the API: <%= name %>'
         return Api[opts.resource](opts);
     }
 
-    App.get = GET;
-    App.maps = Maps;
-    App.views = Views;
-    App.models = Models
+    App.get         = GET;
+    App.maps        = Maps;
+    App.views       = Views;
+    App.layouts     = Layouts;
+    App.models      = Models;
+    App.collections = Collections;
 
     // Deal with configuration options passed in to the start method.
     App.addInitializer(function(opts){

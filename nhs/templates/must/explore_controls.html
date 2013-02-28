@@ -1,21 +1,29 @@
 <script id="explore-controls-template" type="text/template">
+
   <h2>Define your question</h2>
   <h3>
-    What's the ration of prescribing one drug vs. another per CCG?
+    <a href="#"
+       class="tt"
+       data-toggle="tooltip"
+       title="Filter for drugs you're interested in, then drag them into a bucket. Once you're done, click the compare button."
+       >
+       <i class="icon-question-sign"></i>
+    </a>
+    So, you'd like to know what the ratio of prescriptions between two (groups)
+    of drugs are?
   </h3>
+
+  <div id="filter"></div>
+
   <div class="bucket">
-    <h4>
-      First item:
-      <span id="bucket1"></span>
-    </h4>
+    <h4>Bucket 1</h4>
+    <div id="bucket1"></div>
   </div>
   <div class="bucket">
-    <h4>
-      Compare to:
-      <span id="bucket2"></span>
-    </h4>
+    <h4>Bucket 2</h4>
+    <div id="bucket2"></div>
   </div>
   <button>
-    See results
+    Compare
   </button>
-</script>
+ </script>

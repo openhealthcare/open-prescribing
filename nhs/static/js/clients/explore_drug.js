@@ -28,89 +28,14 @@
         debug: _debuglog
     }
 
-    var ExLayout = Backbone.Marionette.Layout.extend({
-        template: '#explore-layout-template',
-
-        regions: {
-            question: '#explore-question',
-            controls: '#explore-controls',
-            results: '#explore-results'
-        },
-
-
-    });
-
     var ExControlLayout = Backbone.Marionette.Layout.extend({
         template: '#explore-drug-controls-template',
 
         regions: {
-            drugs: '#drugs',
+            filter: '#filter',
         },
-
-        events: {
-            'keyup #filter': 'filter'
-        },
-
-        initialize: function(opts){
-            ExploreDrugApp.on('controls:toggle', this.toggle, this);
-        },
-
-        // Filter the visible drugs
-        filter: function(event){
-            log.debug('filtering')
-            var val = this.$('#filter').attr('value');
-            log.debug(val);
-            this.drugs.currentView.filter(val);
-        },
-
-        // Toggle the visibility of the controls
-        toggle: function(){
-            // if(this.$el.is(':visible')){
-            //     this.$el.slideUp();
-            // }else{
-            //     this.$el.slideDown();
-            // }
-        }
 
     })
-
-    var DrugListItemView = Backbone.Marionette.ItemView.extend({
-        template: '#drug-option-template',
-        tagName: 'li',
-        events: {
-            'click': 'resultise'
-        },
-
-        resultise: function(event){
-            log.debug('Make Heatmap!');
-            var bnf_code = this.model.get('bnf_code');
-            var url = 'explore/drug/percapitamap/ccg/' + bnf_code
-            ExploreDrugApp.router.navigate(url, {trigger: true});
-        },
-
-        onRender: function(){
-            this.$el.attr('value', this.model.get('bnf_code'));
-            return
-        }
-    });
-
-    var DrugSelectView = Backbone.Marionette.CollectionView.extend({
-        itemView: DrugListItemView,
-        tagName: 'ul',
-
-        // We'd like to hide any drugs that don't match VAL
-        filter: function(val){
-            log.debug(val);
-            var matches = _(this.collection.search(val)).pluck('cid');
-            this.$('li').toggle(false);
-
-            _.each(
-                matches, function(x){
-                    this.children._views[this.children._indexByModel[x]].$el.toggle(true);
-                },
-                this);
-        }
-    });
 
     // Handle callbacks on routes
     var ExploreDrugController = {
@@ -173,12 +98,12 @@
 
     // On startup, create the initial views for controls, results, etc
     ExploreDrugApp.addInitializer(function(options){
-        var layout = new ExLayout();
+        var layout = new OP.layouts.ExLayout();
         ExploreDrugApp.container.show(layout);
+
         questions = new OP.views.QuestionView({
 
             template: function(model){
-                log.debug('this is a template');
                 t =  _.template(
                     '<h3>\
 <a href="<%= window.location.href.replace("explore", "raw") %>/raw.zip" \
@@ -187,7 +112,9 @@
    class="downloader"> \
 <i class="icon-download"></i></a>\
 <i class="icon-question-sign"></i>\
-<% if (name) { %><%= name.replace("_", " ") %><% }else{ %>drug <% } %> prescription per capita per ccg</h3>');
+<% if (name) { %><%= name.replace("_", " ") %>\
+<% }else{ \
+        %>drug <% } %> prescription per capita per ccg</h3>');
                 return t(model)
             }
 
@@ -203,13 +130,13 @@
 
         ExploreDrugApp.all_drugs = all_drugs;
 
-        drugs = new DrugSelectView({
+        drug_filter = new OP.layouts.DrugFilter({
             collection: all_drugs
         });
 
         layout.question.show(questions);
         layout.controls.show(controls);
-        controls.drugs.show(drugs);
+        controls.filter.show(drug_filter);
         layout.results.show(results);
     });
 
@@ -219,5 +146,14 @@
         Backbone.history.start({pushState: true});
     });
 
+    // Let's listen for events from the Filters
+    ExploreDrugApp.addInitializer(function(options){
+
+        OP.on('drugitem:click', function(bnf_code){
+            var url = 'explore/drug/percapitamap/ccg/' + bnf_code
+            ExploreDrugApp.router.navigate(url, {trigger: true});
+        });
+
+    })
 
 })(this.window||exports, "ExploreDrug")

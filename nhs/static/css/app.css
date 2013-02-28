@@ -4,6 +4,7 @@
 body.custom-background { background-image: url('/static/img/hexabump.png'); background-repeat: repeat;
 background-position: top left; background-attachment: fixed; }
 
+
 #mainNav ul a, #mainNav ul li.sfHover ul a { color: #8f8f8f !important;	}
 	#mainNav ul li.current a,
 	#mainNav ul li.current-cat a,
@@ -139,11 +140,6 @@ body #header {
     border-radius: 3px;
 }
 
-#explore-controls div.bucket {
-    width: 350px;
-    float: left;
-    display: inline-block;
-}
 
 #explore-controls button {
     margin: 0 auto;
