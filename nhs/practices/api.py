@@ -17,7 +17,7 @@ class PracticeResource(GeoModelResource):
 
     class Meta:
         model = Practice
-        queryset = Practice.objects.all()
+        queryset = Practice.objects.select_related('pc').all()
         cache = SimpleCache(timeout=10)
         allowed_methods = ['get']
         max_limit = None

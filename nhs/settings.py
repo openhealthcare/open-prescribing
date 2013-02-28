@@ -85,6 +85,7 @@ INSTALLED_APPS = (
     # 3rd Party
     'south',
     'django_extensions',
+    'devserver',
     'mapit',
     'tastypie_swagger',
     # Us
