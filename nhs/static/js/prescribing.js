@@ -232,17 +232,20 @@
 
         // Fetch the complete set of this item from the API
         // with appropriate UX events fired.
-        fetchall: function(affordance){
+        fetchall: function(affordance, opts){
+            var data = { 'limit': 0 }
+            if(opts){
+                data = _.extend(data, opts);
+            }
             // Inform the UX layer that we're doing stuff. Don't panic.
-            App.trigger('affordance:add', 'Fetching CCG metadata');
+            App.trigger('affordance:add', affordance);
 
             // Fetch the data
             this.fetch({
-                data: {
-                    'limit': 0
-                },
-                success: function(){App.trigger('affordance:done', affordance)}
+                data: data,
+                success: function(){App.trigger('affordance:done', affordance)},
                 error: function(){
+                    log.debug('Error callback for data fetch');
                     App.trigger('affordance:done', affordance);
                     App.trigger('affordance:error', affordance);
                 }
@@ -340,15 +343,7 @@
                     limit: 0
                 });
                 this.practices.on('reset', this.got_practices_cb, this);
-                // Fetch the data
-                this.practices.fetch({
-                    data: {
-                        'limit': 0
-                    },
-                    success: function(){App.trigger('affordance:done', 'Fetching Practice metadata')}
-                });
-                // Inform the UX layer that we're doing stuff. Don't panic.
-                App.trigger('affordance:add', 'Fetching Practice metadata');
+                this.practices.fetchall('Fetching Practice metadata');
             }
 
             // Set up event handlers
@@ -807,6 +802,7 @@
 
     var Views =  {}
 
+    // Represent an in-progress data call to the API
     Views.Affordance =  Backbone.Marionette.ItemView.extend({
 
         template: function(serialised){
@@ -815,6 +811,20 @@
         }
 
     });
+
+    // Represent a failed data call to the API
+    Views.FailedAffordance = Backbone.Marionette.ItemView.extend({
+
+        template: function(serialised){
+            var tpl = _.template('\
+<i class="icon-thumbs-down"></i>\
+Failed fetching data from the API: <%= name %>'
+                                );
+            return tpl(serialised);
+        }
+
+    });
+
 
     // The purpose of a question layout is to listen for events and
     // construct a human-understandable headline for the current
@@ -843,13 +853,19 @@
     Views.ResultLayout = Backbone.Marionette.Layout.extend({
 
         template: function(serialised){
-            tpl = _.template('<div id="explore-affordance"></div><div id="explore-results"></div>');
+            tpl = _.template(
+                '\
+<div id="explore-affordance"></div>\
+<div id="explore-failed-affordance"></div>\
+<div id="explore-results"></div>'
+            );
             return tpl(serialised)
         },
 
         regions: {
             results:    '#explore-results',
-            affordance: '#explore-affordance'
+            affordance: '#explore-affordance',
+            failures:   '#explore-failed-affordance'
         },
 
         // Listen for events
@@ -857,7 +873,8 @@
             this.affordances = []
             App.on('results:new_view', this.new_result, this);
             App.on('affordance:add', this.add_affordance, this);
-            App.on('affordance:done', this.done_affordance, this)
+            App.on('affordance:done', this.done_affordance, this);
+            App.on('affordance:error', this.failed_affordance, this);
         },
 
         new_result: function(view){
@@ -887,6 +904,14 @@
                 this.affordance.show(affview);
             }
             return;
+        },
+
+        // A data call has failed to respond - display this information
+        // to the user.
+        failed_affordance: function(affordance){
+            var aff = new Affordance({name: affordance});
+            var errview = new Views.FailedAffordance({model: aff});
+            this.failures.show(errview);
         }
 
     });
@@ -919,16 +944,10 @@
             var scrips = new PrescriptionAggs();
             var granularity = opts['granularity'] || 'ccg';
             var affordance = 'Fetching ' + granularity + ' Aggregate';
-            scrips.fetch({
-                data: {
-                    'query_type': granularity,
-                    'bnf_code':   opts.bnf_code
-                },
-                success: function(){App.trigger('affordance:done', affordance)}
+            scrips.fetchall(affordance, {
+                query_type: granularity,
+                bnf_code:   opts.bnf_code
             });
-            // Inform the UX layer that we're doing something
-            // that could take some time
-            App.trigger('affordance:add', affordance)
             return scrips;
         }
 

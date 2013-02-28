@@ -175,6 +175,10 @@ body #header {
     margin: 20px;
 }
 
+#explore-failed-affordance{
+    margin: 20px;
+}
+
 #explore-question h3 i,
 #explore-question h3 a i,
 #explore-question h1 i {
