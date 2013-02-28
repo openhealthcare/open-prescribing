@@ -1,3 +1,7 @@
+"""
+Tastypie API for CCGs and CCG metadata.
+"""
+from django.db.models import Count
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 
 from models import CCG
@@ -16,7 +20,7 @@ class CCGMetadataResource(GeoModelResource):
     """
     class Meta:
         model = CCG
-        queryset = CCG.objects.all()
+        queryset = CCG.objects.annotate(pracs=Count('practice'))
         allowed_methods = ['get']
         excludes = ['poly']
 
@@ -24,5 +28,5 @@ class CCGMetadataResource(GeoModelResource):
         """
         Add the number of practices
         """
-        bundle.data['no_of_practices'] = bundle.obj.practice_set.count()
+        bundle.data['no_of_practices'] = bundle.obj.pracs
         return bundle
