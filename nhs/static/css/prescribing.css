@@ -107,12 +107,41 @@ body #header {
     line-height: 1.7em;
 }
 
-/* Data explorations */
+/* Maps */
 
 #map {
     width: 920px;
     height: 600px;
 }
+
+
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+
+.legend {
+    text-align: left;
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 20px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+}
+
+
+/* Data explorations */
 
 
 #explore-container {
@@ -145,7 +174,7 @@ body #header {
     float: left;
     width: 300px;
     padding: 3px;
-    margin-left: 10px;
+    margin: 5px 0px 5px 10px;
 }
 #drugs li:hover {
     background: black;
@@ -160,6 +189,7 @@ body #header {
 #explore-failed-affordance{
     margin: 20px;
 }
+
 
 #explore-question h3 i,
 #explore-question h3 a i,

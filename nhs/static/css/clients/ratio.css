@@ -19,7 +19,7 @@
     list-style-type: none;
     border: 1px solid red;
     padding: 3px;
-    margin: 0px;
+    margin: 5px 0px;
 }
 
 .bucket ul li.target {
