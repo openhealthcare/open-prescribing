@@ -811,6 +811,96 @@
     });
 
 
+    // Templates stored here for use later on
+    var Templates = {}
+
+    // The template used to render ratio comparison data
+    // for CCGs
+    Templates.BucketCCGTable = function(serialised){
+            serialised.App = App; // Like a template context plugin
+            log.debug(App.metadata.ccgs.length)
+            log.debug(App.metadata.ccgs)
+            log.debug('metadata tablerender')
+            var tpl = _.template('\
+<table class="table table-striped table-bordered table-hover">\
+  <thead>\
+    <tr>\
+        <th>CCG ID              </th>\
+        <th>CCG Name            </th>\
+        <th>Bucket 1 Items      </th>\
+        <th>Bucket 1 Proportion </th>\
+        <th>Bucket 2 Items      </th>\
+        <th>Bucket 2 Proportion </th>\
+    </tr>\
+  </thead>\
+  <tbody\
+<% _.each(_.pairs(data), function(pair) { \
+                             var ccg_id = pair[0], groups = pair[1];\
+                             var ccg = App.metadata.ccgs.where({code: ccg_id})[0];\
+%>\
+    <tr>\
+        <td><%= ccg_id %>                  </td>\
+        <td><%= ccg.get("title") %>        </td>\
+        <td><%= groups.group1.items %>     </td>\
+        <td><%= groups.group1.proportion %></td>\
+        <td><%= groups.group2.items %>     </td>\
+        <td><%= groups.group2.proportion %></td>\
+    </tr>\
+<% }); %>\
+  </tbody>\
+</table>');
+            return tpl(serialised);
+    }
+
+    // The template used to render percapita data for CCGs
+    Templates.PercapitaCCGTable = function(serialised){
+            serialised.App = App; // Like a template context plugin
+            var tpl = _.template('\
+<table class="table table-striped table-bordered table-hover">\
+  <thead>\
+    <tr>\
+        <th>CCG ID                   </th>\
+        <th>CCG Name                 </th>\
+        <th>Total Items              </th>\
+        <th>Prescriptions Per Capita </th>\
+    </tr>\
+  </thead>\
+  <tbody\
+<% _.each(_.pairs(data), function(pair) { \
+                             var ccg_id = pair[0], count = pair[1].count;\
+                             var ccg = App.metadata.ccgs.where({code: ccg_id})[0];\
+                             var percap = count / ccg.get("population");\
+%>\
+    <tr>\
+        <td><%= ccg_id %>                  </td>\
+        <td><%= ccg.get("title") %>        </td>\
+        <td><%= count %>                   </td>\
+        <td><%= percap %>                  </td>\
+    </tr>\
+<% }); %>\
+  </tbody>\
+</table>');
+            return tpl(serialised);
+    }
+
+    // Template for A data map - e.g. a heatmap with Data Tables attached
+    Templates.DataMap = _.template('\
+<ul class="nav nav-tabs" id="datamap-tabs">\
+  <li class="active"><a href="#map" class="tabbable">Heatmap</a></li>\
+  <li> <a href="#ccg_data_table" class="tabbable">CCG Data</a></li>\
+</ul>\
+<div class="tab-content">\
+  <div class="tab-pane active" id="map"></div>\
+  <div class="tab-pane" id="ccg_data_table">Some data (CCG)</div>\
+  <div class="tab-pane" id="practice_data_table">Some data (Practice)</div>\
+<\div>\
+<script>\
+  $(function () {\
+    $("#datamap-tabs a:first").tab("show");\
+  })\
+</script>\
+');
+
     // General purpose Marionette views that will be useful in
     // many clients
 
@@ -967,40 +1057,8 @@ Failed fetching data from the API: <%= name %>'
     })
 
     Views.DataTable = Backbone.Marionette.ItemView.extend({
-        template: function(serialised){
-            serialised.App = App; // Like a template context plugin
-            log.debug(App.metadata.ccgs.length)
-            log.debug(App.metadata.ccgs)
-            log.debug('metadata tablerender')
-            var tpl = _.template('\
-<table class="table table-striped table-bordered table-hover">\
-  <thead>\
-    <tr>\
-        <th>CCG ID              </th>\
-        <th>CCG Name            </th>\
-        <th>Bucket 1 Items      </th>\
-        <th>Bucket 1 Proportion </th>\
-        <th>Bucket 2 Items      </th>\
-        <th>Bucket 2 Proportion </th>\
-    </tr>\
-  </thead>\
-  <tbody\
-<% _.each(_.pairs(data), function(pair) { \
-                             var ccg_id = pair[0], groups = pair[1];\
-                             var ccg = App.metadata.ccgs.where({code: ccg_id})[0];\
-%>\
-    <tr>\
-        <td><%= ccg_id %>                  </td>\
-        <td><%= ccg.get("title") %>        </td>\
-        <td><%= groups.group1.items %>     </td>\
-        <td><%= groups.group1.proportion %></td>\
-        <td><%= groups.group2.items %>     </td>\
-        <td><%= groups.group2.proportion %></td>\
-    </tr>\
-<% }); %>\
-  </tbody>\
-</table>');
-            return tpl(serialised);
+        initialise: function(opts){
+            this.template = opts.template;
         },
 
         onRender: function(){
@@ -1084,22 +1142,7 @@ Failed fetching data from the API: <%= name %>'
     // Generic container for a map which shows it's data tables
     Layouts.DataMap = Backbone.Marionette.Layout.extend({
 
-        template: _.template('\
-<ul class="nav nav-tabs" id="datamap-tabs">\
-  <li class="active"><a href="#map" class="tabbable">Heatmap</a></li>\
-  <li> <a href="#ccg_data_table" class="tabbable">CCG Data</a></li>\
-</ul>\
-<div class="tab-content">\
-  <div class="tab-pane active" id="map"></div>\
-  <div class="tab-pane" id="ccg_data_table">Some data (CCG)</div>\
-  <div class="tab-pane" id="practice_data_table">Some data (Practice)</div>\
-<\div>\
-<script>\
-  $(function () {\
-    $("#datamap-tabs a:first").tab("show");\
-  })\
-</script>\
-'),
+        template: Templates.DataMap,
         regions: {
             map:                 '#map',
             ccg_data_table:      '#ccg_data_table',
@@ -1108,7 +1151,8 @@ Failed fetching data from the API: <%= name %>'
 
         initialize: function(opts){
             this.ccgs = opts.ccgs;
-            this.dataflags = {};
+            this.ccg_template = opts.ccg_template;
+            this.dataflags = {}
             this.practices = opts.practices;
             _.bindAll(this, 'build_ccg_table');
             this.ccgs.on('reset', this.build_ccg_table);
@@ -1121,7 +1165,8 @@ Failed fetching data from the API: <%= name %>'
             }
             log.debug('building CCG table');
             var table = new Views.DataTable({
-                model: new Backbone.Model({data: this.ccgs.models[0].attributes})
+                template: this.ccg_template,
+                model:    new Backbone.Model({data: this.ccgs.models[0].attributes})
             })
             this.ccg_data_table.show(table);
         },
@@ -1251,13 +1296,16 @@ Failed fetching data from the API: <%= name %>'
                 practices:        true
             });
 
+            // Do we want a data table?
             if(data_tables){
                 var data_map = new Layouts.DataMap({
                     ccgs:      ccg_comparison,
+                    ccg_template: Templates.BucketCCGTable,
                     practices: practice_comparison
                 });
                 App.trigger('results:new_view', data_map);
                 data_map.map.show(bucketmap)
+                return data_map
             }else{
                 return bucketmap;
             }
@@ -1287,8 +1335,21 @@ Failed fetching data from the API: <%= name %>'
                 x: 'total_items'
             });
 
-            App.trigger('results:new_view', percapitamap);
-            return percapitamap;
+            // Do we want data tables?
+            if(opts.data_tables){
+                var data_map = new Layouts.DataMap({
+                    ccgs:      ccg_scrips,
+                    ccg_template: Templates.PercapitaCCGTable,
+                    practices: practice_scrips
+                });
+
+                App.trigger('results:new_view', data_map);
+                data_map.map.show(percapitamap);
+                return data_map
+            }else{
+                App.trigger('results:new_view', percapitamap);
+                return percapitamap
+            }
         }
 
     };

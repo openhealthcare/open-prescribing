@@ -46,11 +46,11 @@
             var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
             log.debug('In a per capita map for ' + bnf_code + ' from a url');
             var mapview = OP.maps.scrips_per_capita({
-                bnf_code: bnf_code,
-                practices: true
+                bnf_code:   bnf_code,
+                practices:  true,
+                data_tables: true
             });
             log.debug(mapview);
-            ExploreDrugApp.trigger('controls:toggle');
 
             // Check to see if we have a model to update the question
             var explore = function(model){OP.trigger('exploring', model);}

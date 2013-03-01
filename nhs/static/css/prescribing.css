@@ -176,6 +176,7 @@ body #header {
     padding: 3px;
     margin: 5px 0px 5px 10px;
 }
+
 #drugs li:hover {
     background: black;
     color: white;
