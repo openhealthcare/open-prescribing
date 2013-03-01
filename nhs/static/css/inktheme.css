@@ -281,11 +281,11 @@ bottom:4px;
 
 body {
 	font-size: 100%;
-	font-family: "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 	width:auto; height:auto;
 	padding: 0 0 0 0;
 	margin: 0;
-	color: #7d7d7b;
+
 	background-color: #e0e0e0;
 }
 
@@ -479,7 +479,7 @@ a.action {
 }
 
 #header .inside{
-	padding: 40px 35px 20px 40px ;
+
 }
 
 #logo {

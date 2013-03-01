@@ -1,25 +1,22 @@
 <div id="logo">
-  <h1 class="logo"><a href="/"><img src="{{STATIC_URL}}/img/drugs.jpg" alt="Open Prescribing" width="100px"/></a></h1>
+  <a href="/">
+    <img src="{{STATIC_URL}}/img/drugs.jpg" alt="Open Prescribing" width="100px"/>
+  </a>
 </div>
 
-<div id="mainNav" class="clearfix">
-  <div class="menu-menumain-container">
-    <ul id="menu-menumain" class="sf-menu">
-      <li id="menu-item-113" class="menu-item menu-item-type-post_type menu-item-object-page page-item-82 menu-item-113">
-        <a href="{% url home %}"</a>
-      </li>
-      <li id="menu-item-111" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-111 ">
-        <a href="{% url explore %}">Explore</a>
-      </li>
-      <li id="menu-item-109" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-109 ">
-        <a href="{% url about %}">About</a>
-      </li>
-      <li id="menu-item-111" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-111 ">
-        <a href="{% url data %}">Data</a>
-      </li>
-      <li id="menu-item-112" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-113 ">
-        <a href="/api/doc">Api</a>
-      </li>
-    </ul>
-  </div>
+<div id="nav">
+  <ul>
+    <li>
+      <a href="{% url explore %}">Explore</a>
+    </li>
+    <li>
+      <a href="{% url about %}">About</a>
+    </li>
+    <li>
+      <a href="{% url data %}">Data</a>
+    </li>
+    <li >
+      <a href="/api/doc">Api</a>
+    </li>
+  </ul>
 </div>

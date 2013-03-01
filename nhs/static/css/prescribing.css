@@ -1,0 +1,169 @@
+/* Our resets */
+h1, h2 {
+    font-weight: normal;
+    color: #D7301F;
+}
+
+h1 {
+    font-size: 32px;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+}
+
+h3, h3 a, h4, h4 a {
+    color: #900;
+    font-weight: normal;
+    margin: 20px 0px 0px 0px;
+}
+
+a {
+    color: #F1532F;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #8F8F8F;
+    text-decoration: none;
+}
+
+h2 a {
+    font-weight: normal;
+}
+
+.container {
+    width: 100%;
+}
+
+/* Our utility classes */
+
+.left { float: left; }
+.span350 { width: 350px; }
+.drop40 { margin-top: 40px; }
+.full{ height: 100%; }
+.offsethalf { margin-left: 50px !important; }
+
+/* Global styles */
+body {
+    background-image: url('/static/img/hexabump.png');
+    background-repeat: repeat;
+    background-position: top left;
+    background-attachment: fixed;
+    font-family: "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #7d7d7b;
+}
+
+/* Navigation */
+body #header {
+    background-color: white;
+    padding: 40px 35px 20px 40px ;
+    position: fixed;
+}
+
+#nav ul {
+    margin: 20px 0px 0px 0px;
+}
+
+#nav ul li {
+    list-style: none;
+    margin: 10px 0px 0px 0px;
+}
+
+#nav ul li a {
+    color: #8F8F8F;
+    font-size: 12px;
+}
+
+#nav ul li a:hover {
+    text-decoration: none;
+    color: #F1532F;
+}
+
+/* Content */
+#main {
+
+}
+#content {
+
+    background: white;
+    margin-bottom: 20000px;
+    padding: 30px 20px;
+}
+
+#content h1 {
+    padding-bottom: 60px;
+}
+
+#content img {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+#content p {
+    font-size: 18px;
+    line-height: 1.7em;
+}
+
+/* Data explorations */
+
+#map {
+    width: 920px;
+    height: 600px;
+}
+
+
+#explore-container {
+    min-height: 1200px;
+}
+
+#explore-controls {
+    box-shadow: 2px 2px 5px #ccc;
+    margin: 4px;
+    border: 1px #ccc solid;
+    border-radius: 3px;
+}
+
+
+#explore-controls button {
+    margin: 0 auto;
+    clear: both;
+    display: block;
+}
+#drugs ul {
+    margin: 3px;
+    width: 740px;
+    height: 200px;
+    overflow-y: scroll;
+}
+#drugs li {
+    list-style-type: none;
+    border: 1px solid red;
+    display: block;
+    float: left;
+    width: 300px;
+    padding: 3px;
+    margin-left: 10px;
+}
+#drugs li:hover {
+    background: black;
+    color: white;
+    cursor: pointer;
+}
+
+#explore-affordance {
+    margin: 20px;
+}
+
+#explore-failed-affordance{
+    margin: 20px;
+}
+
+#explore-question h3 i,
+#explore-question h3 a i,
+#explore-question h1 i {
+    color: orange;
+    padding-right: 6px;
+}

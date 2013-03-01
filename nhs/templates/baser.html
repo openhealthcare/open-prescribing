@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en-GB">
+<html dir="ltr" lang="en-GB" class="full">
     <head>
       <title>Open Prescribing{% block extratitle %}{% endblock %}</title>
+      {% block prevstyles %}{% endblock %}
       {% include 'head.html' %}
       {% block extrastyles %}{% endblock %}
       {% block extratemplates %}{% endblock %}
 
     </head>
-    <body class="home page page-id-82 page-template-default custom-background">
-        <div id="container">
-            <div id="header">
-                <div class="inside clearfix">
-                  {% include 'nav.html' %}
-                </div>
-            </div>
-        </div>
+    <body class="full">
+        <div class="container full">
+          <div class="row-fluid full">
 
-        <div id="main" class="clearfix">
-            <div id="content">
-                <div class="post-82 page type-page status-publish hentry clearfix box">
-                  {% block content %}{% endblock %}
-                </div>
+            <div id="header" class="span2 full">
+              {% include 'nav.html' %}
             </div>
-            <div id="footer">
-              {% block footer %}
 
-            {% endblock %}</div>
-        </div>
+            <div id="main" class="span10 full">
+              <div id="content" class="span11 offset2 drop40">
+                {% block content %}{% endblock %}
+              </div>
+
+              <div id="footer">
+                {% block footer %}{% endblock %}
+              </div>
+
+            </div>
+          </div> <!-- row-fluid -->
+        </div>   <!-- container -->
 
         {% block extrascripts %}{% endblock %}
 
