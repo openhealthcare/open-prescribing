@@ -85,15 +85,16 @@
                 });
             });
 
+            // This is Insane.
+            window.$ = jQuery;
             var mapview = OP.maps.bucket({
-                bucket1: bucket1,
-                bucket2: bucket2,
-                practices: true
+                bucket1:     bucket1,
+                bucket2:     bucket2,
+                practices:   true,
+                data_tables: true
             });
             log.debug(mapview);
-            OP.trigger('results:new_view', mapview);
-            var _ratio = new OP.models.Ratio({bucket1: bucket1, bucket2: bucket2})
-            OP.trigger('exploring', _ratio);
+            // OP.trigger('results:new_view', mapview);
         }
     };
 
@@ -131,7 +132,7 @@ Bucket 1 vs Bucket 2 prescription ratios per ccg</h3>');
         });
 
         controls = new ExControlLayout();
-        results = new OP.views.ResultLayout();
+        results = new OP.layouts.ResultLayout();
 
         all_drugs = OP.get({
             resource: 'product',

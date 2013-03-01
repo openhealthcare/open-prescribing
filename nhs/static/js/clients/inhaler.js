@@ -20,7 +20,7 @@
 
     Inhaler.addRegions({container: '#inhaler-map'});
     Inhaler.addInitializer(function(options){
-        var results = new OP.views.ResultLayout();
+        var results = new OP.layouts.ResultLayout();
         Inhaler.container.show(results);
         var mapview = OP.maps.bucket({
             bucket1: metered,

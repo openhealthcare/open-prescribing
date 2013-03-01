@@ -1,49 +1,9 @@
-#explore-contr1ols {
-    height: 460px;
-}
-#drugs ul {
-    margin: 3px;
-    width: 330px;
-    height: 200px;
-    overflow-y: hidden;
-}
 
-#content .bucket ul{
-    margin: 10px;
-    padding: 0px;
-
+th {
+    color: #F1532F;
+    font-weight: bold;
 }
-.bucket ul li {
-    background: #D7301F;
-    color: white;
-    list-style-type: none;
-    border: 1px solid red;
-    padding: 3px;
-    margin: 5px 0px;
-}
-
-.bucket ul li.target {
-    background: transparent;
-    color: red;
-    border: 3px dashed red;
-}
-
-#filter {
-    float: left;
-}
-
-#explore-controls div.bucket {
-    height: 240px;
-    width: 240px;
-    float: left;
-    margin: 10px;
-    box-shadow: 2px 2px 5px #ccc;
-    overflow-y: scroll;
-    border: 1px #ccc solid;
-    border-radius: 3px;
-}
-
-#map {
-    width: 620px;
-	height: 550px;
+th:hover {
+    cursor: pointer;
+    color: #8F8F8F;
 }

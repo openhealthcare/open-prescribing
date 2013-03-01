@@ -279,7 +279,7 @@
     Ratio        = Models.Ratio = Backbone.Model.extend({});
     Prescription = Backbone.Model.extend({});
     Affordance   = Backbone.Model.extend({})
-
+;
     var Collections = {}
 
     // Define Collections
@@ -344,6 +344,8 @@
             this.ccgs = new Ccgs({
                 limit: 0
             });
+
+            App.metadata.ccgs = this.ccgs;
 
             this.ccgs.on('reset', this.got_ccgs_cb, this);
             this.ccgs.fetchall('Fetching CCG metadata')
@@ -859,76 +861,6 @@ Failed fetching data from the API: <%= name %>'
 
     });
 
-
-    // Capture results and display affordances on trigger
-    // functions
-    Views.ResultLayout = Backbone.Marionette.Layout.extend({
-
-        template: function(serialised){
-            tpl = _.template(
-                '\
-<div id="explore-affordance"></div>\
-<div id="explore-failed-affordance"></div>\
-<div id="explore-results"></div>'
-            );
-            return tpl(serialised)
-        },
-
-        regions: {
-            results:    '#explore-results',
-            affordance: '#explore-affordance',
-            failures:   '#explore-failed-affordance'
-        },
-
-        // Listen for events
-        initialize: function(opts){
-            this.affordances = []
-            App.on('results:new_view', this.new_result, this);
-            App.on('affordance:add', this.add_affordance, this);
-            App.on('affordance:done', this.done_affordance, this);
-            App.on('affordance:error', this.failed_affordance, this);
-        },
-
-        new_result: function(view){
-            log.debug(view);
-            this.results.show(view);
-        },
-
-        // We've decided to do something that could take some time.
-        // Make sure we remind the user that we're doing something
-        add_affordance: function(affordance){
-            this.affordances.push(affordance);
-            log.debug(this.affordances)
-            var affview = new Views.Affordance({model: new Affordance({name: affordance})});
-            this.affordance.show(affview);
-            return;
-        },
-
-        // We've finished doing something, so let's remove this from the
-        // Queue of affordances
-        done_affordance: function(affordance){
-            this.affordances =  _.without(this.affordances, affordance);
-            if(this.affordances.length == 0){
-                this.affordance.close();
-            }else{
-                var aff =  new Affordance({name: _.first(this.affordances)});
-                var affview = new Views.Affordance({model: aff});
-                this.affordance.show(affview);
-            }
-            return;
-        },
-
-        // A data call has failed to respond - display this information
-        // to the user.
-        failed_affordance: function(affordance){
-            var aff = new Affordance({name: affordance});
-            var errview = new Views.FailedAffordance({model: aff});
-            this.failures.show(errview);
-        }
-
-    });
-
-
     Views.DrugListItemView = Backbone.Marionette.ItemView.extend({
 
         template: _.template("<%= name.replace('_', ' ') %>"),
@@ -1034,8 +966,167 @@ Failed fetching data from the API: <%= name %>'
 
     })
 
+    Views.DataTable = Backbone.Marionette.ItemView.extend({
+        template: function(serialised){
+            serialised.App = App; // Like a template context plugin
+            log.debug(App.metadata.ccgs.length)
+            log.debug(App.metadata.ccgs)
+            log.debug('metadata tablerender')
+            var tpl = _.template('\
+<table class="table table-striped table-bordered table-hover">\
+  <thead>\
+    <tr>\
+        <th>CCG ID              </th>\
+        <th>CCG Name            </th>\
+        <th>Bucket 1 Items      </th>\
+        <th>Bucket 1 Proportion </th>\
+        <th>Bucket 2 Items      </th>\
+        <th>Bucket 2 Proportion </th>\
+    </tr>\
+  </thead>\
+  <tbody\
+<% _.each(_.pairs(data), function(pair) { \
+                             var ccg_id = pair[0], groups = pair[1];\
+                             var ccg = App.metadata.ccgs.where({code: ccg_id})[0];\
+%>\
+    <tr>\
+        <td><%= ccg_id %>                  </td>\
+        <td><%= ccg.get("title") %>        </td>\
+        <td><%= groups.group1.items %>     </td>\
+        <td><%= groups.group1.proportion %></td>\
+        <td><%= groups.group2.items %>     </td>\
+        <td><%= groups.group2.proportion %></td>\
+    </tr>\
+<% }); %>\
+  </tbody>\
+</table>');
+            return tpl(serialised);
+        },
+
+        onRender: function(){
+            this.$el.children('table').tablesorter();
+        },
+
+    });
+
     // Re-usable layouts
     var Layouts = {}
+
+
+    // Capture results and display affordances on trigger
+    // functions
+    Layouts.ResultLayout = Backbone.Marionette.Layout.extend({
+
+        template: function(serialised){
+            tpl = _.template(
+                '\
+<div id="explore-affordance"></div>\
+<div id="explore-failed-affordance"></div>\
+<div id="explore-results"></div>'
+            );
+            return tpl(serialised)
+        },
+
+        regions: {
+            results:    '#explore-results',
+            affordance: '#explore-affordance',
+            failures:   '#explore-failed-affordance'
+        },
+
+        // Listen for events
+        initialize: function(opts){
+            this.affordances = []
+            App.on('results:new_view', this.new_result, this);
+            App.on('affordance:add', this.add_affordance, this);
+            App.on('affordance:done', this.done_affordance, this);
+            App.on('affordance:error', this.failed_affordance, this);
+        },
+
+        new_result: function(view){
+            log.debug(view);
+            this.results.show(view);
+        },
+
+        // We've decided to do something that could take some time.
+        // Make sure we remind the user that we're doing something
+        add_affordance: function(affordance){
+            this.affordances.push(affordance);
+            log.debug(this.affordances)
+            var affview = new Views.Affordance({model: new Affordance({name: affordance})});
+            this.affordance.show(affview);
+            return;
+        },
+
+        // We've finished doing something, so let's remove this from the
+        // Queue of affordances
+        done_affordance: function(affordance){
+            this.affordances =  _.without(this.affordances, affordance);
+            if(this.affordances.length == 0){
+                this.affordance.close();
+            }else{
+                var aff =  new Affordance({name: _.first(this.affordances)});
+                var affview = new Views.Affordance({model: aff});
+                this.affordance.show(affview);
+            }
+            return;
+        },
+
+        // A data call has failed to respond - display this information
+        // to the user.
+        failed_affordance: function(affordance){
+            var aff = new Affordance({name: affordance});
+            var errview = new Views.FailedAffordance({model: aff});
+            this.failures.show(errview);
+        }
+
+    });
+
+    // Generic container for a map which shows it's data tables
+    Layouts.DataMap = Backbone.Marionette.Layout.extend({
+
+        template: _.template('\
+<ul class="nav nav-tabs" id="datamap-tabs">\
+  <li class="active"><a href="#map" class="tabbable">Heatmap</a></li>\
+  <li> <a href="#ccg_data_table" class="tabbable">CCG Data</a></li>\
+</ul>\
+<div class="tab-content">\
+  <div class="tab-pane active" id="map"></div>\
+  <div class="tab-pane" id="ccg_data_table">Some data (CCG)</div>\
+  <div class="tab-pane" id="practice_data_table">Some data (Practice)</div>\
+<\div>\
+<script>\
+  $(function () {\
+    $("#datamap-tabs a:first").tab("show");\
+  })\
+</script>\
+'),
+        regions: {
+            map:                 '#map',
+            ccg_data_table:      '#ccg_data_table',
+            practice_data_table: '#practice_data_table',
+        },
+
+        initialize: function(opts){
+            this.ccgs = opts.ccgs;
+            this.dataflags = {};
+            this.practices = opts.practices;
+            _.bindAll(this, 'build_ccg_table');
+            this.ccgs.on('reset', this.build_ccg_table);
+        },
+
+        build_ccg_table: function(){
+            if(App.metadata.ccgs.length < 5){
+                App.metadata.ccgs.once('reset', this.build_ccg_table);
+                return
+            }
+            log.debug('building CCG table');
+            var table = new Views.DataTable({
+                model: new Backbone.Model({data: this.ccgs.models[0].attributes})
+            })
+            this.ccg_data_table.show(table);
+        },
+
+    });
 
     Layouts.ExLayout = Backbone.Marionette.Layout.extend({
         template: '#explore-layout-template',
@@ -1045,6 +1136,7 @@ Failed fetching data from the API: <%= name %>'
             controls: '#explore-controls',
             results: '#explore-results'
         }
+
     });
 
     Layouts.DrugFilter = Backbone.Marionette.Layout.extend({
@@ -1133,13 +1225,14 @@ Failed fetching data from the API: <%= name %>'
         // Return a view that displays the ratio of prescibing
         // different buckets of drugs per CCG
         bucket: function(opts){
-            var group1 = opts.bucket1 || [];
-            var group2 = opts.bucket2 || [];
+            var group1      = opts.bucket1 || [];
+            var group2      = opts.bucket2 || [];
+            var data_tables = opts.data_tables || false;
 
             var ccg_comparison = Api.prescriptioncomparison({
                 granularity: 'ccg',
-                group1: group1,
-                group2: group2
+                group1:      group1,
+                group2:      group2
             });
 
             // Do we want practice-level data?
@@ -1147,17 +1240,28 @@ Failed fetching data from the API: <%= name %>'
             if(opts.practices){
                 practice_comparison = Api.prescriptioncomparison({
                     granularity: 'practice',
-                    group1: group1,
-                    group2: group2
+                    group1:      group1,
+                    group2:      group2
                 });
             }
 
             var bucketmap = new BucketMap({
-                ccg_buckets: ccg_comparison,
+                ccg_buckets:      ccg_comparison,
                 practice_buckets: practice_comparison,
-                practices: true
+                practices:        true
             });
-            return bucketmap;
+
+            if(data_tables){
+                var data_map = new Layouts.DataMap({
+                    ccgs:      ccg_comparison,
+                    practices: practice_comparison
+                });
+                App.trigger('results:new_view', data_map);
+                data_map.map.show(bucketmap)
+            }else{
+                return bucketmap;
+            }
+
         },
 
         // Return a view that displays a map representing
@@ -1201,6 +1305,7 @@ Failed fetching data from the API: <%= name %>'
     App.layouts     = Layouts;
     App.models      = Models;
     App.collections = Collections;
+    App.metadata    = {}
 
     // Deal with configuration options passed in to the start method.
     App.addInitializer(function(opts){

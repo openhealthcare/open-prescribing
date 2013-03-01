@@ -25,9 +25,14 @@
   <script type="text/javascript" src="{{STATIC_URL}}js/data/ccg-data.js"></script>
   <script src="{{STATIC_URL}}js/clients/explore.js"></script>
   <script type="text/javascript">
-    jQuery(document).ready(function(){
-        jQuery('body').tooltip({
+    window.$ = jQuery
+    $(document).ready(function(){
+        $('body').tooltip({
             selector: '.tt'
+        });
+        $(".tabbable").live('click', function(e){
+            e.preventDefault();
+            $(this).tab("show");
         });
 
         Explore.start();

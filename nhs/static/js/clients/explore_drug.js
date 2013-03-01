@@ -121,7 +121,7 @@
         });
 
         controls = new ExControlLayout();
-        results = new OP.views.ResultLayout();
+        results = new OP.layouts.ResultLayout();
 
         all_drugs = OP.get({
             resource: 'product',
