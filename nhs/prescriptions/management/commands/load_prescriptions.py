@@ -1,3 +1,6 @@
+"""
+Alternative import command - assumes pre transformed data
+"""
 import sys
 import csv
 from optparse import make_option
@@ -9,21 +12,11 @@ from django.db import connection, backend, models
 from prescriptions.models import Product, Prescription
 from practices.models import Practice
 
-class ReadlineIterator:
-    """
-    An iterator that calls readline() to get its next value.
-    """
-    def __init__(self, f): self.f = f
-    def __iter__(self): return self
-    def next(self):
-        line = self.f.readline()
-        if line: return line
-        else: raise StopIteration
-
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('--filename', '-f', dest='filename',),
-        make_option('--date', '-d', dest='date',),
+        make_option('--scripfile', '-s', dest='scripfile',),
+        make_option('--drugfile', '-d', dest='drugfile',),
+        make_option('--date', '-t', dest='date',),
         )
 
     def __init__(self):
@@ -44,7 +37,7 @@ class Command(BaseCommand):
             ])
 
     def copy(self):
-        print self.filename
+        print self.scripfile, self.drugfile, self.period
         sql = """
             DELETE FROM prescriptions_prescription WHERE period = '%(period)s';
         """ % {
@@ -59,7 +52,7 @@ class Command(BaseCommand):
             CSV;
             COMMIT;
         """ % {
-            'filename': self.product_filename,
+            'filename': self.drugfile,
             'columns': self.product_cols
             }
         self.cursor.execute(sql)
@@ -71,48 +64,18 @@ class Command(BaseCommand):
             CSV;
             COMMIT;
         """ % {
-            'filename' : self.filename,
+            'filename' : self.scripfile,
             'columns' : self.columns,
         }
         print sql
         self.cursor.execute(sql)
 
-    def clean_data(self):
-
-        known_bnfs = [p.pk for p in Product.objects.all()]
-
-        infile = csv.reader(open(self.filename))
-        infile.next()
-        outfile = csv.writer(open('/tmp/data.{0}.csv'.format(self.period), 'w'))
-        product_file = csv.writer(open('/tmp/product.{0}.csv'.format(self.period), 'w'))
-
-        self.filename = "/tmp/data.{0}.csv".format(self.period)
-        self.product_filename = "/tmp/product.{0}.csv".format(self.period)
-
-        for line in infile:
-            line = [x.strip() for x in line]
-
-            outfile.writerow([
-                line[3],
-                line[2],
-                line[5],
-                line[6],
-                line[7],
-                line[8],
-                line[9]
-            ])
-
-            if line[3] not in known_bnfs:
-                known_bnfs.append(line[3])
-                product_file.writerow([
-                        line[3],
-                        line[4]
-                        ])
 
     def handle(self, *args, **options):
-        assert options['filename']
+        assert options['scripfile']
+        assert options['drugfile']
         assert options['date']
-        self.filename = options['filename']
+        self.scripfile = options['scripfile']
+        self.drugfile = options['drugfile']
         self.period = options['date']
-        self.clean_data()
         self.copy()

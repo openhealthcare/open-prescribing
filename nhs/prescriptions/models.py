@@ -28,6 +28,7 @@ class Prescription(models.Model):
     """
     product     = models.ForeignKey(Product)
     practice    = models.ForeignKey(Practice)
+    items       = models.IntegerField(blank=True, null=True)
     quantity    = models.IntegerField(blank=True, null=True)
     nic         = models.FloatField()
     actual_cost = models.FloatField()

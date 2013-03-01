@@ -45,11 +45,21 @@ python manage.py migrate
 Import data:
 
 python manage.py mapit_import_postcodes --header --strip /var/data/postcodes/postcodes.csv
+
 find /var/data/practices/*.CSV -print0 | while read -d $'\0' file; do python manage.py import_practices --filename="$file"; done
+
 python manage.py load_ccgs < /var/data/ccgs/ccg.kml.csv
 python manage.py convert_practice_datamodel
 python manage.py bind_practices
 python manage.py import_dispensing -f /var/data/dispensing/dispensing.practices.csv
+
+Import prescription data:
+
+This is kind of a PITA. It's 10M rows per month, and takes time.
+Dropping the indexes then rebuilding them is advised.
+You can get the index SQL from
+
+$ python manage.py sqlindexes prescriptions
 
 ******* MOARE STUFFS HERE !
 

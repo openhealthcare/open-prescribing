@@ -19,10 +19,10 @@ class ProductResource(ModelResource):
 
 class PrescriptionResource(ModelResource):
     class Meta:
-            model = Prescription
-            queryset = Prescription.objects.all()
-            allowed_methods = ['get']
-            cache = SimpleCache(timeout=1000)
+        model = Prescription
+        queryset = Prescription.objects.all()
+        allowed_methods = ['get']
+        cache = SimpleCache(timeout=1000)
 
 class PrescriptionComparisonResource(ModelResource):
     class Meta:
@@ -109,6 +109,43 @@ class PrescriptionAggregatesResource(ModelResource):
         print meth, bnf_code
         groups = meth([bnf_code])
         aggs = {x['id']: x for x in groups}
+        return dict(objects=aggs)
+
+    def get_list(self, request, **kwargs):
+        return self.create_response(request, self.apply_filters(request))
+
+class PrescriptionAggregatesTimeseriesResource(ModelResource):
+    """
+    Provide aggregation data on prescriptions of individual
+    drugs over time.
+    """
+    class Meta:
+        model = Prescription
+        queryset = Prescription.objects.all()
+        # Declarative documentation
+        custom_filtering = {
+            'bnf_code': {
+                'dataType': 'string',
+                'required': True,
+                'description': 'BNF Code you are interested in'
+                }
+            }
+        allowed_methods = ['get']
+        resource_name = 'prescription_timeseries'
+
+
+    def apply_filters(self, request):
+        """
+        Our custom filtering to query for the timeseries
+        """
+        if 'bnf_code' not in request.GET:
+            raise ValueError('Must provide us with a BNF code!')
+        bnf_code = request.GET.get('bnf_code')
+
+        meth = getattr(Prescription.objects, 'bnf_grouped_by_{0}_id'.format(query_type))
+        groups = meth([bnf_code])
+        aggs = {x['id']: x for x in groups}
+
         return dict(objects=aggs)
 
     def get_list(self, request, **kwargs):
