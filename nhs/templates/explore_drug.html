@@ -7,6 +7,10 @@
   {% include 'must/drug_select_item.html' %}
 {% endblock %}
 
+{% block extrastyles %}
+  <link rel="stylesheet" href="{{STATIC_URL}}/css/clients/drug.css" type="text/css" media="all" />
+{% endblock %}
+
 {% block content %}
   <h1>
     Explore NHS Prescription data

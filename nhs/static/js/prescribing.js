@@ -862,6 +862,7 @@
         <th>CCG ID                   </th>\
         <th>CCG Name                 </th>\
         <th>Total Items              </th>\
+        <th>Population               </th>\
         <th>Prescriptions Per Capita </th>\
     </tr>\
   </thead>\
@@ -875,6 +876,7 @@
         <td><%= ccg_id %>                  </td>\
         <td><%= ccg.get("title") %>        </td>\
         <td><%= count %>                   </td>\
+        <td><%= ccg.get("population") %>   </td>\
         <td><%= percap %>                  </td>\
     </tr>\
 <% }); %>\

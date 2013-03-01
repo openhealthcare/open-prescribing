@@ -1,0 +1,9 @@
+
+th {
+    color: #F1532F;
+    font-weight: bold;
+}
+th:hover {
+    cursor: pointer;
+    color: #8F8F8F;
+}
