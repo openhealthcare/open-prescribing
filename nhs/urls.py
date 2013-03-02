@@ -18,6 +18,8 @@ urlpatterns = patterns(
     url('^research/inhaler/?$', TemplateView.as_view(template_name='inhaler.html'), name='inhaler'),
 
     url(r'^api/', include('nhs.api.urls')),
+    url(r'examples/hfc', 'nhs.explore.views.redirect_to_hfc'),
+    url(r'examples/salbutamol', 'nhs.explore.views.redirect_to_salbutamol'),
 
     (r'^admin/', include(admin.site.urls)),
 )
