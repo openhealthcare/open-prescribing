@@ -12,7 +12,7 @@ django-devserver==0.4.0
 django-extensions==0.9
 django-mapit==1.0.0pr2
 -e git://github.com/toastdriven/django-tastypie.git@e9c2dc3309c9b8275d7b9455b841e0d0d746c350#egg=django_tastypie-dev
--e git://github.com/davidmiller/django-tastypie-swagger.git@d64e88edf3ef986f82745c4b162dab95bd38f955#egg=django_tastypie_swagger-dev
+-e git://github.com/davidmiller/django-tastypie-swagger.git#egg=django_tastypie_swagger-dev
 django-test-utils==0.3
 ffs==0.0.7.3
 gunicorn==0.14.6
