@@ -103,20 +103,14 @@
 
         questions = new OP.views.QuestionView({
 
-            template: function(model){
-                t =  _.template(
-                    '<h3>\
-<a href="<%= window.location.href.replace("explore", "raw") %>/raw.zip" \
-   data-toggle="tooltip" \
-   title="Download raw data" \
-   class="downloader"> \
-<i class="icon-download"></i></a>\
-<i class="icon-question-sign"></i>\
-<% if (name) { %><%= name.replace("_", " ") %>\
-<% }else{ \
-        %>drug <% } %> prescription per capita per ccg</h3>');
+            question_template: function(model){
+                t =  _.template('<% if (name) { %><%= name.replace("_", " ") %>\
+                                           <% }else{ \
+                                                 %>drug <% } %> prescription per capita per ccg');
                 return t(model)
-            }
+            },
+
+            filename: 'percap.zip',
 
         });
 
