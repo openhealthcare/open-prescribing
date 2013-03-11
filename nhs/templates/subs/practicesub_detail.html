@@ -1,10 +1,11 @@
 {% extends 'baser.html' %}
+{% load humanize %}
 {% block content %}
   <h1>
     Practice Report for {{ practice.display_name }}
   </h1>
   <h2>
-    {{ total_scrips }} Prescriptions (£ {{ total_cost }})
+    {{ total_scrips }} Prescriptions (£ {{ total_cost|intcomma }})
   </h2>
 
   <table class="table table-striped table-bordered table-hover">
@@ -20,9 +21,9 @@
       {% for scrip in top_5 %}
         <tr>
           <td>{{ scrip.product.name}}</td>
-          <td>{{ scrip.quantity }}</td>
+          <td>{{ scrip.quantity|intcomma }}</td>
           <td>{{ scrip.display_period }}</td>
-          <td>{{ scrip.actual_cost }}</td>
+          <td>{{ scrip.actual_cost|intcomma }}</td>
         </tr>
       {% endfor %}
     </tbody>
