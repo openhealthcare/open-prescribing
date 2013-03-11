@@ -7,12 +7,8 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
-<h1>{% trans "Sign Up" %}</h1>
+<h1>Sign Up</h1>
 
-<p>
-  {% blocktrans %}Already have an account? Then please
-<a href="{{ login_url }}">log in</a>.{% endblocktrans %}
-</p>
 
 <form id="signup_form" method="post" action="{% url 'account_signup' %}">
   {% csrf_token %}
@@ -24,5 +20,9 @@
   <button class="btn btn-primary" type="submit">{% trans "Sign Up" %}</button>
   </div>
 </form>
+<p>
+  Already have an account? Then please
+  <a href="{{ login_url }}">log in</a>.
+</p>
 
 {% endblock %}

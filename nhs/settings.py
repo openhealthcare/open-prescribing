@@ -116,7 +116,6 @@ INSTALLED_APPS = (
     'api',
     'ccgs',
     'raw',
-    'subs',
 )
 
 # 27700
