@@ -20,3 +20,15 @@ class Practice(geo_models.Model):
 
     def __unicode__(self):
         return "%s (%s)" % (self.pk, self.name)
+
+    def frist_addr(self):
+        """
+        Return the frist line of the practice address
+        """
+        return self.address.splitlines()[0]
+
+    def display_name(self):
+        """
+        A nice display name
+        """
+        return '{0} ({1})'.format(self.frist_addr(), self.practice)

@@ -39,6 +39,12 @@ class Prescription(models.Model):
     def __repr__(self):
         return "<Presciption {0} X {1}>".format(self.product.name, self.quantity)
 
+    def display_period(self):
+        """
+        Format the integer we store in a minimally pleasant way
+        """
+        return "{0}/{1}".format(str(self.period)[:-2], str(self.period)[-2:])
+
 
 class Group(models.Model):
     """

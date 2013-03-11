@@ -3,6 +3,7 @@ Subscription users - to be presented with custom reports etc
 """
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from nhs.practices.models import Practice
 from nhs.ccgs.models import CCG
@@ -27,6 +28,12 @@ class PracticeSub(models.Model):
         Prety prin1tin'
         """
         return '<Sub: {0} -> {1}>'.format(self.user, self.practice)
+
+    def get_absolute_url(self):
+        """
+        URL for this subscription
+        """
+        return reverse('practice-sub', kwargs={'pk': self.pk})
 
 
 class CCGSub(models.Model):

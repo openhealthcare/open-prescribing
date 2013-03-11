@@ -20,8 +20,12 @@
       {% if request.user.practicesub_set.count > 0 %}
         <h2>Practices You're subscribed to:</h2>
         <ul>
-          {% for practice in request.user.practicesub_set.all %}
-            <li>{{practice}}</li>
+          {% for sub in request.user.practicesub_set.all %}
+            <li>
+              <a href="{{sub.get_absolute_url}}">
+                {{sub.practice.frist_addr}} ({{sub.practice.practice}})
+              </a>
+            </li>
           {% endfor %}
         </ul>
       {% endif %}
