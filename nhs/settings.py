@@ -116,6 +116,7 @@ INSTALLED_APPS = (
     'api',
     'ccgs',
     'raw',
+    'subs',
 )
 
 # 27700
@@ -124,8 +125,9 @@ MAPIT_COUNTRY = 'GB'
 
 TASTYPIE_SWAGGER_API_MODULE = 'nhs.api.urls.v1_api';
 
+#AUTH_USER_MODEL = 'nhs.subs.OPUser'
 ACCOUNT_EMAIL_REQUIRED = True
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/home'
 
 # Application specific settings
 DOWNLOAD_STORAGE_DIR = '/tmp'

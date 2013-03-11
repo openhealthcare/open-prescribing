@@ -3,6 +3,8 @@ from django.conf.urls.defaults import patterns, url, include
 from django.views.generic import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+from nhs.subs.views import HomeView
+
 from django.contrib import admin
 #from django.contrib.gis import admin
 admin.autodiscover()
@@ -16,7 +18,9 @@ urlpatterns = patterns(
     (r'^accounts/', include('allauth.urls')),
 
 
-    url('^$', TemplateView.as_view(template_name='home.html'), name='home'),
+    url('^$', TemplateView.as_view(template_name='home.html'), name='index'),
+    url('^subs/', include('nhs.subs.urls')),
+    url('^home$', HomeView.as_view(), name='home'),
     url(r'^about/?$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^data/?$', TemplateView.as_view(template_name='data.html'), name='data'),
 

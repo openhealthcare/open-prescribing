@@ -1,0 +1,40 @@
+{% extends 'baser.html' %}
+{% block content %}
+  <h1>HAI {{ request.user }}!</h1>
+  <div class="row-fluid">
+  {% if request.user.pinnedanalysis_set.count > 0 %}
+    <div class="span4">
+      <h2>Stuff you've pinned</h2>
+      <ul>
+        {% for anal in request.user.pinnedanalysis_set.all %}
+          <li>
+            <i class="icon-pushpin"></i>
+            <a href="{{anal.frag}}">{{anal.name}}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+    <div class="span7">
+      {% if request.user.practicesub_set.count > 0 %}
+        <h2>Practices You're subscribed to:</h2>
+        <ul>
+          {% for practice in request.user.practicesub_set.all %}
+            <li>{{practice}}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if request.user.ccgsub_set.count > 0 %}
+        <h2>CCGs You're subscribed to:</h2>
+        <ul>
+          {% for ccg in request.user.ccgsub_set.all %}
+            <li>{{ccg}}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+    </div> <!-- Row fluid -->
+
+{% endblock %}

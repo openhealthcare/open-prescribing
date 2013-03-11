@@ -278,8 +278,26 @@
     Bucket       = Backbone.Model.extend({});
     Ratio        = Models.Ratio = Backbone.Model.extend({});
     Prescription = Backbone.Model.extend({});
-    Affordance   = Backbone.Model.extend({})
-;
+    Affordance   = Backbone.Model.extend({});
+    Models.PinnedAnalysis = Backbone.Model.extend({
+        save: function(){
+            var url = 'http://' + App.config.api_host + '/subs/pin/save'
+            log.debug('saving pinned analysis');
+            $.ajax(url, {
+                type: 'POST',
+                data: {
+                    frag: this.get('frag'),
+                    name: this.get('name')
+                },
+                success: function(data){
+                    $('#pinAnalysis').modal('hide');
+                    $('body').addClass('pinned');
+                },
+                error: log.debug
+            });
+        }
+    });
+
     var Collections = {}
 
     // Define Collections
@@ -903,6 +921,42 @@
 </script>\
 ');
 
+
+    // Template for a question
+    Templates.Question = _.template('<h3>\
+<a href="<%= window.location.href.replace("explore", "raw") %>/<%= filename %>"\
+   data-toggle="tooltip" \
+   title="Download raw data" \
+   class="tt"> \
+<i class="icon-download"></i></a>\
+<a href="#pinAnalysis"\
+   data-toggle="modal"\
+   role="button">\
+     <i class="icon-pushpin tt"\
+        data-toggle="tooltip"\
+        title="Save this analysis"\
+     ></i>\
+</a>\
+<i class="icon-question-sign tt"\
+   data-toggle="tooltip"\
+   title="What question is this visualisation attempting to answer?"></i>\
+<%= question %>\
+</h3>\
+\
+<div id="pinAnalysis" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">\
+  <div class="modal-header">\
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>\
+    <h3 id="myModalLabel">Pin Analysis</h3>\
+  </div>\
+  <div class="modal-body">\
+    <p>Friendly Name: <input id="pushpin-name" type="text" name="name"> </p>\
+  </div>\
+  <div class="modal-footer">\
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>\
+    <button class="btn btn-danger pushpin">Save changes</button>\
+  </div>\
+</div>');
+
     // General purpose Marionette views that will be useful in
     // many clients
 
@@ -937,11 +991,28 @@ Failed fetching data from the API: <%= name %>'
     // visualisation of our data.
     Views.QuestionView = Backbone.Marionette.ItemView.extend({
 
+        events: {
+
+            'click .pushpin': 'save'
+
+        },
+
+        // The master template containing the icons etc.
+        // Interpolates the question values in from the model.
+        template: function(model){
+            var data = {
+                question: this.question_template(model),
+                filename: this.filename
+            }
+            return Templates.Question(data)
+        },
+
         initialize: function(opts){
             log.debug('question started');
-            this.template = opts.template;
+            this.question_template = opts.question_template;
+            this.filename = opts.filename;
             App.on('exploring', this.exploring, this);
-
+            _.bindAll(this, 'template')
         },
 
         exploring: function(model){
@@ -949,6 +1020,15 @@ Failed fetching data from the API: <%= name %>'
             log.debug('exploringit');
             this.model = model;
             this.render();
+        },
+
+        // The user would like to save the current visualisation.
+        save: function(){
+            log.debug('saving');
+            var name = $('#pushpin-name').val();
+            var frag = window.location.pathname;
+            var pin  = new Models.PinnedAnalysis({name: name, frag: frag});
+            pin.save();
         },
 
     });
@@ -1230,6 +1310,7 @@ Failed fetching data from the API: <%= name %>'
 
     });
 
+
     // GET Api calls
 
     var Api = {
@@ -1374,6 +1455,7 @@ Failed fetching data from the API: <%= name %>'
     App.addInitializer(function(opts){
         _.extend(App.config, opts);
     });
+
 
     // Initialisation API -> api = new Scrip();
     var Scrip = context[namespace] = function(opts){

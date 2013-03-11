@@ -1,5 +1,5 @@
 <div id="logo">
-  <a href="/">
+  <a href="{% if request.user.is_authenticated %}/home{% else %}/{% endif %}">
     <img src="{{STATIC_URL}}/img/drugs.jpg" alt="Open Prescribing" width="100px"/>
   </a>
 </div>
@@ -10,7 +10,6 @@
       <li><a href="/admin/">Admin</a></li>
     {% endif %}
     {% if request.user.is_authenticated %}
-      <li><a href="#">Profile</a></li>
       <li><a href="#">Account</a></li>
       <li><a href="/logout">Log Out {{ request.user }}</a></li>
       <hr />

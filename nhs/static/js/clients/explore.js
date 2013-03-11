@@ -30,7 +30,7 @@
         },
 
         events: {
-            'click button': 'resultise'
+            'click button.go': 'resultise'
         },
 
         resultise: function(){
@@ -41,7 +41,7 @@
             // return us a view with a heatmap in it.
             var url = 'explore/ratio/' + bucket1.join(',') + '/' + bucket2.join(',');
             ExApp.router.navigate(url, {trigger: true});
-        }
+        },
 
     })
 
@@ -115,19 +115,8 @@
 
         question = new OP.views.QuestionView({
 
-            template: function(model){
-                model.bucket1 = model.bucket1 || false;
-                t =  _.template(
-                    '<h3>\
-<a href="<%= window.location.href.replace("explore", "raw") %>/ratio.zip"\
-   data-toggle="tooltip" \
-   title="Download raw data" \
-   class="tt"> \
-<i class="icon-download"></i></a>\
-<i class="icon-question-sign"></i>\
-Bucket 1 vs Bucket 2 prescription ratios per ccg</h3>');
-                return t(model)
-            }
+            filename: 'ratio.zip',
+            question_template: _.template('Bucket 1 vs Bucket 2 prescription ratios per ccg')
 
         });
 
