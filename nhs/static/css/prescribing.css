@@ -142,7 +142,9 @@ body #header {
 
 
 /* Data explorations */
-
+body.anon #explore-controls {
+    display: none;
+}
 
 #explore-container {
     min-height: 1200px;
@@ -197,4 +199,9 @@ body #header {
 #explore-question h1 i {
     color: orange;
     padding-right: 6px;
+}
+
+
+body.anon #explore-controls {
+    display: none;
 }

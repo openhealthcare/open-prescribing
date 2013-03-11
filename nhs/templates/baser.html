@@ -8,7 +8,7 @@
       {% block extratemplates %}{% endblock %}
 
     </head>
-    <body class="full">
+    <body class="full {% if request.user.is_authenticated %}user{% else %}anon{% endif%}">
         <div class="container full">
           <div class="row-fluid full">
 

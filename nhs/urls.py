@@ -9,19 +9,27 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
+    (r'^grappelli/', include('grappelli.urls')),
+    (r'^admin/', include(admin.site.urls)),
+    (r'^logout/$', 'django.contrib.auth.views.logout',
+     {'next_page': '/'}),
+    (r'^accounts/', include('allauth.urls')),
+
+
     url('^$', TemplateView.as_view(template_name='home.html'), name='home'),
     url(r'^about/?$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^data/?$', TemplateView.as_view(template_name='data.html'), name='data'),
+
     url(r'^explore', include('nhs.explore.urls')),
     url(r'^raw', include('nhs.raw.urls')),
 
     url('^research/inhaler/?$', TemplateView.as_view(template_name='inhaler.html'), name='inhaler'),
 
     url(r'^api/', include('nhs.api.urls')),
-    url(r'examples/hfc', 'nhs.explore.views.redirect_to_hfc'),
-    url(r'examples/salbutamol', 'nhs.explore.views.redirect_to_salbutamol'),
+    url(r'examples/hfc', 'nhs.explore.views.redirect_to_hfc', name='example-hfc'),
+    url(r'examples/salbutamol', 'nhs.explore.views.redirect_to_salbutamol',
+        name='example-salbutamol'),
 
-    (r'^admin/', include(admin.site.urls)),
 )
 
 urlpatterns += staticfiles_urlpatterns()

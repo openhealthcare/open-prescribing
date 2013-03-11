@@ -6,6 +6,17 @@
 
 <div id="nav">
   <ul>
+    {% if request.user.is_superuser %}
+      <li><a href="/admin/">Admin</a></li>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+      <li><a href="#">Profile</a></li>
+      <li><a href="#">Account</a></li>
+      <li><a href="/logout">Log Out {{ request.user }}</a></li>
+      <hr />
+    {% else %}
+      <li><a href="/accounts/login">Log In</a></li>
+    {% endif %}
     <li>
       <a href="{% url 'explore' %}">Explore</a>
     </li>

@@ -59,6 +59,22 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.debug',
+    "django.core.context_processors.request",
+    'django.core.context_processors.static',
+    'django.contrib.auth.context_processors.auth',
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
+)
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,9 +96,13 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.gis',
+    'grappelli',
     'django.contrib.admin',
-    'django.contrib.admindocs',
     # 3rd Party
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'bootstrapform',
     'south',
     'django_extensions',
     'devserver',
@@ -96,6 +116,7 @@ INSTALLED_APPS = (
     'api',
     'ccgs',
     'raw',
+    'subs',
 )
 
 # 27700
@@ -103,6 +124,9 @@ MAPIT_AREA_SRID = 27700
 MAPIT_COUNTRY = 'GB'
 
 TASTYPIE_SWAGGER_API_MODULE = 'nhs.api.urls.v1_api';
+
+ACCOUNT_EMAIL_REQUIRED = True
+LOGIN_REDIRECT_URL = '/'
 
 # Application specific settings
 DOWNLOAD_STORAGE_DIR = '/tmp'

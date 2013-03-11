@@ -4,7 +4,7 @@ Urls for the interactive exploration pages
 from django.conf.urls.defaults import patterns, url
 from django.views.generic import TemplateView
 
-from nhs.explore.views import Ratio, ExploreDrug
+from nhs.explore.views import Explore, Ratio, ExploreDrug
 
 urlpatterns = patterns(
     '',
@@ -12,5 +12,5 @@ urlpatterns = patterns(
         name='explorecompare'),
     url(r'/drug/?', ExploreDrug.as_view(template_name='explore_drug.html'),
         name='exploredrug'),
-    url(r'/?$', TemplateView.as_view(template_name='explore.html'), name='explore'),
+    url(r'/?$', Explore.as_view(), name='explore'),
     )
