@@ -303,7 +303,26 @@
     // Define Collections
     Pharmacy = Collections.Pharmacy = ScripCollection.extend({
         model: Drug,
-        resource: 'product'
+        resource: 'product',
+
+        // Hit the server and reset ourselves.
+        ajax_search: function(letters){
+            var that = this;
+            $.ajax(this.url(),
+                   {
+                       type: 'GET',
+                       data: {
+                           limit: 100,
+                           name__icontains: letters
+                       },
+                       success: function(data){
+                           that.reset(data.objects);
+                       }
+                   }
+                  );
+        },
+
+
     });
 
     // There is no good collective noun for buckets,
@@ -1049,6 +1068,7 @@ Failed fetching data from the API: <%= name %>'
 
         onRender: function(){
             this.$el.attr('data-bnf-code', this.model.get('bnf_code'));
+            log.debug('Drug item rendered ' + this.model.get('bnf_code'));
             return
         }
     });
@@ -1074,19 +1094,13 @@ Failed fetching data from the API: <%= name %>'
             return
         },
 
-        // We'd like to hide any drugs that don't match VAL
+        // We'd like to get any drugs that contain VAL
         filter: function(val){
             log.debug(val);
-            var matches = _(this.collection.search(val)).pluck('cid');
-            this.$('li').toggle(false);
-
-            _.each(
-                matches, function(x){
-                    this.children._views[this.children._indexByModel[x]].$el.toggle(true);
-                },
-                this);
+            this.collection.ajax_search(val);
         }
     });
+
 
     Views.DrugBucketItemView = Backbone.Marionette.ItemView.extend({
 
@@ -1094,6 +1108,7 @@ Failed fetching data from the API: <%= name %>'
         tagName: 'li',
 
     });
+
 
     Views.DrugBucketView = Backbone.Marionette.CollectionView.extend({
 
@@ -1287,15 +1302,17 @@ Failed fetching data from the API: <%= name %>'
             var collection = opts.collection;
             var that = this;
 
-            // Make sure we re-render when we get results back from the API
-            collection.once('reset', function(){
+            var showit = function(){
                 var druglist = new Views.DrugSelectView({
                     collection: collection,
                     draggable:  true
                 });
-                _.bind(that.drugs.show, that);
                 that.drugs.show(druglist);
-            });
+            }
+
+            collection.on('reset', showit)
+            showit()
+
 
 
         },

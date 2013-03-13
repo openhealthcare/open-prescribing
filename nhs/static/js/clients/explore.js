@@ -123,15 +123,15 @@
         controls = new ExControlLayout();
         results = new OP.layouts.ResultLayout();
 
-        all_drugs = OP.get({
-            resource: 'product',
-            data: { limit: 0 }
-        })
+        // all_drugs = OP.get({
+        //     resource: 'product',
+        //     data: { limit: 0 }
+        // })
 
-        ExApp.all_drugs = all_drugs;
+        // ExApp.all_drugs = all_drugs;
 
         drug_filter = new OP.layouts.DrugFilter({
-            collection: all_drugs,
+            collection: new OP.collections.Pharmacy(),
             draggable: true
         });
 

@@ -43,7 +43,7 @@
         pong: function(){ log.debug('ping -> pong') },
 
         per_capita_map: function(granularity, bnf_code){
-            var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
+            // var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
             log.debug('In a per capita map for ' + bnf_code + ' from a url');
             var mapview = OP.maps.scrips_per_capita({
                 bnf_code:   bnf_code,
@@ -55,16 +55,12 @@
             // Check to see if we have a model to update the question
             var explore = function(model){OP.trigger('exploring', model);}
 
-            if(_.isUndefined(model)){
-                log.debug('No model yet');
-                ExploreDrugApp.all_drugs.once('reset', function(){
-                    log.debug('Got the drug list. Updataing the question with metatada');
-                    var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
-                    explore(model);
-                });
-            }else{
+            var drug = new OP.models.Drug({bnf_code: bnf_code});
+            drug.fetch({success: function(model, response, options){
+                log.debug(model);
                 explore(model);
             }
+            });
 
         }
 
@@ -117,15 +113,15 @@
         controls = new ExControlLayout();
         results = new OP.layouts.ResultLayout();
 
-        all_drugs = OP.get({
-            resource: 'product',
-            data: { limit: 0 }
-        });
+        // all_drugs = OP.get({
+        //     resource: 'product',
+        //     data: { limit: 0 }
+        // });
 
-        ExploreDrugApp.all_drugs = all_drugs;
+        // ExploreDrugApp.all_drugs = all_drugs;
 
         drug_filter = new OP.layouts.DrugFilter({
-            collection: all_drugs
+            collection: new OP.collections.Pharmacy()
         });
 
         layout.question.show(questions);

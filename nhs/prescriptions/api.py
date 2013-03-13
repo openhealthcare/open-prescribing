@@ -10,12 +10,15 @@ from models import Product, Prescription, Group
 
 class ProductResource(ModelResource):
     class Meta:
-            model = Product
-            queryset = Product.objects.all()
-            filtering = {
-                "bnf_code": ALL,
+        model = Product
+        queryset = Product.objects.all()
+        filtering = {
+            'bnf_code': ALL,
+            'name': ALL
             }
-            allowed_methods = ['get']
+        allowed_methods = ['get']
+        max_limit = 1000
+        # dehydrate = False
 
 class PrescriptionResource(ModelResource):
     class Meta:
