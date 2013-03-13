@@ -52,6 +52,7 @@ python manage.py load_ccgs < /var/data/ccgs/ccg.kml.csv
 python manage.py convert_practice_datamodel
 python manage.py bind_practices
 python manage.py import_dispensing -f /var/data/dispensing/dispensing.practices.csv
+python manage.py denormalise_practices
 
 Import prescription data:
 

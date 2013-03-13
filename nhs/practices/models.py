@@ -14,6 +14,9 @@ class Practice(geo_models.Model):
     address    = models.TextField(blank=True)
     ccg        = models.ForeignKey(CCG, null=True)
     dispensing = models.NullBooleanField(blank=True, null=True)
+    lat        = models.IntegerField(blank=True, null=True)
+    lon        = models.IntegerField(blank=True, null=True)
+    display_name = models.CharField(blank=True, null=True, max_length=200)
 
 
     objects = geo_models.GeoManager()
@@ -27,8 +30,8 @@ class Practice(geo_models.Model):
         """
         return self.address.splitlines()[0]
 
-    def display_name(self):
-        """
-        A nice display name
-        """
-        return '{0} ({1})'.format(self.frist_addr(), self.practice)
+    # def display_name(self):
+    #     """
+    #     A nice display name
+    #     """
+    #     return '{0} ({1})'.format(self.frist_addr(), self.practice)
