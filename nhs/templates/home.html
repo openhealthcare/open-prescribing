@@ -1,4 +1,5 @@
 {% extends 'baser.html' %}
+{% load i18n zinnia_tags %}
 {% block content %}
 <p>
   <img src="{{STATIC_URL}}img/drugssign.jpg">
@@ -16,23 +17,8 @@
 </p>
 
 <h2>
-  Research
+  Examples
 </h2>
-
-<h4>
-  <a href="/research/inhaler">
-    Campaign to change inhaler prescribing patterns
-  </a>
-</h4>
-<p>
-  <img src="{{STATIC_URL}}img/inhaler.jpg">
-  The continued use of metered-dose inhalers in respiratory care will have a potentially
-  catastrophic effect on global warming if production is not controlled 2, largely
-  because these inhalers use potent green-house gas hydroflourocarbons (HFCs) as propellants.
-  <br/>
-  <a href="/research/inhaler">
-    Read more...
-  </a>
-</p>
+{% get_featured_entries 3 "zinnia/featured_entries.html" %}
 
 {% endblock %}

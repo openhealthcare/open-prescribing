@@ -6,7 +6,7 @@
       {% include 'head.html' %}
       {% block extrastyles %}{% endblock %}
       {% block extratemplates %}{% endblock %}
-
+      {% block link %}{% endblock %}
     </head>
     <body class="full {% if request.user.is_authenticated %}user{% else %}anon{% endif%}
                  {% if html_classes %}{% for klass in html_classes %} {{ klass }} {% endfor %}{% endif %}">
@@ -19,7 +19,11 @@
 
             <div id="main" class="span10 full">
               <div id="content" class="span11 offset2 drop40">
-                {% block content %}{% endblock %}
+                {% block content %}{% endblock %}xb
+                <hr />
+                {% block extracontent %}
+
+                {% endblock %}
               </div>
 
               <div id="footer">

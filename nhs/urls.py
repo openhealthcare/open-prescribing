@@ -40,6 +40,16 @@ urlpatterns = patterns(
     url(r'examples/salbutamol', 'nhs.explore.views.redirect_to_salbutamol',
         name='example-salbutamol'),
 
+    url(r'^blog/', include('zinnia.urls')),
+    url(r'^comments/', include('django.contrib.comments.urls')),
+
 )
 
 urlpatterns += staticfiles_urlpatterns()
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT,
+        }),
+   )

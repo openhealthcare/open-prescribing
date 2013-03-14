@@ -14,19 +14,20 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/London'
 LANGUAGE_CODE = 'en-gb'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
+USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/usr/local/ohc/scrip/uploads/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -64,6 +65,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",
 )
@@ -94,6 +97,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.humanize',
     'django.contrib.sessions',
+    'django.contrib.comments',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.gis',
@@ -109,6 +113,10 @@ INSTALLED_APPS = (
     'devserver',
     'mapit',
     'tastypie_swagger',
+    'tagging',
+    'mptt',
+    'zinnia_bootstrap',
+    'zinnia',
     # Us
     'prescriptions',
     'practices',
@@ -131,7 +139,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_REDIRECT_URL = '/home'
 
 DEVSERVER_TRUNCATE_SQL = False
-
+ZINNIA_ENTRY_TEMPLATES = True
 # Application specific settings
 DOWNLOAD_STORAGE_DIR = '/tmp'
 CONTACT_EMAIL = 'hello@openhealthcare.org.uk'
