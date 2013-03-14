@@ -59,6 +59,11 @@ body {
     color: #7d7d7b;
 }
 
+/* Logo */
+#logo img {
+    max-width: 150px;
+}
+
 /* Navigation */
 body #header {
     background-color: white;

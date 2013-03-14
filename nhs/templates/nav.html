@@ -1,6 +1,6 @@
 <div id="logo">
   <a href="{% if request.user.is_authenticated %}/home{% else %}/{% endif %}">
-    <img src="{{STATIC_URL}}/img/drugs.jpg" alt="Open Prescribing" width="100px"/>
+    <img src="{{STATIC_URL}}/img/op-logo.png" alt="Open Prescribing" />
   </a>
 </div>
 
@@ -12,18 +12,21 @@
     {% if request.user.is_authenticated %}
       <li><a href="#">Account</a></li>
       <li><a href="/logout">Log Out {{ request.user }}</a></li>
+      <a href="{% url 'explore' %}">Explore</a>
       <hr />
     {% else %}
       <li><a href="/accounts/login">Log In</a></li>
     {% endif %}
     <li>
-      <a href="{% url 'explore' %}">Explore</a>
     </li>
     <li>
       <a href="{% url 'about' %}">About</a>
     </li>
     <li>
       <a href="{% url 'data' %}">Data</a>
+    </li>
+    <li>
+      <a href="{% url 'contact' %}">Contact</a>
     </li>
     <li >
       <a href="/api/doc">Api</a>

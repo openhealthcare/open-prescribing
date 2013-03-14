@@ -130,9 +130,11 @@ TASTYPIE_SWAGGER_API_MODULE = 'nhs.api.urls.v1_api';
 ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_REDIRECT_URL = '/home'
 
+DEVSERVER_TRUNCATE_SQL = False
+
 # Application specific settings
 DOWNLOAD_STORAGE_DIR = '/tmp'
-
+CONTACT_EMAIL = 'hello@openhealthcare.org.uk'
 
 try:
     from local_settings import *

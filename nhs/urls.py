@@ -3,6 +3,7 @@ from django.conf.urls.defaults import patterns, url, include
 from django.views.generic import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+from nhs.views import ContactView
 from nhs.subs.views import HomeView
 
 from django.contrib import admin
@@ -22,6 +23,11 @@ urlpatterns = patterns(
     url('^subs/', include('nhs.subs.urls')),
     url('^home$', HomeView.as_view(), name='home'),
     url(r'^about/?$', TemplateView.as_view(template_name='about.html'), name='about'),
+    url(r'^contact/?$', ContactView.as_view(), name='contact'),
+    url(r'^contact/ta$', TemplateView.as_view(template_name='contact_ta.html'),
+        name='contact-ta'),
+
+
     url(r'^data/?$', TemplateView.as_view(template_name='data.html'), name='data'),
 
     url(r'^explore', include('nhs.explore.urls')),

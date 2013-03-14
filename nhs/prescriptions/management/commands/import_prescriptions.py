@@ -112,7 +112,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         assert options['filename']
         assert options['date']
-        self.filename = options['filename']
         self.period = options['date']
         self.clean_data()
         self.copy()
