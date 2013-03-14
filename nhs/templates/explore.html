@@ -10,32 +10,34 @@
 {% endblock %}
 
 {% block content %}
-  <h1>
-    Explore NHS Prescription data
-  </h1>
 
-  {% if request.user.is_authenticated %}
-    {% include 'explore_copy.html' %}
-  {% else %}
+  {% include 'explore_copy.html' %}
 
-    In order to ask the data your own questions and explore the answers,
-    either log in or <a href="{% url 'account_signup' %}">sign up</a>
-    for an account
+  {% if not request.user.is_authenticated %}
 
+    <hr />
+    <div class="row-fluid">
+      <h3>
+        log in
+      </h3>
+      <p>
+        In order to ask the data your own questions and explore the answers,
+        either log in or <a href="{% url 'account_signup' %}">sign up</a>
+        for an account
+      </p>
 
-    <form class="login" method="POST" action="{% url 'account_login' %}">
-      {% csrf_token %}
-      {{ form|bootstrap }}
-      <input type="hidden" name="next" value="/explore" />
-      <div class="form-actions">
-        <button class="btn btn-primary" type="submit">
-          Sign In
-        </button>
-        <a class="btn" href="{% url 'account_reset_password' %}">Forgot Password?</a>
-      </div>
-    </form>
+      <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <input type="hidden" name="next" value="/explore" />
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">
+            Sign In
+          </button>
+          <a class="btn" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+        </div>
+      </form>
 
+    {% endif %}
 
-  {% endif %}
-
-{% endblock %}
+  {% endblock %}

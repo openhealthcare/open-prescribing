@@ -13,17 +13,17 @@
 {% endblock %}
 
 {% block content %}
-  <h1>
-    Explore NHS Prescription data ratios
-  </h1>
 
   <div id="explore-container"></div>
+  {% block ratioextra %}
+
+  {% endblock %}
 
 {% endblock %}
 
 {% block extrascripts %}
   <script type="text/javascript" src="{{STATIC_URL}}js/data/ccg-data.js"></script>
-  <script src="{{STATIC_URL}}js/clients/explore.js"></script>
+  <script src="{{STATIC_URL}}js/clients/ratio.js"></script>
   <script type="text/javascript">
     window.$ = jQuery
     $(document).ready(function(){

@@ -73,17 +73,17 @@
         ratio: function(bucket1, bucket2){
             log.debug('explore ratio from bucket url');
 
-            _.map([[bucket1, '1'], [bucket2, '2']], function(bucketlist){
-                var bucket = bucketlist[0];
-                var id = bucketlist[1];
-                _.map(bucket.split(','), function(bnf_code){
-                    var drug = new Drug({bnf_code: bnf_code});
-                    drug.fetch({success: function(model, response, options){
-                        log.debug(model);
-                        OP.trigger('bucket' + id + ':add', model);
-                    }})
-                });
-            });
+            // _.map([[bucket1, '1'], [bucket2, '2']], function(bucketlist){
+            //     var bucket = bucketlist[0];
+            //     var id = bucketlist[1];
+            //     _.map(bucket.split(','), function(bnf_code){
+            //         var drug = new Drug({bnf_code: bnf_code});
+            //         drug.fetch({success: function(model, response, options){
+            //             log.debug(model);
+            //             OP.trigger('bucket' + id + ':add', model);
+            //         }})
+            //     });
+            // });
 
             // This is Insane.
             window.$ = jQuery;
