@@ -1,24 +1,52 @@
 {% extends 'baser.html' %}
 {% load i18n zinnia_tags %}
 {% block content %}
-<p>
-  <img src="{{STATIC_URL}}img/drugssign.jpg">
-  Every month, the <a href="http://www.ic.nhs.uk/home">NHS Information Centre</a>
-  publishes an open dataset of the UK's
-  <a href="http://www.ic.nhs.uk/gpprescribingdata">GP prescribing activity</a>.
-  Roughly ten million records each month. Which is brilliant for openness, transparency
-  and enabling research, but not particularly friendly.
-</p>
-<p>
-  Open Prescribing offers a free <a href="/api/doc">public API</a> for anyone to build
-  visualisations and
-  answer questions about GP prescribing habits, along with sample applications that
-  make use of the data in interesting ways.
-</p>
+  <h2>
+    exploring the UK's GP prescribing data
+  </h2>
+  <div class="row-fluid marketing3">
+    <div class="span4">
+      <h4>
+        <i class="icon-question-sign"></i>
+        explore the data interactively
+      </h4>
+      <p>
+        Find the answers to interesting questions about prescribing
+        habits by using our <a href="{% url 'explore' %}">visualisation tools</a>
+        to build and plot your own analysis...
+      </p>
+    </div>
+    <div class="span4">
+      <h4>
+        <i class="icon-dashboard"></i>
+        reports for GPs and CCGs
+      </h4>
+      <p>
+        Analyse your own prescribing habits for formulary adherence, track
+        your prescribing targets and comparisons to similar prescribers...
+        <a href="{% url 'contact' %}">Contact us</a> to find out more...
+      </p>
+    </div>
+    <div class="span4">
+      <h4>
+        <i class="icon-bar-chart"></i>
+        bespoke analysis
+      </h4>
+      <p>
+        Want something that's not currently available?
+        <a href="{% url 'contact' %}">drop us a line</a> and let us know,
+        we can help you ask the right questions and find the answers...
+      </p>
+    </div>
+  </div> <!-- row-fluid -->
 
-<h2>
-  Examples
-</h2>
-{% get_featured_entries 3 "zinnia/featured_entries.html" %}
+  <hr />
+
+  <h2>
+    examples
+  </h2>
+
+
+  {% get_featured_entries 4 "zinnia/featured_entries.html" %}
 
 {% endblock %}

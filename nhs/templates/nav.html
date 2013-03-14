@@ -8,36 +8,46 @@
   <ul>
     {% if request.user.is_superuser %}
       <li>
-        <a href="/admin/">Admin</a>
+        <a href="/admin/">admin</a>
       </li>
     <li>
       <a href="{% url 'admin:app_list' 'zinnia' %}" title="Dashboard">
-        Dashboard
+        dashboard
       </a>
     </li>
 
     {% endif %}
     {% if request.user.is_authenticated %}
-      <li><a href="#">Account</a></li>
-      <li><a href="/logout">Log Out {{ request.user }}</a></li>
-      <a href="{% url 'explore' %}">Explore</a>
+      <li><a href="#">account</a></li>
+      <li><a href="/logout">log out {{ request.user }}</a></li>
+    <li>
+      <a href="{% url 'explore' %}">explore</a>
       <hr />
     {% else %}
-      <li><a href="/accounts/login">Log In</a></li>
+      <li><a href="/accounts/login">log in</a></li>
     {% endif %}
     <li>
     </li>
     <li>
-      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'about' %}">about</a>
     </li>
     <li>
-      <a href="{% url 'data' %}">Data</a>
+      <a href="{% url 'data' %}">data</a>
     </li>
     <li>
-      <a href="{% url 'contact' %}">Contact</a>
+      <a href="{% url 'contact' %}">contact</a>
     </li>
     <li >
-      <a href="/api/doc">Api</a>
+      <a href="/api/doc">api</a>
     </li>
   </ul>
+</div>
+
+<div id="brought">
+  <a href="http://www.openhealthcare.org.uk">
+    <img src="{{STATIC_URL}}img/ohc.png">
+    <p>
+      brought to you by Open Healthcare UK
+    </p>
+  </a>
 </div>

@@ -1,0 +1,34 @@
+
+  <h2>
+    O.K. - now what do I do?
+  </h2>
+
+  <p>
+    We've built a few visualisation tools to help you ask interesting
+    questions about prescribing in the UK...
+  </p>
+
+  <div class="span4">
+    <a href="{% url 'explorecompare' %}">
+      <h3>Compare relationships</h3>
+    </a>
+    <p>
+      What does the <a href="{% url 'example-hfc' %}">
+      breakdown of inhaler prescriptions</a> with
+      HFC/Dry powder systems look like by CCG?
+    </p>
+    <p>
+      Which CCGs or practices prescribe <a href="{% url 'explorecompare' %}/0212000AAAAAAAA,0212000AAAAACAC/0212000ACAAAAAA,0212000ACAAACAC,0212000B0AAAAAA,0212000B0AAACAC,0212000X0AAAAAA,0212000X0AAADAD,0212000Y0AAAAAA,0212000Y0AAADAD,0212000Y0AAALAL">
+      unusually high proportions of branded statins</a>?
+    </p>
+  </div>
+
+  <div class="span4">
+    <a href="{% url 'exploredrug' %}">
+      <h3>Explore individual drugs</h3>
+    </a>
+    <p>
+      How does <a href="{% url 'example-salbutamol' %}"> prescribing of
+      Salbutamol per capita vary by CCG</a>?
+    </p>
+  </div>

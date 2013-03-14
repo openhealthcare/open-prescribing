@@ -1,6 +1,5 @@
 {% extends 'baser.html' %}
 {% block content %}
-  <h1>HAI {{ request.user }}!</h1>
   <div class="row-fluid">
   {% if request.user.pinnedanalysis_set.count > 0 %}
     <div class="span4">
@@ -40,5 +39,8 @@
       {% endif %}
     </div>
     </div> <!-- Row fluid -->
+
+  <hr />
+  {% include 'explore_copy.html' %}
 
 {% endblock %}

@@ -1,13 +1,42 @@
 {% extends 'baser.html' %}
 {% block extratitle %} - About{% endblock %}
 {% block content %}
-  <h1>About Open Prescriptions</h1>
+  <h1>About Open Prescribing</h1>
   <div id="content">
+    <p>
+      <img src="{{STATIC_URL}}img/amoxy.jpg">
+      Every month, the <a href="http://www.ic.nhs.uk/home">NHS Information Centre</a>
+      publishes an open dataset of the UK's
+      <a href="http://www.ic.nhs.uk/gpprescribingdata">GP prescribing activity</a>.
+      Roughly ten million records each month. Which is brilliant for openness, transparency
+      and enabling research, but not particularly friendly.
+    </p>
+    <p>
+      Open Prescribing offers a free <a href="/api/doc">public API</a> for anyone to build
+      visualisations and
+      answer questions about GP prescribing habits, along with sample applications that
+      make use of the data in interesting ways.
+    </p>
+
+
     <h2>Code</h2>
     <p>
-      All the code for Open Prescriptions is available on
-      <a href="https://github.com/symroe/nhs-prescriptions">Github</a>
+      All the code for Open Prescribing is available on
+      <a href="https://github.com/openhealthcare/open-prescribing">Github</a>
     </p>
+
+    <hr />
+
+    <p class="muted">
+      Image Credits: <br/>
+      <small>
+        Prednisone bottles -
+        <a href="http://www.flickr.com/photos/bartificial/">Bartsz</a><br />
+        Inhaler mask -
+        <a href="http://www.flickr.com/photos/wurzeltod/">Wurzeltod</a>
+      </small>
+    <p>
+
 </div>
 
 {% endblock %}

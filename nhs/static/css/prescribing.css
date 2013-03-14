@@ -41,6 +41,10 @@ li {
     width: 100%;
 }
 
+.muted small {
+    font-size: 65%;
+}
+
 /* Our utility classes */
 
 .left { float: left; }
@@ -89,6 +93,25 @@ body #header {
     text-decoration: none;
     color: #F1532F;
 }
+
+#brought {
+    margin-top: 40px;
+}
+
+#brought a {
+    color: #8F8F8F;
+    font-size: 80%;
+}
+
+#brought a:hover {
+    color: #F1532F;
+}
+#brought img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+}
+
 
 /* Content */
 #main {
@@ -218,4 +241,15 @@ body.anon #explore-controls {
 
 body.pinned #explore-question i.icon-pushpin{
     color: red;
+}
+
+
+/* Marketing */
+.marketing3 h4 {
+    margin-bottom: 10px;
+}
+
+.marketing3 h4 i {
+    font-size: 220%;
+    color: orange;
 }
