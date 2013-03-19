@@ -19,4 +19,3 @@ class PracticeResource(GeoModelResource):
         cache = SimpleCache(timeout=10)
         allowed_methods = ['get']
         max_limit = None
-        dehydrate = False
