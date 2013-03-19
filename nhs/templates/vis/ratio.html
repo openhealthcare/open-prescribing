@@ -1,4 +1,5 @@
 {% extends 'vis/_ratio_base.html' %}
+{% load login_cta %}
 {% block extrastyles %}
   {{ block.super }}
   <style>
@@ -26,6 +27,6 @@
       {% endfor %}
     </ul>
   </div>
-
 </div>
+{% login_cta %}
 {% endblock %}

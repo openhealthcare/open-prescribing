@@ -5,39 +5,50 @@
     exploring the UK's GP prescribing data
   </h2>
   <div class="row-fluid marketing3">
-    <div class="span4">
-      <h4>
-        <i class="icon-question-sign"></i>
-        explore the data interactively
-      </h4>
+    <div class="span6">
+      <a href="{% url 'explore' %}">
+        <h2>
+          <i class="icon-question-sign"></i>
+          explore the data interactively
+        </h2>
+      </a>
       <p>
         Find the answers to interesting questions about prescribing
         habits by using our <a href="{% url 'explore' %}">visualisation tools</a>
         to build and plot your own analysis...
       </p>
     </div>
-    <div class="span4">
-      <h4>
+
+    <div class="span6">
+      <h2>
         <i class="icon-dashboard"></i>
         reports for GPs and CCGs
-      </h4>
+      </h2>
       <p>
         Analyse your own prescribing habits for formulary adherence, track
         your prescribing targets and comparisons to similar prescribers...
         <a href="{% url 'contact' %}">Contact us</a> to find out more...
       </p>
     </div>
-    <div class="span4">
+
+  </div> <!-- row-fluid -->
+
+  <hr />
+
+  <div class="row-fluid">
+
+    <div class="span12">
       <h4>
         <i class="icon-bar-chart"></i>
         bespoke analysis
       </h4>
-      <p>
+      <p class="ssh">
         Want something that's not currently available?
         <a href="{% url 'contact' %}">drop us a line</a> and let us know,
         we can help you ask the right questions and find the answers...
       </p>
     </div>
+
   </div> <!-- row-fluid -->
 
   <hr />

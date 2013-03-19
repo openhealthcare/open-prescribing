@@ -137,7 +137,7 @@ TASTYPIE_SWAGGER_API_MODULE = 'nhs.api.urls.v1_api';
 #AUTH_USER_MODEL = 'nhs.subs.OPUser'
 ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_REDIRECT_URL = '/home'
-
+INTERNAL_IPS = ('127.0.0.1',)
 DEVSERVER_TRUNCATE_SQL = False
 ZINNIA_ENTRY_TEMPLATES = True
 # Application specific settings

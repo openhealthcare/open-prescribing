@@ -1,5 +1,5 @@
 {% extends 'baser.html' %}
-{% load bootstrap %}
+{% load login_cta %}
 
 {% block extratemplates %}
   {% include 'must/explore_layout.html' %}
@@ -12,32 +12,6 @@
 {% block content %}
 
   {% include 'explore_copy.html' %}
+  {% login_cta %}
 
-  {% if not request.user.is_authenticated %}
-
-    <hr />
-    <div class="row-fluid">
-      <h3>
-        log in
-      </h3>
-      <p>
-        In order to ask the data your own questions and explore the answers,
-        either log in or <a href="{% url 'account_signup' %}">sign up</a>
-        for an account
-      </p>
-
-      <form class="login" method="POST" action="{% url 'account_login' %}">
-        {% csrf_token %}
-        {{ form|bootstrap }}
-        <input type="hidden" name="next" value="/explore" />
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Sign In
-          </button>
-          <a class="btn" href="{% url 'account_reset_password' %}">Forgot Password?</a>
-        </div>
-      </form>
-
-    {% endif %}
-
-  {% endblock %}
+{% endblock %}

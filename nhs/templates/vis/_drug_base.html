@@ -2,28 +2,27 @@
 
 {% block extratemplates %}
   {% include 'must/explore_layout.html' %}
-  {% include 'must/explore_controls.html' %}
+  {% include 'must/explore_drug_controls.html' %}
   {% include 'must/explore_results.html' %}
   {% include 'must/drug_select_item.html' %}
-  {% include 'must/map_placeholder.html' %}
 {% endblock %}
 
 {% block extrastyles %}
-  <link rel="stylesheet" href="{{STATIC_URL}}/css/clients/ratio.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="{{STATIC_URL}}/css/clients/drug.css" type="text/css" media="all" />
 {% endblock %}
 
 {% block content %}
 
   <div id="explore-container"></div>
-  {% block ratioextra %}{% endblock %}
+  {% block drugextra %}{% endblock %}
 
 {% endblock %}
 
 {% block extrascripts %}
   <script type="text/javascript" src="{{STATIC_URL}}js/data/ccg-data.js"></script>
-  <script src="{{STATIC_URL}}js/clients/ratio.js"></script>
+  <script src="{{STATIC_URL}}js/clients/explore_drug.js"></script>
   <script type="text/javascript">
-    window.$ = jQuery
+    window.$ = jQuery;
     $(document).ready(function(){
         $('body').tooltip({
             selector: '.tt'
@@ -33,7 +32,7 @@
             $(this).tab("show");
         });
 
-        Explore.start();
+        ExploreDrug.start();
     });
   </script>
 {% endblock %}

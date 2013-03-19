@@ -52,6 +52,8 @@ li {
 .drop40 { margin-top: 40px; }
 .full{ height: 100%; }
 .offsethalf { margin-left: 50px !important; }
+.ssh { font-size: 80%; }
+
 
 /* Global styles */
 body {
@@ -134,7 +136,7 @@ body #header {
     margin-bottom: 20px;
 }
 
-#content p {
+#content {
     font-size: 18px;
     line-height: 1.7em;
 }
@@ -249,7 +251,8 @@ body.pinned #explore-question i.icon-pushpin{
     margin-bottom: 10px;
 }
 
-.marketing3 h4 i {
+.marketing3 h4 i,
+.marketing3 h2 i {
     font-size: 220%;
     color: orange;
 }

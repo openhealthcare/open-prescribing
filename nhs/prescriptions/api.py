@@ -29,32 +29,33 @@ class PrescriptionResource(ModelResource):
 
 class PrescriptionComparisonResource(ModelResource):
     class Meta:
-            model = Prescription
-            queryset = Prescription.objects.all()
-            filtering = {
-                "bnf_code": ALL,
+        model = Prescription
+        dehydrate = False
+        queryset = Prescription.objects.all()
+        filtering = {
+            "bnf_code": ALL,
             }
-            # This attribute is from my fork of Tastypie Swagger that is
-            # yet to be merged upstream - it allows you to specify API
-            # documentation details declaratively on the Resource
-            custom_filtering = {
-                'query_type': {
-                    'dataType': 'string',
-                    'required': True,
-                    'description': 'Granularity of the data you want to retrieve'
-                    },
-                'group1': {
-                    'dataType': 'string',
-                    'required': True,
-                    'description': 'Frist bucket. Comma separated list of BNF Codes'
-                    },
-                'group2': {
-                    'dataType': 'string',
-                    'required': True,
-                    'description': 'Second bucket. Comma separated list of BNF Codes'
-                    }
+        # This attribute is from my fork of Tastypie Swagger that is
+        # yet to be merged upstream - it allows you to specify API
+        # documentation details declaratively on the Resource
+        custom_filtering = {
+            'query_type': {
+                'dataType': 'string',
+                'required': True,
+                'description': 'Granularity of the data you want to retrieve'
+                },
+            'group1': {
+                'dataType': 'string',
+                'required': True,
+                'description': 'Frist bucket. Comma separated list of BNF Codes'
+                },
+            'group2': {
+                'dataType': 'string',
+                'required': True,
+                'description': 'Second bucket. Comma separated list of BNF Codes'
                 }
-            allowed_methods = ['get']
+            }
+        allowed_methods = ['get']
 
     def apply_filters(self, request):
         # TODO make query_type in to a override_url

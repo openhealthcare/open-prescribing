@@ -42,7 +42,7 @@
 
         pong: function(){ log.debug('ping -> pong') },
 
-        per_capita_map: function(granularity, bnf_code){
+        per_capita_map: function(bnf_code){
             // var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
             log.debug('In a per capita map for ' + bnf_code + ' from a url');
             var mapview = OP.maps.scrips_per_capita({
@@ -70,8 +70,7 @@
     var ExploreDrugRouter = Backbone.Marionette.AppRouter.extend({
 
         appRoutes: {
-            'explore/drug/ping': 'pong',
-            'explore/drug/percapitamap/:granularity/:bnf_code': 'per_capita_map'
+            'explore/drug/:bnf_code': 'per_capita_map'
         },
 
         controller: ExploreDrugController
@@ -140,7 +139,7 @@
     ExploreDrugApp.addInitializer(function(options){
 
         OP.on('drugitem:click', function(bnf_code){
-            var url = 'explore/drug/percapitamap/ccg/' + bnf_code
+            var url = 'explore/drug/' + bnf_code
             ExploreDrugApp.router.navigate(url, {trigger: true});
         });
 

@@ -27,6 +27,17 @@ class LoginRequiredMixin(object):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
+class LoginFormIfAnonymousMixin(object):
+    """
+    Wanting to act as a login view is a common enough paradigm
+    """
+    def get_context_data(self, **kw):
+        ctx = super(LoginFormIfAnonymousMixin, self).get_context_data(**kw)
+        if not self.request.user.is_authenticated():
+            ctx['form'] = LoginForm()
+        return ctx
+
+
 class PinnedView(TemplateView):
     """
     Check to see if this view has been pinned
@@ -42,21 +53,13 @@ class PinnedView(TemplateView):
             context['html_classes'] = ['pinned']
         return context
 
-class Explore(TemplateView):
+
+class Explore(LoginFormIfAnonymousMixin, TemplateView):
     """
     Initial home page for explorations.
     Deal with non-logged in users.
     """
     template_name='explore.html'
-
-    def get_context_data(self, **kw):
-        """
-        Provide a login form if required
-        """
-        context = super(Explore, self).get_context_data(**kw)
-        if not self.request.user.is_authenticated():
-            context['form'] = LoginForm()
-        return context
 
 
 class ExploreRatio(LoginRequiredMixin, TemplateView):
@@ -71,11 +74,11 @@ class ExploreRatio(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ExploreDrug(PinnedView):
+class ExploreDrug(LoginRequiredMixin, PinnedView):
     """
     Explore drugs
     """
-    template_name = 'vis/explore_ratio.html'
+    template_name = 'vis/explore_drug.html'
 
     def get_context_data(self, **kw):
         context = super(ExploreDrug, self).get_context_data(**kw)
@@ -83,7 +86,7 @@ class ExploreDrug(PinnedView):
         return context
 
 
-class Ratio(PinnedView):
+class Ratio(LoginFormIfAnonymousMixin, PinnedView):
     """
     A specific ratio of drugs we want to render.
     Could well be a shared link.
@@ -99,6 +102,14 @@ class Ratio(PinnedView):
         context['bucket2'] = Product.objects.filter(bnf_code__in=bucket2.split(','))
         return context
 
+
+class Drug(LoginFormIfAnonymousMixin, PinnedView):
+    """
+    Show prescriptions per-capita for a particular drug
+    """
+    template_name = 'vis/drug.html'
+
+
 def redirect_to_hfc(request):
     """
     Trivial redirect that provides a nice URL to link to
@@ -112,5 +123,4 @@ def redirect_to_salbutamol(request):
     Trivial redirect that provides a nice URL to link to
     externally
     """
-    base = reverse('exploredrug')
-    return HttpResponseRedirect(base+'/percapitamap/ccg/0301011R0AAAPAP')
+    return HttpResponseRedirect(reverse('drug', kwargs=dict(bucket='0301011R0AAAPAP')))

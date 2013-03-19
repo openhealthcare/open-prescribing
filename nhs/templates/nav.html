@@ -20,14 +20,14 @@
     {% if request.user.is_authenticated %}
       <li><a href="#">account</a></li>
       <li><a href="/logout">log out {{ request.user }}</a></li>
-    <li>
-      <a href="{% url 'explore' %}">explore</a>
-      <hr />
     {% else %}
       <li><a href="/accounts/login">log in</a></li>
     {% endif %}
+
     <li>
+      <a href="{% url 'explore' %}">explore</a>
     </li>
+
     <li>
       <a href="{% url 'about' %}">about</a>
     </li>
@@ -47,7 +47,7 @@
   <a href="http://www.openhealthcare.org.uk">
     <img src="{{STATIC_URL}}img/ohc.png">
     <p>
-      brought to you by Open Healthcare UK
+      brought to you by Open Health Care UK
     </p>
   </a>
 </div>
