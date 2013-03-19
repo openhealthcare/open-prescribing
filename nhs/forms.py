@@ -18,10 +18,14 @@ class ContactForm(forms.Form):
         Do work.
         """
         subject = 'Open Prescribing - Contact Form'
-        message = self.cleaned_data['message']
-        from_email = '{0} <{1}>'.format(
+        message = "Contact-form from: {0}\n\n{1}".format(
+            '{0} <{1}>'.format(
             self.cleaned_data['name'],
-            self.cleaned_data['email'])
+            self.cleaned_data['email']),
+
+            self.cleaned_data['message'])
+
+
         recipient_list = [settings.CONTACT_EMAIL]
-        send_mail(subject, message, from_email, recipient_list)
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
         return

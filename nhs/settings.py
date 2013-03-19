@@ -142,7 +142,7 @@ DEVSERVER_TRUNCATE_SQL = False
 ZINNIA_ENTRY_TEMPLATES = True
 # Application specific settings
 DOWNLOAD_STORAGE_DIR = '/tmp'
-CONTACT_EMAIL = 'hello@openhealthcare.org.uk'
+CONTACT_EMAIL = 'hello@openprescribing.org'
 
 try:
     from local_settings import *
