@@ -1,3 +1,4 @@
+{% load tracking %}
 <!DOCTYPE html>
 <html dir="ltr" lang="en-GB" class="full">
     <head>
@@ -10,6 +11,7 @@
     </head>
     <body class="full {% if request.user.is_authenticated %}user{% else %}anon{% endif%}
                  {% if html_classes %}{% for klass in html_classes %} {{ klass }} {% endfor %}{% endif %}">
+        {% tracking %}
         <div class="container full">
           <div class="row-fluid full">
 

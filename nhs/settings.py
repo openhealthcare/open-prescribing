@@ -140,9 +140,11 @@ LOGIN_REDIRECT_URL = '/home'
 INTERNAL_IPS = ('127.0.0.1',)
 DEVSERVER_TRUNCATE_SQL = False
 ZINNIA_ENTRY_TEMPLATES = True
+
 # Application specific settings
 DOWNLOAD_STORAGE_DIR = '/tmp'
 CONTACT_EMAIL = 'hello@openprescribing.org'
+TRACK_USERS = True
 
 try:
     from local_settings import *
