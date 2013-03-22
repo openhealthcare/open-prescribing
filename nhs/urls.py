@@ -14,9 +14,11 @@ urlpatterns = patterns(
     '',
     (r'^grappelli/', include('grappelli.urls')),
     (r'^admin/', include(admin.site.urls)),
-    (r'^logout/$', 'django.contrib.auth.views.logout',
-     {'next_page': '/'}),
-    (r'^accounts/', include('allauth.urls')),
+    url(r'^login/$', 'django_cas.views.login', name='login'),
+    url(r'^logout/$', 'django_cas.views.logout', name='logout'),
+    # (r'^logout/$', 'django.contrib.auth.views.logout',
+    #  {'next_page': '/'}),
+    # (r'^accounts/', include('allauth.urls')),
 
 
     url('^$', TemplateView.as_view(template_name='home.html'), name='index'),

@@ -48,3 +48,4 @@ simplejson==3.1.0
 six==1.2.0
 wsgiref==0.1.2
 zinnia-theme-bootstrap==0.1
+-e git://github.com/openhealthcare/django-cas2.git#egg=django_cas2
