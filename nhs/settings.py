@@ -144,7 +144,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 DEVSERVER_TRUNCATE_SQL = False
 ZINNIA_ENTRY_TEMPLATES = True
 
-CAS_SERVER_URL = 'http://localhost:8888'
+CAS_SERVER_URL = 'http://auth.openhealthcare.org.uk'
 CAS_REDIRECT_URL = '/'
 CAS_IGNORE_REFERER = True
 CAS_AUTO_CREATE_USERS = True
