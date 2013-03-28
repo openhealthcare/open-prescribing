@@ -113,7 +113,7 @@ INSTALLED_APPS = (
     'south',
     'django_cas',
     'django_extensions',
-    'devserver',
+#    'devserver',
     'mapit',
     'tastypie_swagger',
     'tagging',
