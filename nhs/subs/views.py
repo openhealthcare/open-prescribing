@@ -14,7 +14,7 @@ class HomeView(TemplateView):
     """
     template_name = 'subs/home.html'
 
-    def get_contect_data(self, **kw):
+    def get_context_data(self, **kw):
         context = super(HomeView, self).get_contect_data(**kw)
         context['title'] = 'Your Account'
         return context
