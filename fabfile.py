@@ -48,7 +48,7 @@ def migrate():
 #         run('{0} -c {1}/gunicorn_conf.py -D'.format(venv_bin('gunicorn_django'), PROJ_DIR))
 
 @hosts(web)
-def reload():
+def reload_gunicorn():
     """
     Reload the gunicorn process
     """
@@ -68,6 +68,7 @@ def deploy():
         run('/home/ohc/.virtualenvs/scrip/bin/pip install -r requirements.txt')
     migrate()
 
+    reload_gunicorn()
     # stop()
     # start()
     time.sleep(1) # Give it a second to start up

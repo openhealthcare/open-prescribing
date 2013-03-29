@@ -1,5 +1,6 @@
 {% extends 'baser.html' %}
 {% block content %}
+  <h1>{{ title }}</h1>
   <div class="row-fluid">
   {% if request.user.pinnedanalysis_set.count > 0 %}
     <div class="span4">
