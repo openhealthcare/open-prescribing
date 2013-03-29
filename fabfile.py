@@ -6,6 +6,10 @@ from fabric.colors import red, green
 import requests
 
 web = ['ohc@horsell.scraperwiki.com']
+PROJ_DIR = '/usr/local/ohc/scrip/nhs-prescriptions/nhs'
+VENV_BIN = '/home/ohc/.virtualenvs/scrip/bin/{0}'
+venv_bin = lambda x: VENV_BIN.format(x)
+VENV_PY = venv_bin('python')
 
 serves = [
     'http://www.openprescribing.org',
@@ -18,9 +22,37 @@ def manage(what):
     Return: None
     Exceptions: None
     """
-    with cd('/usr/local/ohc/scrip/nhs-prescriptions/nhs'):
-        run('/home/ohc/.virtualenvs/scrip/bin/python manage.py {0}'.format(what))
+    with cd(PROJ_DIR):
+        run('{0} manage.py {1}'.format(VENV_PY, what))
 
+def migrate():
+    """
+    Update the database
+    """
+    manage('syncdb --migrate')
+
+# def stop():
+#     """
+#     Stop the application in production
+#     """
+#     with cd(PROJ_DIR):
+#         run('pkill gunicorn')
+
+# @hosts(web)
+# def start():
+#     """
+#     Start the application in production.
+#     """
+#     with cd(PROJ_DIR):
+#         run('ls')
+#         run('{0} -c {1}/gunicorn_conf.py -D'.format(venv_bin('gunicorn_django'), PROJ_DIR))
+
+@hosts(web)
+def reload():
+    """
+    Reload the gunicorn process
+    """
+    run('kill -HUP `cat /usr/local/ohc/var/op.pid`')
 
 @hosts(web)
 def deploy():
@@ -34,11 +66,10 @@ def deploy():
     with cd('/usr/local/ohc/scrip/nhs-prescriptions'):
         run('git pull ohc master') #not ssh - key stuff
         run('/home/ohc/.virtualenvs/scrip/bin/pip install -r requirements.txt')
-        run('pkill gunicorn')
-    with cd('/usr/local/ohc/scrip/nhs-prescriptions/nhs'):
-        run('/home/ohc/.virtualenvs/scrip/bin/python manage.py syncdb')
-        run('/home/ohc/.virtualenvs/scrip/bin/python manage.py migrate')
-        run('/home/ohc/.virtualenvs/scrip/bin/gunicorn_django -D -c gunicorn_conf.py')
+    migrate()
+
+    # stop()
+    # start()
     time.sleep(1) # Give it a second to start up
     for site in serves:
         req = requests.get(site)
@@ -46,7 +77,6 @@ def deploy():
             print red("Cripes! something just blew up Larry! ({0})".format(site))
             sys.exit(1)
     print green("Deploy-o-rama!")
-
 
 
 @hosts(web)
@@ -60,3 +90,11 @@ def migrate():
     manage('syncdb')
     manage('migrate')
     manage('create_groups')
+
+# @hosts(web)
+# def restart():
+#     """
+#     Restart the application
+#     """
+#     stop()
+#     start()

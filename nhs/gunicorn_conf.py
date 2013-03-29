@@ -2,3 +2,4 @@ bind = "127.0.0.1:4567"
 logfile = "/usr/local/ohc/log/op.gunicorn.log"
 workers = 6
 timeout = 120
+pidfile = '/usr/local/ohc/var/op.pid'
