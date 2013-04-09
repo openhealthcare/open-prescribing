@@ -8,19 +8,7 @@
       </h3>
       <p>
         In order to ask the data your own questions and explore the answers,
-        either log in or <a href="{% url 'account_signup' %}">sign up</a>
-        for an account
-      </p>
+        please <a href="{% url 'login' %}">log in here</a>
 
-      <form class="login" method="POST" action="{% url 'account_login' %}">
-        {% csrf_token %}
-        {{ form|bootstrap }}
-        <input type="hidden" name="next" value="{{ request.path }}" />
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Sign In
-          </button>
-          <a class="btn" href="{% url 'account_reset_password' %}">Forgot Password?</a>
-        </div>
-      </form>
+      </p>
 {% endif %}
