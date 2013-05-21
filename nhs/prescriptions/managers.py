@@ -13,18 +13,25 @@ class PrescriptionManager(models.Manager):
         return results
 
     def bnf_grouped_by_practice_id(self, codes):
-
-        codes = "(%s)" % ",".join("'%s'" % c for c in codes)
-
         from django.db import connection
-
         cursor = connection.cursor()
-        cursor.execute("""
-            SELECT practice_id as id, COUNT(*)
-            FROM prescriptions_prescription P
-            WHERE P.product_id IN %s
-            GROUP BY practice_id
-            """ % codes)
+
+        if len(codes) > 1:
+            codes = "(%s)" % ",".join("'%s'" % c
+                                      for c in codes)
+            cursor.execute("""
+                SELECT practice_id as id, SUM(items) as count
+                FROM prescriptions_prescription P
+                WHERE P.product_id IN %s
+                GROUP BY practice_id
+                """ % codes)
+        else:
+            cursor.execute("""
+                SELECT practice_id as id, SUM(items) as count
+                FROM prescriptions_prescription P
+                WHERE P.product_id = '%s'
+                GROUP BY practice_id
+                """ % codes[0])
 
         return self.dict_cursor(cursor)
 
@@ -36,7 +43,7 @@ class PrescriptionManager(models.Manager):
 
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT C.code as id, COUNT(*)
+            SELECT C.code as id, SUM(items) as count
             FROM prescriptions_prescription as P
             JOIN practices_practice as PR
             ON P.practice_id = PR.practice
@@ -84,5 +91,3 @@ class PrescriptionManager(models.Manager):
         items = self.add_results(group_2, items, 'group2')
 
         return self.make_proportions(items)
-
-
