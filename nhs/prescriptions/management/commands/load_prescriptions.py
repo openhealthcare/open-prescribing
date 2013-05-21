@@ -45,17 +45,17 @@ class Command(BaseCommand):
         }
         self.cursor.execute(sql)
 
-        sql = """
-            COPY prescriptions_product (%(columns)s)
-            FROM '%(filename)s'
-            DELIMITERS ','
-            CSV;
-            COMMIT;
-        """ % {
-            'filename': self.drugfile,
-            'columns': self.product_cols
-            }
-        self.cursor.execute(sql)
+        # sql = """
+        #     COPY prescriptions_product (%(columns)s)
+        #     FROM '%(filename)s'
+        #     DELIMITERS ','
+        #     CSV;
+        #     COMMIT;
+        # """ % {
+        #     'filename': self.drugfile,
+        #     'columns': self.product_cols
+        #     }
+        # self.cursor.execute(sql)
 
         sql = """
             Copy prescriptions_prescription (%(columns)s)

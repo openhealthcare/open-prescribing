@@ -625,6 +625,11 @@
                     var ccg_code = geometry.ccg_code;
                     var ccg = ccgs.where({code: ccg_code})[0];
 
+                    if(!ccg){
+                        log.debug("Can't find CCG with code " + ccg_code)
+                        return {}
+                    }
+
                     feature.properties.ccg_code = ccg_code;
                     feature.properties.Name = ccg.get('title');
                     feature.properties.ccg_name = ccg.get('title');

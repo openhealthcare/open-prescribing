@@ -110,7 +110,6 @@ class PrescriptionAggregatesResource(ModelResource):
             raise ValueError('Must provide us with a BNF code!')
         bnf_code = request.GET.get('bnf_code')
         meth = getattr(Prescription.objects, 'bnf_grouped_by_{0}_id'.format(query_type))
-        print meth, bnf_code
         groups = meth([bnf_code])
         aggs = {x['id']: x for x in groups}
         return dict(objects=aggs)

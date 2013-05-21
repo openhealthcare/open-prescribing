@@ -34,6 +34,7 @@ class Command(BaseCommand):
         else:
             ccg = CCG()
             print 'Creating new CCG for %s' % row[3]
+
         ccg.title = row[3]
         ccg.code = row[2]
         ccg.population = int(row[5])
@@ -73,5 +74,5 @@ class Command(BaseCommand):
                 pass
 
         mp =   MultiPolygon(results)
-        mp.transform(4326)
+#        mp.transform(4326)
         return mp
