@@ -1,4 +1,4 @@
-{% load tracking %}
+{% load tracking  data_range %}
 <!DOCTYPE html>
 <html dir="ltr" lang="en-GB" class="full">
     <head>
@@ -29,6 +29,9 @@
                     </a>
                   </p>
                 </strong>
+              </div>
+              <div class="alert">
+                Data: {% data_range %}
               </div>
             </div>
 
