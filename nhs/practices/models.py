@@ -14,8 +14,8 @@ class Practice(geo_models.Model):
     address    = models.TextField(blank=True)
     ccg        = models.ForeignKey(CCG, null=True)
     dispensing = models.NullBooleanField(blank=True, null=True)
-    lat        = models.IntegerField(blank=True, null=True)
-    lon        = models.IntegerField(blank=True, null=True)
+    lat        = models.FloatField(blank=True, null=True)
+    lon        = models.FloatField(blank=True, null=True)
     display_name = models.CharField(blank=True, null=True, max_length=200)
 
 

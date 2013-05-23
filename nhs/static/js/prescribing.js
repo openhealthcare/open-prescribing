@@ -494,8 +494,12 @@
 
                 // Only make the clusters visible at a defined Zoom level
                 function onZoomend(){
-                    if(map.getZoom()>=7){map.addLayer(marker_group)};
-                    if(map.getZoom()<7){map.removeLayer(marker_group);};
+                    if(map.getZoom()>=7){
+                        map.addLayer(marker_group)
+                    };
+                    if(map.getZoom()<7){
+                        map.removeLayer(marker_group);
+                    };
                 };
                 view.map.on('zoomend', onZoomend);
 
@@ -826,9 +830,9 @@
             )
 
             this.practices.map(function(practice){
-                var coords = practice.get('coords');
+                var coords = [practice.get('lat'), practice.get('lon')];
                 // Some practices aren't linked to a Mapit postcode
-                if(!coords){
+                if(!(coords[0] && coords[1])){
                     return
                 }
                 var marker = L.marker(coords);
