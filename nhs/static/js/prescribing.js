@@ -677,9 +677,9 @@
             var missed = 0;
 
             this.practices.map(function(practice){
-                var coords = practice.get('coords');
+                var coords = [practice.get('lat'), practice.get('lon')];
                 // Some practices aren't linked to a Mapit postcode
-                if(!coords){
+                if(!(coords[0] && coords[1])){
                     return
                 }
                 var marker = L.marker(coords);
