@@ -931,11 +931,44 @@
             return tpl(serialised);
     }
 
+    Templates.PercapitaPracticeTable = function(serialised){
+            serialised.App = App; // Like a template context plugin
+            var tpl = _.template('\
+<table class="table table-striped table-bordered table-hover">\
+  <thead>\
+    <tr>\
+        <th>Practice ID              </th>\
+        <th>Practice Name            </th>\
+        <th>Total Items              </th>\
+        <th>Population               </th>\
+        <th>Prescriptions Per Capita </th>\
+    </tr>\
+  </thead>\
+  <tbody\
+<% _.each(_.pairs(data), function(pair) { \
+                             var ccg_id = pair[0], count = pair[1].count;\
+                             var ccg = App.metadata.ccgs.where({code: ccg_id})[0];\
+                             var percap = count / ccg.get("population");\
+%>\
+    <tr>\
+        <td><%= ccg_id %>                  </td>\
+        <td><%= ccg.get("title") %>        </td>\
+        <td><%= count %>                   </td>\
+        <td><%= ccg.get("population") %>   </td>\
+        <td><%= percap %>                  </td>\
+    </tr>\
+<% }); %>\
+  </tbody>\
+</table>');
+            return tpl(serialised);
+    }
+
     // Template for A data map - e.g. a heatmap with Data Tables attached
     Templates.DataMap = _.template('\
 <ul class="nav nav-tabs" id="datamap-tabs">\
   <li class="active"><a href="#map" class="tabbable">Heatmap</a></li>\
   <li> <a href="#ccg_data_table" class="tabbable">CCG Data</a></li>\
+  <li> <a href="#practice_data_table" class="tabbable">Practice Data</a></li>\
 </ul>\
 <div class="tab-content">\
   <div class="tab-pane active" id="map"></div>\
@@ -1258,9 +1291,13 @@ Failed fetching data from the API: <%= name %>'
         initialize: function(opts){
             this.ccgs = opts.ccgs;
             this.ccg_template = opts.ccg_template;
-            this.dataflags = {}
+
             this.practices = opts.practices;
-            _.bindAll(this, 'build_ccg_table');
+            this.practice_template = opts.practice_template
+
+            this.dataflags = {}
+
+            _.bindAll(this, 'build_ccg_table', 'build_practice_table');
             this.ccgs.on('reset', this.build_ccg_table);
         },
 
@@ -1275,6 +1312,12 @@ Failed fetching data from the API: <%= name %>'
                 model:    new Backbone.Model({data: this.ccgs.models[0].attributes})
             })
             this.ccg_data_table.show(table);
+        },
+
+        build_practice_table: function(){
+            if(App.metadata.practices.length < 5){
+                App.metadaa.practices.once()
+            }
         },
 
     });
@@ -1449,7 +1492,8 @@ Failed fetching data from the API: <%= name %>'
                 var data_map = new Layouts.DataMap({
                     ccgs:      ccg_scrips,
                     ccg_template: Templates.PercapitaCCGTable,
-                    practices: practice_scrips
+                    practices: practice_scrips,
+                    practice_template: Templates.PercapitaPracticeTable,
                 });
 
                 App.trigger('results:new_view', data_map);

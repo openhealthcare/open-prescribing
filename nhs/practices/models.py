@@ -17,6 +17,7 @@ class Practice(geo_models.Model):
     lat        = models.FloatField(blank=True, null=True)
     lon        = models.FloatField(blank=True, null=True)
     display_name = models.CharField(blank=True, null=True, max_length=200)
+    list_size  = models.IntegerField(blank=True, null=True)
 
 
     objects = geo_models.GeoManager()
