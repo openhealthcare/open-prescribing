@@ -13,30 +13,26 @@
                  {% if html_classes %}{% for klass in html_classes %} {{ klass }} {% endfor %}{% endif %}">
         {% tracking %}
         <div class="container full">
+
+        <div class="alpha navbar-fixed-top">
+          This product is currently an alpha release and may contain bugs.
+          Feel free to
+          <a href="https://github.com/openhealthcare/open-prescribing/issues">
+            let us know if you find any...
+          </a>
+        </div>
+
           <div class="row-fluid full">
 
             <div id="header" class="span2 full">
               {% include 'nav.html' %}
-              <div class="alert-error">
-                <strong>
-                  <p>
-                    This product is currently an alpha release and may contain bugs.
-                  </p>
-                  <p>
-                    Feel free to
-                    <a href="https://github.com/openhealthcare/open-prescribing/issues">
-                      let us know if you find any...
-                    </a>
-                  </p>
-                </strong>
-              </div>
               <div class="alert">
-                Data: {% data_range %}
+                Data:<br/> {% data_range %}
               </div>
             </div>
 
             <div id="main" class="span10 full">
-              <div id="content" class="span11 offset2 drop40">
+              <div id="content" class="span11 offset2 drop30">
                 {% block content %}{% endblock %}
                 <hr />
                 {% block extracontent %}
@@ -52,7 +48,6 @@
 
               <div id="footer">
                 {% block footer %}{% endblock %}
-                HAI
 
             </div>
           </div> <!-- row-fluid -->

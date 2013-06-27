@@ -1,3 +1,13 @@
+
+.alpha {
+    font-size: 1.2em;
+    padding: 4px;
+    padding-bottom: 8px;
+    text-align: center;
+    background-color: #fcf8e3;
+    color: #c09853;
+}
+
 /* Our resets */
 h1, h2 {
     font-weight: normal;
@@ -49,7 +59,7 @@ li {
 
 .left { float: left; }
 .span350 { width: 350px; }
-.drop40 { margin-top: 40px; }
+.drop30 { margin-top: 30px; }
 .full{ height: 100%; }
 .offsethalf { margin-left: 50px !important; }
 .ssh { font-size: 80%; }
@@ -68,6 +78,7 @@ body {
 /* Logo */
 #logo img {
     max-width: 150px;
+    margin-left: -20px;
 }
 
 /* Navigation */
@@ -90,6 +101,13 @@ body #header {
     color: #8F8F8F;
     font-size: 12px;
 }
+
+#nav ul li.active a {
+    color: #fff;
+    font-size: 12px;
+    background-color: #F1532F;
+}
+
 
 #nav ul li a:hover {
     text-decoration: none;
@@ -127,7 +145,7 @@ body #header {
 }
 
 #content h1 {
-    padding-bottom: 60px;
+    padding-bottom: 10px;
 }
 
 #content img {

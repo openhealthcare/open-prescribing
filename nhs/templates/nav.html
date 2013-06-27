@@ -1,3 +1,8 @@
+{% load navtags %}
+{% url 'explore' as explore_url %}
+{% url 'data' as data_url %}
+{% url 'about' as about_url %}
+
 <div id="logo">
   <a href="{% if request.user.is_authenticated %}/home{% else %}/{% endif %}">
     <img src="{{STATIC_URL}}/img/op-logo.png" alt="Open Prescribing" />
@@ -5,7 +10,7 @@
 </div>
 
 <div id="nav">
-  <ul>
+  <ul class="nav nav-pills nav-stacked">
     {% if request.user.is_superuser %}
       <li>
         <a href="/admin/">admin</a>
@@ -18,25 +23,25 @@
 
     {% endif %}
     {% if request.user.is_authenticated %}
-      <li><a href="{% url 'logout' %}">log out {{ request.user }}</a></li>
+      <li class="{% active request '/accounts/logout' %}"><a href="{% url 'logout' %}">log out {{ request.user }}</a></li>
     {% else %}
-      <li><a href="{% url 'login' %}">log in</a></li>
+      <li class="{% active request '/accounts/login' %}"><a href="{% url 'login' %}">log in</a></li>
     {% endif %}
 
-    <li>
+    <li class="{% active request explore_url %}">
       <a href="{% url 'explore' %}">explore</a>
     </li>
 
-    <li>
+    <li class="{% active request about_url %}">
       <a href="{% url 'about' %}">about</a>
     </li>
-    <li>
+    <li class="{% active request data_url %}">
       <a href="{% url 'data' %}">data</a>
     </li>
-    <li>
+    <li class="{% active request '/contact' %}">
       <a href="{% url 'contact' %}">contact</a>
     </li>
-    <li >
+    <li class="{% active request '/api/doc' %}">
       <a href="/api/doc">api</a>
     </li>
   </ul>
