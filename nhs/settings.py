@@ -76,7 +76,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
 #    "allauth.account.auth_backends.AuthenticationBackend",
-    'django_cas.backends.CASBackend',
+    # 'django_cas.backends.CASBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -84,7 +84,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_cas.middleware.CASMiddleware',
+    # 'django_cas.middleware.CASMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
@@ -111,7 +111,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount',
     'bootstrapform',
     'south',
-    'django_cas',
+    # 'django_cas',
     'django_extensions',
 #    'devserver',
     'mapit',
@@ -144,10 +144,10 @@ INTERNAL_IPS = ('127.0.0.1',)
 DEVSERVER_TRUNCATE_SQL = False
 ZINNIA_ENTRY_TEMPLATES = True
 
-CAS_SERVER_URL = 'http://auth.openhealthcare.org.uk'
-CAS_REDIRECT_URL = '/'
-CAS_IGNORE_REFERER = True
-CAS_AUTO_CREATE_USERS = True
+# CAS_SERVER_URL = 'http://auth.openhealthcare.org.uk'
+# CAS_REDIRECT_URL = '/'
+# CAS_IGNORE_REFERER = True
+# CAS_AUTO_CREATE_USERS = True
 
 # Application specific settings
 DOWNLOAD_STORAGE_DIR = '/tmp'

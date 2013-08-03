@@ -101,7 +101,7 @@
             question_template: function(model){
                 t =  _.template('<% if (name) { %><%= name.replace("_", " ") %>\
                                            <% }else{ \
-                                                 %>drug <% } %> prescription per capita per ccg');
+                                                 %>Drug <% } %> prescription per capita per ccg');
                 return t(model)
             },
 

@@ -1,0 +1,208 @@
+/* Typography */
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+h1, h2{
+    font-family: 'Bitter', serif;
+    color: #FF8300;
+    font-weight: bold;
+}
+h3 {
+    font-family: 'Bitter', serif;
+    color: #00BB3F;
+    font-weight: bold;
+}
+
+.navbar {
+    font-family: 'Bitter', serif;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 26px;
+}
+a {
+    color: #06799F;
+}
+a:hover {
+    color: #61B4CF;
+    text-decoration: none;
+}
+.navbar-nav li a,
+.navbar-nav li.active a {
+    color: black;
+}
+.copy {
+    text-align: justify;
+}
+
+/* Navbar */
+.navbar {
+    background: #FF5D40;
+}
+.navbar-nav li a{
+    padding: 25px 40px;
+}
+.navbar-nav li.active a,
+.navbar-brand.active {
+    background: #FF2800
+}
+.navbar-nav li a:hover,
+.navbar-nav li.active a:hover,
+.navbar-brand:hover {
+    background: #FF8973;
+}
+.navbar-brand {
+    padding: 0px 0px 0px;
+    margin-right: 0px;
+}
+
+/* Explore Navbar */
+
+#explore-nav {
+    float: left;
+    background: #FF5D40;
+    margin-top: -20px;
+    width: 190px;
+}
+#explore-nav li a{
+   color: black;
+}
+#explore-nav li.active a {
+    background: #FF2800;
+    color: white;
+}
+#explore-nav li a:hover,
+#explore-nav li.active a:hover {
+    background: #FF8973
+}
+.nav-stacked > li + li {
+    margin-top: 0px;
+}
+
+.nav-pills > li > a {
+    border-radius: 0px;
+}
+/* Timeline */
+.timeline .year {
+    background: #00BB3F;
+}
+
+
+/* Maps */
+
+#map {
+    /* width: 920px; */
+    /* height: 600px; */
+    width: 600px;
+    height: 400px;
+}
+
+
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+
+.legend {
+    text-align: left;
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 20px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+}
+
+
+/* Data explorations */
+body.anon #explore-controls {
+    display: none;
+}
+
+/* Exploring */
+#explore-container {
+    min-height: 1200px;
+    margin-left: 190px;
+    padding-left: 38px;
+}
+
+#explore-controls {
+    margin: 0px 4px 0px 0px;
+    background: #FFBB73;
+    padding: 20px;
+}
+
+
+#explore-controls button {
+    margin: 0 auto;
+    clear: both;
+    display: block;
+}
+#drugs ul {
+    margin: 3px;
+    /* width: 740px; */
+    height: 200px;
+    overflow-y: scroll;
+    padding: 0px;
+}
+#drugs li {
+    list-style-type: none;
+    border: 1px solid #FF2800;
+    display: block;
+    float: left;
+    width: 300px;
+    padding: 3px 3px 3px 3px;
+    margin: 5px 0px 5px 5px;
+    background: #FFA240;
+}
+
+#drugs li:hover {
+    background: #BF7930;
+    color: white;
+    cursor: pointer;
+}
+
+#explore-affordance {
+    margin: 20px;
+}
+
+#explore-failed-affordance{
+    margin: 20px;
+}
+
+
+#explore-question h3 i,
+#explore-question h3 a i,
+#explore-question h1 i {
+    color: orange;
+    padding-right: 6px;
+}
+
+
+body.anon #explore-controls {
+    display: none;
+}
+
+
+body.pinned #explore-question i.icon-pushpin{
+    color: red;
+}
+
+
+/* General */
+.feature {
+    /* background: #FFBB73; */
+    /* padding-top: 40px; */
+    /* padding-bottom: 40px; */
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

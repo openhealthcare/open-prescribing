@@ -17,12 +17,14 @@ urlpatterns = patterns(
     url(r'^login/$', 'django_cas.views.login', name='login'),
     url(r'^accounts/login/$', 'django_cas.views.login'),
     url(r'^logout/$', 'django_cas.views.logout', name='logout'),
-    # (r'^logout/$', 'django.contrib.auth.views.logout',
-    #  {'next_page': '/'}),
-    # (r'^accounts/', include('allauth.urls')),
-
 
     url('^$', TemplateView.as_view(template_name='home.html'), name='index'),
+
+    # New static content
+    url('^why$', TemplateView.as_view(template_name='stat/why.html'), name='why'),
+    url('^what$', TemplateView.as_view(template_name='stat/what.html'), name='what'),
+    url('^who$', TemplateView.as_view(template_name='stat/who.html'), name='who'),
+
     url('^subs/', include('nhs.subs.urls')),
     url('^home$', HomeView.as_view(), name='home'),
     url(r'^about/?$', TemplateView.as_view(template_name='about.html'), name='about'),

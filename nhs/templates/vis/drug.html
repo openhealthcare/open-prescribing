@@ -1,5 +1,4 @@
 {% extends 'vis/_drug_base.html' %}
-{% load login_cta %}
 
 {% block extrastyles %}
   {{ block.super }}
@@ -8,8 +7,4 @@
         min-height: auto;
     }
   </style>
-{% endblock %}
-
-{% block drugextra %}
-  {% login_cta %}
 {% endblock %}

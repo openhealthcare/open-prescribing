@@ -1,0 +1,108 @@
+{% extends 'basest.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-lg-8 col-offset-2">
+      <h1>Who did this?</h1>
+    </div>
+  </div>
+  <div class="row copy">
+    <div class="col-lg-8 col-offset-2">
+      <ul class='timeline'>
+        <li class="year first">2011</li>
+
+        <li class='event'>
+          <p>
+          <b>Christmas</b><br />
+          <a href="https://github.com/symroe">Sym</a>
+          spends a
+          <a href="https://groups.google.com/d/msg/ohc-dev/59NTFk3OJ_Q/5Bcb_F7F8PYJ">
+            spare couple hours
+          </a>
+          prototyping an
+          <a href="https://github.com/symroe/nhs-prescriptions/">
+            API
+          </a>
+          for the prescriptions data
+          </p>
+        </li>
+        <li class="event">
+          The NHS Information Centre releases UK GP
+          <a href="http://www.ehi.co.uk/news/EHI/7417/nhs-ic-releases-gp-prescribing-data">
+            prescribing data
+          </a>
+        </li>
+
+        <li class="year">2012</li>
+
+        <li class="event">
+          <p>
+          <b>October</b><br />
+          <a href="https://github.com/symroe">Sym</a> puts his prototype up on
+          <a href="https://github.com/symroe/nhs-prescriptions/commit/741d4ea01e11396aaa1e5444df3cc881d2ec7ac9">
+          github</a>
+          </p>
+        </li>
+
+        <li class="event">
+          <p>
+          <b>September - DOH Hackday</b><br />
+          <img src="{% static 'img/design.council.png' %}" class="" alt="" /><br />
+          in conversation at the Design Council people start to remember
+          how many amazing things you could do with the data
+          </p>
+        </li>
+
+
+        <li class="event">
+          <p>
+          <b>November</b><br />
+          <img src="{% static 'img/hack4health.png' %}" class="" alt="" /><br />
+          David presents an early version at
+          <a href="http://hack4health.co.uk/">Hack 4 Health</a>
+          </p>
+        </li>
+
+        <li class="year">2013</li>
+        <li class="event">
+          <p>
+          <b>January - NHS Hack Day Oxford</b><br />
+          <img src="{% static 'img/nhshackday.oxford.jpg' %}" class="" alt="" /><br />
+          <a href="https://github.com/symroe">Sym</a>,
+          <a href="http://www.simon-hargreaves.com/">Simon</a>,
+          <a href="https://twitter.com/bmcjamin">Ben</a> &
+          <a href="http://deadpansincerity.com/">David</a>
+          manage to take a semi-functional prototype and spend three
+          days breaking it with increasingly obscure GDAL stack traces.
+          </p>
+          <p>
+            Sad faces ensue.
+          </p>
+        </li>
+
+        <li class="event">
+          <p>
+            <b>February</b><br />
+            <img src="{% static 'img/scraperwiki.png' %}" class="" alt="" /><br />
+            the lovely folks at <a href="http://scraperwiki.com">Scraperwiki</a>
+            donate a box...
+          </p>
+        </li>
+
+        <li class="event">
+          <p>
+            <b>later...</b><br />
+            <img src="{% static 'img/ohc.png'%}" class="" alt="" /><br />
+            <a href="http://openhealthcare.org.uk">
+              Open Health Care UK
+            </a>
+            brings you Open Prescribing!
+          </p>
+        </li>
+
+      </ul>
+
+    </div>
+  </div>
+{% endblock %}

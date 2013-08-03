@@ -1,0 +1,69 @@
+{% extends 'basest.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-lg-8 col-offset-2">
+      <h1>What is Open Prescribing?</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8 col-offset-2 feature">
+      <center>
+        <img src="{% static 'img/example.vis.png' %}" class="" alt="" />
+      </center>
+    </div>
+  </div>
+  <div class="row copy">
+    <div class="col-lg-8 col-offset-2">
+      <p class="lead">
+        Having finished the <a href="http://openprescribing.org">Open Prescribing</a>
+        project (Which you may have heard about from the <a href="http://theodi.org/">ODI</a>)
+        we thought it would be neat to be able to analyse the UK's GP prescribing data
+        for any numerator over any denominator.
+      </p>
+      <p class="lead">
+        Open Prescribing offers an API and an interactive data exploration
+        tool that allows clinicians, researchers, journalists, & even members
+        of the public to discover what's going on with drug prescriptions in the UK
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8 col-offset-2">
+      <h1>Where does the data come from?</h1>
+        <p>
+          All of the data presented on Open Prescribing comes from publically
+          available sources - let's break that down a little...
+        </p>
+        <h3>Prescribing Data</h3>
+        <p>
+          The prescribing data comes from the NHS Information Centre
+          <a href="http://www.ic.nhs.uk/gpprescribingdata">GP prescribing activity</a>.
+        </p>
+        <h3>Geolocation Data</h3>
+        <p>
+          The geolocation data comes from the Ordnance Survey
+          <a href="http://www.ordnancesurvey.co.uk/oswebsite/products/code-point-open/">Code-Point Open</a>
+          data, using the mySociety <a href="http://mapit.mysociety.org/">Mapit</a> project.
+        </p>
+        <p>
+          The CCG boundaries come from the list of proposed CCGs available
+          <a href="https://www.google.com/fusiontables/DataSource?snapid=S571166HfO4">here</a>
+        </p>
+        <h3>Practice Metadata</h3>
+        <p>
+          Practice dispensing status comes from the
+          <a href="http://www.nhsbsa.nhs.uk/PrescriptionServices/3198.aspx">
+            NHS Business Services Authority Monthly report
+          </a>
+        </p>
+        <p>
+          Demographic data for GP surgeries is sourced from the
+          <a href="https://indicators.ic.nhs.uk/webview/">
+            NHS IC Indicators Portal GP Practice Data
+          </a>
+        </p>
+      </div>
+    </div>
+  {% endblock %}

@@ -152,7 +152,7 @@
             });
         },
 
-        // Add a color legent to our map.
+        // Add a color legend to our map.
         // This is a base implementation suitable for percentage based
         // heatmaps. Other ranges must implement their own.
         make_legend: function(steps, color_fn){
@@ -165,9 +165,16 @@
                 from, to;
 
                 for (var i = 0; i < steps.length; i++) {
-                    from = steps[i];
-                    to = steps[i + 1];
-
+                    var from = steps[i];
+                    var to = steps[i + 1];
+                    if(from < 0.01){
+                        var exp = from.toExponential().match(/(\d.\d{2})\d+e([+-]\d)/)
+                        from = exp[1] + 'e^' + exp[2];
+                    }
+                    if(to < 0.01){
+                        var exp = to.toExponential().match(/(\d.\d{2})\d+e([+-]\d)/)
+                        to = exp[1] + 'e^' + exp[2];
+                    }
                     labels.push(
                         '<i style="background:' + color_fn(from) + '"></i> ' +
                             from + (to ? '&ndash;' + to : '+'));
@@ -985,38 +992,9 @@
 
     // Template for a question
     Templates.Question = _.template('<h3>\
-<a href="<%= window.location.href.replace("explore", "raw") %>/<%= filename %>"\
-   data-toggle="tooltip" \
-   title="Download raw data" \
-   class="tt"> \
-<i class="icon-download"></i></a>\
-<a href="#pinAnalysis"\
-   data-toggle="modal"\
-   role="button">\
-     <i class="icon-pushpin tt"\
-        data-toggle="tooltip"\
-        title="Save this analysis"\
-     ></i>\
-</a>\
-<i class="icon-question-sign tt"\
-   data-toggle="tooltip"\
-   title="What question is this visualisation attempting to answer?"></i>\
 <%= question %>\
 </h3>\
-\
-<div id="pinAnalysis" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">\
-  <div class="modal-header">\
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>\
-    <h3 id="myModalLabel">Pin Analysis</h3>\
-  </div>\
-  <div class="modal-body">\
-    <p>Friendly Name: <input id="pushpin-name" type="text" name="name"> </p>\
-  </div>\
-  <div class="modal-footer">\
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>\
-    <button class="btn btn-danger pushpin">Save changes</button>\
-  </div>\
-</div>');
+');
 
     // General purpose Marionette views that will be useful in
     // many clients
@@ -1336,7 +1314,9 @@ Failed fetching data from the API: <%= name %>'
     Layouts.DrugFilter = Backbone.Marionette.Layout.extend({
 
         template: _.template('\
-<input type="text" placeholder="type here to filter" id="filter">\
+<h4>Drug Filter</h4>\
+<p>Start typing the name of a drug e.g. paracetamol</p>\
+<input type="text" placeholder="drug name" id="filter">\
 <div id="drugs"></div>'),
 
         regions: {
