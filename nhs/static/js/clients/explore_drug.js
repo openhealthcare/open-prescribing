@@ -81,7 +81,7 @@
     var ExploreDrugApp = context[namespace] = new Backbone.Marionette.Application();
 
     // We want access to our prescribing.js application everywhere in this scope
-    var OP = new Scrip({
+    var OP = ExploreDrugApp.OP = new Scrip({
         // Currently we'll only ever serve this from the main site
         api_host: window.location.host
     })

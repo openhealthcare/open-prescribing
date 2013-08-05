@@ -86,14 +86,20 @@ a:hover {
     background: #00BB3F;
 }
 
+#footer {
+    background: black;
+    font-size: 16px;
+    border-radius: 0px;
+}
+
 
 /* Maps */
 
 #map {
-    /* width: 920px; */
-    /* height: 600px; */
-    width: 600px;
-    height: 400px;
+    width: 920px;
+    height: 600px;
+    /* width: 600px; */
+    /* height: 400px; */
 }
 
 
@@ -205,4 +211,9 @@ body.pinned #explore-question i.icon-pushpin{
     /* padding-bottom: 40px; */
     margin-top: 30px;
     margin-bottom: 30px;
+}
+
+img.explorer {
+    height: 200px;
+    width: 200px;
 }

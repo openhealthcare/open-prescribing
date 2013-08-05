@@ -1,4 +1,5 @@
 {% load tracking  data_range %}
+{% load static %}
 
 <!DOCTYPE html>
 <html dir="ltr" lang="en-GB">
@@ -11,7 +12,7 @@
   <body>
     {% tracking %}
     <div class="navbar navbar-static-top">
-      <a class="{% if request.path == '/' %}active{% endif %} navbar-brand" href="/">
+      <a class="{% if request.path == 'dsdsa/' %}active{% endif %} navbar-brand" href="/">
         <img src="{{STATIC_URL}}/img/op-logo.png" alt="Open Prescribing" />
       </a>
       <ul class="navbar-nav nav">
@@ -24,7 +25,7 @@
         <li class="{% if request.path == '/who' %}active{% endif %}">
           <a href="/who">who</a>
         </li>
-        <li class="{% if request.path == '/api/doc' %}active{% endif %}">
+        <li class="{% if  '/api/doc' in request.path%}active{% endif %}">
           <a href="/api/doc">api</a>
         </li>
         <li class="pull-right {% if 'explore' in request.path %}active{% endif %}">
@@ -39,5 +40,18 @@
       {% block content %}{% endblock %}
     </div>
     {% block extrascripts %}{% endblock %}
+
+    <div id="footer" class="navbar {% block footerclass %}navbar-fixed-bottom {% endblock%}">
+      <p class="navbar-text">
+        This product is currently an alpha release and may contain bugs.
+        <a href="https://github.com/openhealthcare/open-prescribing/issues">
+          Feel free to let us know if you find any...
+        </a>
+        <a href="http://openhealthcare.org.uk" class="navbar-link pull-right">
+          <img src="{% static 'img/logo.box.png' %}" class="" alt="" />
+        </a>
+      </p>
+    </div>
+
   </body>
 </html>

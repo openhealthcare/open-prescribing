@@ -12,7 +12,14 @@
   <link rel="stylesheet" href="{{STATIC_URL}}/css/clients/ratio.css" type="text/css" media="all" />
 {% endblock %}
 
-{% block content %}
+{% block precontainer %}
+
+  <div id="explore-nav">
+    <ul class="nav nav-pills nav-stacked">
+      <li class=""><a href="/explore">Individual Drugs</a></li>
+      <li class="active"><a href="/explore/ratio">Relationships</a></li>
+    </ul>
+  </div>
 
   <div id="explore-container"></div>
   {% block ratioextra %}{% endblock %}

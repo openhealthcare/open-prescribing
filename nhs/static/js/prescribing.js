@@ -169,11 +169,15 @@
                     var to = steps[i + 1];
                     if(from < 0.01){
                         var exp = from.toExponential().match(/(\d.\d{2})\d+e([+-]\d)/)
-                        from = exp[1] + 'e^' + exp[2];
+                        if(exp){
+                            from = exp[1] + 'e^' + exp[2];
+                        }
                     }
                     if(to < 0.01){
                         var exp = to.toExponential().match(/(\d.\d{2})\d+e([+-]\d)/)
-                        to = exp[1] + 'e^' + exp[2];
+                        if(exp){
+                            to = exp[1] + 'e^' + exp[2];
+                        }
                     }
                     labels.push(
                         '<i style="background:' + color_fn(from) + '"></i> ' +
@@ -400,6 +404,7 @@
                 this.practices = new Practices({
                     limit: 0
                 });
+                App.metadata.practices = this.practices;
                 this.practices.on('reset', this.got_practices_cb, this);
                 this.practices.fetchall('Fetching Practice metadata');
             }
@@ -871,9 +876,6 @@
     // for CCGs
     Templates.BucketCCGTable = function(serialised){
             serialised.App = App; // Like a template context plugin
-            log.debug(App.metadata.ccgs.length)
-            log.debug(App.metadata.ccgs)
-            log.debug('metadata tablerender')
             var tpl = _.template('\
 <table class="table table-striped table-bordered table-hover">\
   <thead>\
@@ -903,6 +905,40 @@
   </tbody>\
 </table>');
             return tpl(serialised);
+    }
+
+    // Template used to render ratio comparison table data for practices
+    Templates.BucketPracticeTable = function(serialised){
+        serialised.App = App // Like a template context plugin
+        var tpl = _.template('\
+<table class="table table-striped table-bordered table-hover">\
+  <thead>\
+    <tr>\
+        <th>Practice ID              </th>\
+        <th>Practice Name            </th>\
+        <th>Bucket 1 Items      </th>\
+        <th>Bucket 1 Proportion </th>\
+        <th>Bucket 2 Items      </th>\
+        <th>Bucket 2 Proportion </th>\
+    </tr>\
+  </thead>\
+  <tbody\
+<% _.each(_.pairs(data), function(pair) { \
+                             var practice_id = pair[0], groups = pair[1];\
+                             var practice = App.metadata.practices.where({practice: practice_id})[0];\
+%>\
+    <tr>\
+        <td><%= practice_id %>                  </td>\
+        <td><%= practice ? practice.get("display_name") : "NA" %>        </td>\
+        <td><%= groups.group1.items %>     </td>\
+        <td><%= groups.group1.proportion %></td>\
+        <td><%= groups.group2.items %>     </td>\
+        <td><%= groups.group2.proportion %></td>\
+    </tr>\
+<% }); %>\
+  </tbody>\
+</table>');
+        return tpl(serialised)
     }
 
     // The template used to render percapita data for CCGs
@@ -945,24 +981,21 @@
   <thead>\
     <tr>\
         <th>Practice ID              </th>\
-        <th>Practice Name            </th>\
+        <th>Practice name            </th>\
         <th>Total Items              </th>\
-        <th>Population               </th>\
-        <th>Prescriptions Per Capita </th>\
+        <th>List size                </th>\
     </tr>\
   </thead>\
   <tbody\
 <% _.each(_.pairs(data), function(pair) { \
-                             var ccg_id = pair[0], count = pair[1].count;\
-                             var ccg = App.metadata.ccgs.where({code: ccg_id})[0];\
-                             var percap = count / ccg.get("population");\
+                             var practice_id = pair[0], count = pair[1].count;\
+                             var practice = App.metadata.practices.where({practice: practice_id})[0]\
 %>\
     <tr>\
-        <td><%= ccg_id %>                  </td>\
-        <td><%= ccg.get("title") %>        </td>\
+        <td><%= practice_id %>                  </td>\
+        <td><%= practice ? practice.get("display_name") : "NA" %>                   </td>\
         <td><%= count %>                   </td>\
-        <td><%= ccg.get("population") %>   </td>\
-        <td><%= percap %>                  </td>\
+        <td><%= practice ? practice.get("list_size") : "NA" %>                   </td>\
     </tr>\
 <% }); %>\
   </tbody>\
@@ -1277,6 +1310,7 @@ Failed fetching data from the API: <%= name %>'
 
             _.bindAll(this, 'build_ccg_table', 'build_practice_table');
             this.ccgs.on('reset', this.build_ccg_table);
+            this.practices.on('reset', this.build_practice_table)
         },
 
         build_ccg_table: function(){
@@ -1294,8 +1328,14 @@ Failed fetching data from the API: <%= name %>'
 
         build_practice_table: function(){
             if(App.metadata.practices.length < 5){
-                App.metadaa.practices.once()
+                App.metadata.practices.once('reset', this.build_practice_table);
             }
+            log.debug('building Practice table');
+            var table = new Views.DataTable({
+                template: this.practice_template,
+                model: new Backbone.Model({data: this.practices.models[0].attributes})
+            });
+            this.practice_data_table.show(table);
         },
 
     });
@@ -1433,7 +1473,8 @@ Failed fetching data from the API: <%= name %>'
                 var data_map = new Layouts.DataMap({
                     ccgs:      ccg_comparison,
                     ccg_template: Templates.BucketCCGTable,
-                    practices: practice_comparison
+                    practices: practice_comparison,
+                    practice_template: Templates.BucketPracticeTable
                 });
                 App.trigger('results:new_view', data_map);
                 data_map.map.show(bucketmap)
