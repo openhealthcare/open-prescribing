@@ -136,7 +136,7 @@ body.anon #explore-controls {
 
 /* Exploring */
 #explore-container {
-    min-height: 1200px;
+    /* min-height: 1200px; */
     margin-left: 190px;
     padding-left: 38px;
 }
@@ -189,7 +189,7 @@ body.anon #explore-controls {
 #explore-question h3 i,
 #explore-question h3 a i,
 #explore-question h1 i {
-    color: orange;
+    color: #00BB3F;
     padding-right: 6px;
 }
 

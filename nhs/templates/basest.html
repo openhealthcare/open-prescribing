@@ -28,7 +28,7 @@
         <li class="{% if  '/api/doc' in request.path%}active{% endif %}">
           <a href="/api/doc">api</a>
         </li>
-        <li class="pull-right {% if 'explore' in request.path %}active{% endif %}">
+        <li class="{% if 'explore' in request.path %}active{% endif %}">
           <a href="/explore">explore</a>
         </li>
 

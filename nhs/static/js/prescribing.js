@@ -82,7 +82,7 @@
                 {
                     attributionControl: false
                 }
-            ).setView([53.0, -1.5], 7);
+            ).setView([53.0, -1.5], 6);
             var cloudmade = L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
                                         {
                                             key: 'BC9A493B41014CAABB98F0471D759707',
@@ -1025,6 +1025,11 @@
 
     // Template for a question
     Templates.Question = _.template('<h3>\
+<a href="<%= window.location.href.replace("explore", "raw") %>/<%= filename %>"\
+   data-toggle="tooltip" \
+   title="Download raw data" \
+   class="tt"> \
+<i class="icon-download"></i></a>\
 <%= question %>\
 </h3>\
 ');

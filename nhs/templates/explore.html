@@ -17,8 +17,23 @@
     </ul>
   </div>
   <div id="explore-container"></div>
+{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-lg-8 col-offset-2">
+      <h2>e.g.</h2>
+      <p class="lead">
+        How does <a href="{% url 'example-salbutamol' %}"> prescribing of
+        Salbutamol per capita vary by CCG</a>?
+      </p>
+    </div>
+  </div>
 
 {% endblock %}
+
+{% block footerclass %}navbar-static-bottom{% endblock %}
 
 {% block extrascripts %}
   <script type="text/javascript" src="{{STATIC_URL}}js/data/ccg-data.js"></script>
