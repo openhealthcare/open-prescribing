@@ -21,6 +21,9 @@ def load_drugs():
     drugfile = DATA / 'drug.codes.names.csv'
     drugdict = {}
     bnfdict  = {}
+    if not drugfile:
+        return {}, {}
+
     with drugfile.csv(header=True) as csv:
         for drug in csv:
             drugdict[drug.name.upper()] = drug.bnf_code
