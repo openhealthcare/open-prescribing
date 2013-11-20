@@ -432,7 +432,9 @@
                 function(x){ return x === true });
             if(readyp){
                 this.heatmap_layers(this);
-                this.marker_layers(this);
+                if(this.dataflags.practices){
+                    this.marker_layers(this);
+                }
             }
         },
 
@@ -1021,12 +1023,12 @@
 <ul class="nav nav-tabs" id="datamap-tabs">\
   <li class="active"><a href="#map" class="tabbable">Heatmap</a></li>\
   <li> <a href="#ccg_data_table" class="tabbable">CCG Data</a></li>\
-  <li> <a href="#practice_data_table" class="tabbable">Practice Data</a></li>\
+<!--<li> <a href="#practice_data_table" class="tabbable">Practice Data</a></li>-->\
 </ul>\
 <div class="tab-content">\
   <div class="tab-pane active" id="map"></div>\
   <div class="tab-pane" id="ccg_data_table">Some data (CCG)</div>\
-  <div class="tab-pane" id="practice_data_table">Some data (Practice)</div>\
+<!--<div class="tab-pane" id="practice_data_table">Some data (Practice)</div>-->\
 <\div>\
 <script>\
   $(function () {\
@@ -1328,7 +1330,9 @@ Failed fetching data from the API: <%= name %>'
 
             _.bindAll(this, 'build_ccg_table', 'build_practice_table');
             this.ccgs.on('reset', this.build_ccg_table);
-            this.practices.on('reset', this.build_practice_table)
+            if(this.practices){
+                this.practices.on('reset', this.build_practice_table)
+            }
         },
 
         build_ccg_table: function(){
@@ -1483,7 +1487,7 @@ Failed fetching data from the API: <%= name %>'
             var bucketmap = new BucketMap({
                 ccg_buckets:      ccg_comparison,
                 practice_buckets: practice_comparison,
-                practices:        true
+                practices:        false
             });
 
             // Do we want a data table?
