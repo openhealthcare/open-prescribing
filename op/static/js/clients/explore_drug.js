@@ -47,7 +47,7 @@
             log.debug('In a per capita map for ' + bnf_code + ' from a url');
             var mapview = OP.maps.scrips_per_capita({
                 bnf_code:   bnf_code,
-                practices:  true,
+                practices:  false,
                 data_tables: true
             });
             log.debug(mapview);
