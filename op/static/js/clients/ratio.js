@@ -90,7 +90,7 @@
             var mapview = OP.maps.bucket({
                 bucket1:     bucket1,
                 bucket2:     bucket2,
-                practices:   true,
+                practices:   false,
                 data_tables: true
             });
             log.debug(mapview);
