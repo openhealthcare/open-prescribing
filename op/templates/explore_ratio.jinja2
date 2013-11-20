@@ -1,0 +1,26 @@
+{% extends 'explore.jinja2' %}
+
+{% block extrastyles %}
+  <link rel="stylesheet" href="/static/css/clients/ratio.css" type="text/css" media="all" />
+{% endblock %}
+
+{% block extrascripts %}
+  <script type="text/javascript" src="/static/js/data/ccg-data.js"></script>
+  <script src="/static/js/clients/ratio.js"></script>
+  <script type="text/javascript">
+    window.$ = jQuery;
+    $(document).ready(function(){
+        $('body').tooltip({
+            selector: '.tt'
+        });
+        $(".tabbable").live('click', function(e){
+            e.preventDefault();
+            $(this).tab("show");
+        });
+
+
+    Explore.start();
+
+    });
+  </script>
+{% endblock %}

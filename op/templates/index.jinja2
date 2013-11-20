@@ -1,0 +1,33 @@
+{% extends "baser.jinja2" %}
+{% block content %}
+  <div class="row">
+    <div class="col-lg-6">
+      <center>
+      <a href="/explore">
+        <h2>Individual drugs</h2>
+        <img src="/static/img/bottle.icon.png" class="explorer" alt="" />
+      </a>
+      <h3>
+        Examine postcode lottery drugs
+      </h3>
+      <h3>
+          Investigate prescribing of high cost drugs
+      </h3>
+      </center>
+    </div>
+    <div class="col-lg-6">
+      <center>
+      <a href="/explore/ratio">
+        <h2>Groups of drugs</h2>
+        <img src="/static/img/scales.icon.svg" class="explorer" alt="" />
+      </a>
+      <h3>
+        Compare branded vs generic drugs
+      </h3>
+      <h3>
+        Review inhalers by environmental impact
+      </h3>
+      </center>
+    </div>
+  </div>
+{% endblock %}

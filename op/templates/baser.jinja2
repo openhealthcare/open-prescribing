@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-GB">
+  <head>
+    <title>Open Prescribing{% block extratitle %}{% endblock %}</title>
+    {% include 'head.jinja2' %}
+    {% block extratemplates %}{% endblock %}
+    {% block extrastyles %}{% endblock %}
+  </head>
+  <body>
+    <div class="navbar navbar-static-top">
+      <a class="navbar-brand" href="/">
+        <img src="/static/img/op-logo.png" alt="Open Prescribing" />
+      </a>
+      <ul class="navbar-nav nav">
+        <li class="">
+          <a href="/what">what</a>
+        </li>
+        <li class="">
+          <a href="/why">why</a>
+        </li>
+        <li class="">
+          <a href="/who">who</a>
+        </li>
+        {# <li class=""> #}
+        {#   <a href="/api/doc">api</a> #}
+        {# </li> #}
+        <li class="">
+          <a href="/explore">explore</a>
+        </li>
+
+      </ul>
+
+    </div>
+    {% block precontainer %}{% endblock %}
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+    {% block extrascripts %}{% endblock %}
+
+    <div id="footer" class="navbar {% block footerclass %}navbar-fixed-bottom {% endblock%}">
+      <p class="navbar-text">
+        This product is currently an alpha release and may contain bugs.
+        <a href="https://github.com/openhealthcare/open-prescribing/issues">
+          Feel free to let us know if you find any...
+        </a>
+        <a href="http://openhealthcare.org.uk" class="navbar-link pull-right">
+          <img src="/static/img/logo.box.png" class="" alt="" />
+        </a>
+      </p>
+    </div>
+
+  </body>
+</html>
