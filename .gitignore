@@ -11,3 +11,5 @@ nhs/static/js/node_modules
 /nhs/static/js/docs/docco.css
 /nhs/static/js/docs/prescribing.html
 uploads
+build
+op/static/op.data.tar.gz
