@@ -4,6 +4,18 @@
   <link rel="stylesheet" href="/static/css/clients/ratio.css" type="text/css" media="all" />
 {% endblock %}
 
+{% block example %}
+      <p class="lead">
+        What does the <a href="/example-hfc">
+        breakdown of inhaler prescriptions</a> with
+        HFC/Dry powder systems look like by CCG?
+      </p>
+      <p class="lead">
+        Which CCGs or practices prescribe <a href="/explore/ratio/0212000AAAAAAAA,0212000AAAAACAC/0212000ACAAAAAA,0212000ACAAACAC,0212000B0AAAAAA,0212000B0AAACAC,0212000X0AAAAAA,0212000X0AAADAD,0212000Y0AAAAAA,0212000Y0AAADAD,0212000Y0AAALAL">
+        unusually high proportions of branded statins</a>?
+      </p>
+{% endblock %}
+
 {% block extrascripts %}
   <script type="text/javascript" src="/static/js/data/ccg-data.js"></script>
   <script src="/static/js/clients/ratio.js"></script>
