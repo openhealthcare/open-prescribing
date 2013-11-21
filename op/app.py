@@ -171,10 +171,7 @@ def prescription_aggregates_api():
     if query_type not in ['practice', 'ccg']:
         raise UnknownQueryTypeError()
 
-    print query_type, bnf_code
-
     agg = AGGREGATES / '{0}/bnf.{1}.json'.format(query_type, bnf_code)
-    print agg
     aggregates = {}
     if agg:
         aggregates = agg.json_load()
@@ -188,10 +185,7 @@ def prescription_comparison_api():
     group1 = request.args.get('group1')
     group2 = request.args.get('group2')
 
-    print group1, group2
     bnfs1, bnfs2 = set(group1.split(',')), set(group2.split(','))
-
-    print bnfs1, bnfs2
 
     aggs1 = [_get_aggregates(query_type, b) for b in bnfs1]
     aggs2 = [_get_aggregates(query_type, b) for b in bnfs2]
