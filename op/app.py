@@ -15,6 +15,7 @@ import ffs
 from flask import Flask, render_template, request, Response, abort, redirect
 
 from op.db import r
+from op import downloads
 
 HERE = ffs.Path.here()
 DATA = HERE / 'static/data'
@@ -149,7 +150,8 @@ Downloads
 @app.route("/raw/ratio/<bucket1>/<bucket2>/")
 def download_ratio(bucket1, bucket2):
     b1, b2 = urllib.unquote(bucket1), urllib.unquote(bucket2)
-    return stream_generated_file(download.ratio(b1, b2))
+    bucket = b1.split(',') + b2.split(',')
+    return stream_generated_file(downloads.extract(bucket))
 
 """
 API
