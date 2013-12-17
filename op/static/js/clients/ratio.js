@@ -60,7 +60,7 @@
     });
 
     var ExApp = context[namespace] = new Backbone.Marionette.Application();
-    var OP = new Scrip({
+    var OP = ExApp.OP = new Scrip({
             api_host: window.location.host
         })
 
@@ -90,7 +90,7 @@
             var mapview = OP.maps.bucket({
                 bucket1:     bucket1,
                 bucket2:     bucket2,
-                practices:   false,
+                practices:   true,
                 data_tables: true
             });
             log.debug(mapview);

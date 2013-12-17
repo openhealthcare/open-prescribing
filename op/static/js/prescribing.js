@@ -1023,7 +1023,7 @@
 <ul class="nav nav-tabs" id="datamap-tabs">\
   <li class="active"><a href="#map" class="tabbable">Heatmap</a></li>\
   <li> <a href="#ccg_data_table" class="tabbable">CCG Data</a></li>\
-<!--<li> <a href="#practice_data_table" class="tabbable">Practice Data</a></li>-->\
+<!-- <li> <a href="#practice_data_table" class="tabbable">Practice Data</a></li>-->\
 </ul>\
 <div class="tab-content">\
   <div class="tab-pane active" id="map"></div>\
@@ -1355,7 +1355,8 @@ Failed fetching data from the API: <%= name %>'
             log.debug('building Practice table');
             var table = new Views.DataTable({
                 template: this.practice_template,
-                model: new Backbone.Model({data: this.practices.models[0].attributes})
+                model: new Backbone.Model({data: {}})
+                // model: new Backbone.Model({data: this.practices.models[0].attributes})
             });
             this.practice_data_table.show(table);
         },
@@ -1487,7 +1488,7 @@ Failed fetching data from the API: <%= name %>'
             var bucketmap = new BucketMap({
                 ccg_buckets:      ccg_comparison,
                 practice_buckets: practice_comparison,
-                practices:        false
+                practices:        opts.practices
             });
 
             // Do we want a data table?

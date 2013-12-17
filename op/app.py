@@ -3,15 +3,19 @@ Flask application for OP.
 """
 import collections
 import functools
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 import mimetypes
 import os
+import time
+import urllib
 
 import ffs
 from flask import Flask, render_template, request, Response, abort, redirect
 
 from op.db import r
-
 
 HERE = ffs.Path.here()
 DATA = HERE / 'static/data'
@@ -50,8 +54,7 @@ class UnknownQueryTypeError(Error): pass
 def jsonp(fn):
     @functools.wraps(fn)
     def with_callback_maybe(*args,**kwargs):
-        results = fn(*args,**kwargs)
-        results = json.dumps(results)
+        results = json.dumps(fn(*args,**kwargs))
         if  request.args.get('callback', None):
             return '{0}({1})'.format(request.args.get('callback'), results)
         else:
@@ -59,9 +62,7 @@ def jsonp(fn):
     return with_callback_maybe
 
 def stream_file(filename):
-
     def stream_wrapper(fn):
-
         @functools.wraps(fn)
         def streamer(*args, **kwargs):
             mime, _ = mimetypes.guess_type(filename)
@@ -71,9 +72,7 @@ def stream_file(filename):
                     yield row
             return Response(generate(), mimetype=mime)
         return streamer
-
     return stream_wrapper
-
 
 def _get_aggregates(query_type, bnf_code):
     """
@@ -86,10 +85,10 @@ def _get_aggregates(query_type, bnf_code):
         aggregates = agg.json_load()
     return aggregates
 
+
 """
 Views
 """
-
 @app.route("/")
 def hello():
     return render_template('index.jinja2')
@@ -128,9 +127,8 @@ def explore_ratio_buckets(bucket1, bucket2):
     return render_template("explore_ratio.jinja2")
 
 """
-Begin API
+API
 """
-
 @app.route("/api/v2/drug/")
 @jsonp
 def drug_api():
@@ -182,8 +180,8 @@ def prescription_aggregates_api():
 @jsonp
 def prescription_comparison_api():
     query_type = request.args.get('query_type')
-    group1 = request.args.get('group1')
-    group2 = request.args.get('group2')
+    group1 = urllib.unquote(request.args.get('group1'))
+    group2 = urllib.unquote(request.args.get('group2'))
 
     bnfs1, bnfs2 = set(group1.split(',')), set(group2.split(','))
 
