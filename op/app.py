@@ -7,7 +7,6 @@ try:
     import simplejson as json
 except ImportError:
     import json
-import mimetypes
 import os
 import time
 import urllib
@@ -65,14 +64,32 @@ def stream_file(filename):
     def stream_wrapper(fn):
         @functools.wraps(fn)
         def streamer(*args, **kwargs):
-            mime, _ = mimetypes.guess_type(filename)
             streamable = HERE / filename
             def generate():
                 for row in streamable:
                     yield row
-            return Response(generate(), mimetype=mime)
+            return Response(generate(), mimetype=streamable.mimetype)
         return streamer
     return stream_wrapper
+
+def stream_generated_file(fname):
+    """
+    Given the name of a file we have just generated,
+    stream it!
+
+    Arguments:
+    - `fname`: str
+
+    Return: Response
+    Exceptions: None
+    """
+    f = ffs.Path(fname)
+    def generate():
+        for row in f:
+            yield row
+
+    return Response(generate(), mimetype=f.mimetype)
+
 
 def _get_aggregates(query_type, bnf_code):
     """
@@ -127,8 +144,17 @@ def explore_ratio_buckets(bucket1, bucket2):
     return render_template("explore_ratio.jinja2")
 
 """
+Downloads
+"""
+@app.route("/raw/ratio/<bucket1>/<bucket2>/")
+def download_ratio(bucket1, bucket2):
+    b1, b2 = urllib.unquote(bucket1), urllib.unquote(bucket2)
+    return stream_generated_file(download.ratio(b1, b2))
+
+"""
 API
 """
+
 @app.route("/api/v2/drug/")
 @jsonp
 def drug_api():
