@@ -1,3 +1,4 @@
 Flask
 -e git://github.com/davidmiller/ffs.git#egg=ffs
 redis
+simplejson
