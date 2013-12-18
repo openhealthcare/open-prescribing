@@ -181,10 +181,10 @@
                     }
                     labels.push(
                         '<i style="background:' + color_fn(from) + '"></i> ' +
-                            from + (to ? '&ndash;' + to : '+'));
+                            from.toString().substring(0, 5) + (to ? '&ndash;' + to.toString().substring(0, 5) : '+'));
                 }
 
-            div.innerHTML = labels.join('<br>');
+            div.innerHTML = labels.join('<br />');
                 return div;
             };
             return legend

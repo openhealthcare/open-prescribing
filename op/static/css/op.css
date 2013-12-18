@@ -127,6 +127,9 @@ a:hover {
     float: left;
     margin-right: 8px;
 }
+.legend br {
+    clear: both;
+}
 
 
 /* Data explorations */
