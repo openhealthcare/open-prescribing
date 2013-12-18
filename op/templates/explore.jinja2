@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block precontainer %}
+  <!--[if !IE]><!-->
   <div id="explore-nav">
     <ul class="nav nav-pills nav-stacked">
       <li class="active"><a href="/explore">Individual Drugs</a></li>
@@ -17,19 +18,58 @@
     </ul>
   </div>
   <div id="explore-container"></div>
+<!--<![endif]-->
 {% endblock %}
 
 {% block content %}
 
   <div class="row">
     <div class="col-lg-8 col-offset-2">
+
+
+      <!--[if IE]>
+          <h1>Oh, it looks like you're using Internet Explorer.</h1>
+          <p>
+            You can use Open Prescribing in these browsers:
+          </p>
+          <div >
+            <ul>
+              <li >
+                <a href="https://www.google.com/chrome" target="_blank">
+                  <img height="64" width="64" alt="chrome" src="/static/img/chrome-logo.jpg">
+                    <span>Chrome</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.mozilla.org/firefox" target="_blank">
+                  <img height="64" width="64" alt="firefox" src="/static/img/firefox_128x128.png">
+                    <span>Firefox</span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.opera.com/" target="_blank">
+                  <img height="64" width="64" alt="opera" src="/static/img/opera-logo.jpg">
+                    <span>Opera</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <![endif]-->
+
+      <!--[if !IE]><!-->
+
       <h2>e.g.</h2>
       {% block example %}
       <p class="lead">
         How does <a href="/example-salbutamol"> prescribing of
         Salbutamol per capita vary by CCG</a>?
       </p>
-    {% endblock %}
+      {% endblock %}
+
+
+      <!--<![endif]-->
+
+
     </div>
   </div>
 
