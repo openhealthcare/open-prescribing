@@ -2,6 +2,7 @@
 <html dir="ltr" lang="en-GB">
   <head>
     <title>Open Prescribing{% block extratitle %}{% endblock %}</title>
+    {% block prevstyles %}{% endblock %}
     {% include 'head.jinja2' %}
     {% block extratemplates %}{% endblock %}
     {% block extrastyles %}{% endblock %}
@@ -21,9 +22,9 @@
         <li class="">
           <a href="/who">who</a>
         </li>
-        {# <li class=""> #}
-        {#   <a href="/api/doc">api</a> #}
-        {# </li> #}
+        <li class="">
+          <a href="/api/v2/doc">api</a>
+        </li>
         <li class="">
           <a href="/explore">explore</a>
         </li>
