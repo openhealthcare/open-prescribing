@@ -147,11 +147,16 @@ def explore_ratio_buckets(bucket1, bucket2):
 """
 Downloads
 """
-@app.route("/raw/ratio/<bucket1>/<bucket2>/")
+@app.route("/raw/ratio/<bucket1>/<bucket2>/ratio.zip")
 def download_ratio(bucket1, bucket2):
     b1, b2 = urllib.unquote(bucket1), urllib.unquote(bucket2)
     bucket = b1.split(',') + b2.split(',')
     return stream_generated_file(downloads.extract(bucket))
+
+@app.route("/raw/drug/<bnf>/percap.zip")
+def download_percapita(bnf):
+    return stream_generated_file(downloads.extract([bnf]))
+
 
 """
 API
