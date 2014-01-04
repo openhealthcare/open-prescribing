@@ -13,19 +13,19 @@
         <img src="/static/img/op-logo.png" alt="Open Prescribing" />
       </a>
       <ul class="navbar-nav nav">
-        <li class="">
+        <li class="{% if nav == 'what' %}active{% endif %}">
           <a href="/what">what</a>
         </li>
-        <li class="">
+        <li class="{% if nav == 'why' %}active{% endif %}">
           <a href="/why">why</a>
         </li>
-        <li class="">
+        <li class="{% if nav == 'who' %}active{% endif %}">
           <a href="/who">who</a>
         </li>
-        <li class="">
+        <li class="{% if nav == 'api' %}active{% endif %}">
           <a href="/api/v2/doc">api</a>
         </li>
-        <li class="">
+        <li class="{% if nav == 'explore' %}active{% endif %}">
           <a href="/explore">explore</a>
         </li>
 

@@ -96,10 +96,8 @@ a:hover {
 /* Maps */
 
 #map {
-    width: 920px;
+    width: 800px;
     height: 600px;
-    /* width: 600px; */
-    /* height: 400px; */
 }
 
 
@@ -132,22 +130,44 @@ a:hover {
 }
 
 
+/* Alerts */
+.alert {
+    max-width: 800px;;
+}
+
+.alert-info {
+  color: #024e68;
+  background-color: #63dd8d;
+  border-color: #37dd6f;
+}
+
+.alert-info h2 {
+    color: #024e68;
+}
+
 /* Data explorations */
 body.anon #explore-controls {
     display: none;
 }
 
 /* Exploring */
+#explore-alerts {
+    margin-left: 190px;
+    padding-left: 38px;
+}
 #explore-container {
     /* min-height: 1200px; */
     margin-left: 190px;
+    margin-bottom: 24px;
     padding-left: 38px;
 }
 
 #explore-controls {
-    margin: 0px 4px 0px 0px;
+    margin: 24px 4px 0px 0px;
     background: #FFBB73;
     padding: 20px;
+    max-width: 800px;
+    border-radius: 5px
 }
 
 
@@ -156,6 +176,16 @@ body.anon #explore-controls {
     clear: both;
     display: block;
 }
+
+#drugs {
+    min-height: 200px;
+}
+
+#filter-input{
+    width: 100%;
+    height: 2.6em;
+}
+
 #drugs ul {
     margin: 3px;
     /* width: 740px; */
@@ -163,6 +193,38 @@ body.anon #explore-controls {
     overflow-y: scroll;
     padding: 0px;
 }
+
+#content .bucket ul{
+    margin: 10px;
+    padding: 0px;
+
+}
+.bucket ul li {
+    background: #D7301F;
+    color: white;
+    list-style-type: none;
+    border: 1px solid red;
+    padding: 3px;
+    margin: 5px 0px;
+}
+
+.bucket ul li.target {
+    background: transparent;
+    color: red;
+    border: 3px dashed red;
+}
+#explore-controls div.bucket {
+    height: 240px;
+    width: 240px;
+    float: left;
+    margin: 10px;
+    box-shadow: 2px 2px 5px #ccc;
+    overflow-y: scroll;
+    border: 1px #ccc solid;
+    border-radius: 3px;
+}
+
+
 #drugs li {
     list-style-type: none;
     border: 1px solid #FF2800;

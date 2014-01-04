@@ -13,9 +13,29 @@
   <!--[if !IE]><!-->
   <div id="explore-nav">
     <ul class="nav nav-pills nav-stacked">
-      <li class="active"><a href="/explore">Individual Drugs</a></li>
-      <li><a href="/explore/ratio">Relationships</a></li>
+      <li  {% if active == 'percapita' %}class="active"{% endif %}><a href="/explore">Drugs</a></li>
+      <li  {% if active == 'ratio' %}class="active"{% endif %}><a href="/explore/ratio">Relationships</a></li>
     </ul>
+  </div>
+
+  <div id="explore-alerts">
+  {% block alert %}
+  <div class="alert alert-info alert-dismissable">
+    <button type="button" id="percapita-close" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <h2>
+      <i class="fa fa-fw fa-info-circle"></i>Regional variation in prescribing habits
+    </h2>
+    <p>
+      Looking at regional variation for drugs, or for groups of drugs is important because
+      it allows us to explore how our health system is working.
+    </p>
+    <p>
+      Healthcare professionals, such as GPs, retain a high degree of autonomy in deciding which
+      drug therapy to prescribe. Individual healthcare professionals consider the evidence and
+      exercise their judgement in deciding which drug therapy to prescribe in a particular circumstance.
+    </p>
+  </div>
+  {% endblock %}
   </div>
   <div id="explore-container"></div>
 <!--<![endif]-->
@@ -25,7 +45,6 @@
 
   <div class="row">
     <div class="col-lg-8 col-offset-2">
-
 
       <!--[if IE]>
           <h1>Oh, it looks like you're using Internet Explorer.</h1>
@@ -56,20 +75,6 @@
           </div>
           <![endif]-->
 
-      <!--[if !IE]><!-->
-
-      <h2>e.g.</h2>
-      {% block example %}
-      <p class="lead">
-        How does <a href="/example-salbutamol"> prescribing of
-        Salbutamol per capita vary by CCG</a>?
-      </p>
-      {% endblock %}
-
-
-      <!--<![endif]-->
-
-
     </div>
   </div>
 
@@ -83,6 +88,18 @@
   <script type="text/javascript">
     window.$ = jQuery;
     $(document).ready(function(){
+
+    $('#percapita-close').click(function( e ){
+    e.preventDefault();
+    $.cookie('percapita-alert', 'closed', { path: '/' });
+    });
+
+     if( $.cookie('percapita-alert') === 'closed' ){
+        $('#percapita-close').click();
+    }
+
+
+
         $('body').tooltip({
             selector: '.tt'
         });

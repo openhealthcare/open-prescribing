@@ -33,7 +33,22 @@
 
         regions: {
             filter: '#filter',
+            bucket1: '#bucket1'
         },
+
+        events: {
+            'click button.go': 'resultise'
+        },
+
+        resultise: function(){
+            var bucket =  this.bucket1.currentView.collection.pluck('bnf_code');
+            var url =  'explore/drug/' + bucket.join(',');
+            ExploreDrugApp.router.navigate(url,  {trigger: true});
+
+            //         var url = 'explore/drug/' + bnf_code
+    //         ExploreDrugApp.router.navigate(url, {trigger: true});
+
+        }
 
     })
 
@@ -42,11 +57,11 @@
 
         pong: function(){ log.debug('ping -> pong') },
 
-        per_capita_map: function(bnf_code){
+        per_capita_map: function(bnf_codes){
             // var model = ExploreDrugApp.all_drugs.where({bnf_code: bnf_code})[0];
-            log.debug('In a per capita map for ' + bnf_code + ' from a url');
+            log.debug('In a per capita map for ' + bnf_codes + ' from a url');
             var mapview = OP.maps.scrips_per_capita({
-                bnf_code:   bnf_code,
+                bnf_codes:   bnf_codes,
                 practices:  true,
                 data_tables: true
             });
@@ -55,7 +70,7 @@
             // Check to see if we have a model to update the question
             var explore = function(model){OP.trigger('exploring', model);}
 
-            var drug = new OP.models.Drug({bnf_code: bnf_code});
+            var drug = new OP.models.Drug({bnf_codes: bnf_codes});
             drug.fetch({success: function(model, response, options){
                 log.debug(model);
                 explore(model);
@@ -112,20 +127,19 @@
         controls = new ExControlLayout();
         results = new OP.layouts.ResultLayout();
 
-        // all_drugs = OP.get({
-        //     resource: 'product',
-        //     data: { limit: 0 }
-        // });
-
-        // ExploreDrugApp.all_drugs = all_drugs;
-
         drug_filter = new OP.layouts.DrugFilter({
             collection: new OP.collections.Pharmacy()
+        });
+        bucket1 = new OP.views.DrugBucketView({
+            collection: new OP.collections.Pharmacy(),
+            bucket_name: 'bucket1'
         });
 
         layout.question.show(questions);
         layout.controls.show(controls);
         controls.filter.show(drug_filter);
+        controls.bucket1.show(bucket1);
+
         layout.results.show(results);
     });
 
@@ -135,14 +149,14 @@
         Backbone.history.start({pushState: true});
     });
 
-    // Let's listen for events from the Filters
-    ExploreDrugApp.addInitializer(function(options){
+    // // Let's listen for events from the Filters
+    // ExploreDrugApp.addInitializer(function(options){
 
-        OP.on('drugitem:click', function(bnf_code){
-            var url = 'explore/drug/' + bnf_code
-            ExploreDrugApp.router.navigate(url, {trigger: true});
-        });
+    //     OP.on('drugitem:click', function(bnf_code){
+    //         var url = 'explore/drug/' + bnf_code
+    //         ExploreDrugApp.router.navigate(url, {trigger: true});
+    //     });
 
-    })
+    // })
 
 })(this.window||exports, "ExploreDrug")

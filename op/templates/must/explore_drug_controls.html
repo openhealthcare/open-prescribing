@@ -1,4 +1,27 @@
 <script id="explore-drug-controls-template" type="text/template">
 
-  <div id="filter"></div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Examples...</h2>
+      <p>
+        <a href="/explore/inhalers-per-capita">Inhalers per capita</a>
+      </p>
+      <p>
+        <a href="/explore/statins-per-capita">Statins per capita</a>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <h2>Choose your own...</h2>
+      <div id="filter"></div>
+      <div class="bucket">
+        <h4>Drug(s)</h4>
+        <div id="bucket1"></div>
+      </div>
+
+      <button class="btn btn-danger go">
+        Draw me a map...
+      </button>
+
+    </div>
+  </div>
 </script>

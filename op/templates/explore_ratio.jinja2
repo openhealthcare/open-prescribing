@@ -4,6 +4,27 @@
   <link rel="stylesheet" href="/static/css/clients/ratio.css" type="text/css" media="all" />
 {% endblock %}
 
+{% block alert %}
+  <div class="alert alert-info alert-dismissable">
+    <button type="button" id="ratio-close" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <h2>
+      <i class="fa fa-fw fa-info-circle"></i>Comparing groups of prescriptions
+    </h2>
+    <p>
+      There is only a finite amount of money available to be spent on health.
+      It is imperative that this money is not spent on therapies which have not been proven to offer good value for money.
+    </p>
+    <p>
+      The value of a drug therapy depends on the net effect it has on health, and the amount of money it costs.
+    </p>
+    <p>
+      Independent critical analysis of the evidence on medicines and their patterns of use,
+      together with the judgement of healthcare professionals, is essential to ensuring that we
+      get the greatest possible benefit from the finite amount of money available to spend on health.
+    </p>
+  </div>
+{% endblock %}
+
 {% block example %}
       <p class="lead">
         What does the <a href="/example-hfc">
@@ -14,6 +35,14 @@
         Which CCGs or practices prescribe <a href="/explore/ratio/0212000AAAAAAAA,0212000AAAAACAC/0212000ACAAAAAA,0212000ACAAACAC,0212000B0AAAAAA,0212000B0AAACAC,0212000X0AAAAAA,0212000X0AAADAD,0212000Y0AAAAAA,0212000Y0AAADAD,0212000Y0AAALAL">
         unusually high proportions of branded statins</a>?
       </p>
+      <h1>Bucket1</h1>
+      {% for drug in bucket1 %}
+        <p>{{drug}} {{ bnfs[drug] }}</p>
+      {% endfor %}
+      <h1>Bucket2</h1>
+      {% for drug in bucket2 %}
+        <p>{{drug}} {{ bnfs[drug] }}</p>
+      {% endfor %}
 {% endblock %}
 
 {% block extrascripts %}
@@ -22,6 +51,18 @@
   <script type="text/javascript">
     window.$ = jQuery;
     $(document).ready(function(){
+
+
+    $('#ratio-close').click(function( e ){
+    e.preventDefault();
+    $.cookie('ratio-alert', 'closed', { path: '/' });
+    });
+
+     if( $.cookie('ratio-alert') === 'closed' ){
+        $('#ratio-close').click();
+    }
+
+
         $('body').tooltip({
             selector: '.tt'
         });

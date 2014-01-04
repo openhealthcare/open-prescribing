@@ -49,7 +49,7 @@
         debug: _debuglog
     }
 
-    // Namespace mapping functions
+    // namespace mapping functions
     var mapping = {
 
         info: null,
@@ -831,8 +831,8 @@
                         return feature;
                     }
 
-                    feature.properties.total_items = data.count;
-                    var scrips_per_capita = data.count/ccg.get('population');
+                    feature.properties.total_items = data;
+                    var scrips_per_capita = data/ccg.get('population');
                     feature.properties.heatmap_property = scrips_per_capita;
                     percap.push(scrips_per_capita)
                     return feature
@@ -1044,7 +1044,7 @@
    data-toggle="tooltip" \
    title="Download raw data" \
    class="tt"> \
-<i class="icon-download"></i></a>\
+<i class="fa fa-download"></i></a>\
 <%= question %>\
 </h3>\
 ');
@@ -1377,9 +1377,7 @@ Failed fetching data from the API: <%= name %>'
     Layouts.DrugFilter = Backbone.Marionette.Layout.extend({
 
         template: _.template('\
-<h4>Drug Filter</h4>\
-<p>Start typing the name of a drug e.g. paracetamol</p>\
-<input type="text" placeholder="drug name" id="filter">\
+<input type="text" placeholder=" drug name" id="filter-input">\
 <div id="drugs"></div>'),
 
         regions: {
@@ -1387,7 +1385,7 @@ Failed fetching data from the API: <%= name %>'
         },
 
         events: {
-            'keyup #filter': 'filter'
+            'keyup #filter-input': 'filter'
         },
 
         // Constructor for the filter layout
@@ -1414,7 +1412,7 @@ Failed fetching data from the API: <%= name %>'
 
         // Filter the visible drugs
         filter: function(event){;
-            var val = this.$('#filter').attr('value');
+            var val = this.$('#filter-input').attr('value');
             log.debug('filtering ' + val)
             // log.debug(val);
             this.drugs.currentView.filter(val);
@@ -1452,7 +1450,7 @@ Failed fetching data from the API: <%= name %>'
             var affordance = 'Fetching ' + granularity + ' Aggregate';
             scrips.fetchall(affordance, {
                 query_type: granularity,
-                bnf_code:   opts.bnf_code
+                bnf_codes:   opts.bnf_codes
             });
             return scrips;
         }
@@ -1512,7 +1510,7 @@ Failed fetching data from the API: <%= name %>'
         // the number of prescriptions per capita
         scrips_per_capita: function(opts){
             var ccg_scrips = Api.prescriptionaggregate({
-                bnf_code: opts.bnf_code,
+                bnf_codes: opts.bnf_codes,
                 granularity: 'ccg'
             });
 
@@ -1520,7 +1518,7 @@ Failed fetching data from the API: <%= name %>'
             var practice_scrips = false
             if(opts.practices){
                 practice_scrips = Api.prescriptionaggregate({
-                    bnf_code: opts.bnf_code,
+                    bnf_codes: opts.bnf_codes,
                     granularity: 'practice'
                 });
             }

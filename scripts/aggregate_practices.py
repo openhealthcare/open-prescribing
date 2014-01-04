@@ -65,11 +65,6 @@ def _practices():
 
     return
 
-def _ccgs():
-    """
-    write out our CCG aggregates.
-    """
-
 
 def main():
     """

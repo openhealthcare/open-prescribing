@@ -14,8 +14,9 @@ import urllib
 import ffs
 from flask import Flask, render_template, request, Response, abort, redirect
 
+from op.constants import INHALE_CODES
 from op.db import r
-from op import downloads
+from op import constants, downloads
 
 HERE = ffs.Path.here()
 DATA = HERE / 'static/data'
@@ -121,36 +122,39 @@ def hello():
 
 @app.route("/what")
 def what():
-    return render_template('what.jinja2')
+    return render_template('what.jinja2', nav='what')
 
 @app.route("/why")
 def why():
-    return render_template('why.jinja2')
+    return render_template('why.jinja2', nav='what')
 
 @app.route("/who")
 def who():
-    return render_template('who.jinja2')
+    return render_template('who.jinja2', nav='who')
 
 @app.route("/api/doc")
 def api_doc():
-    return render_template('api.jinja2')
+    return render_template('api.jinja2', nav='api')
 
 @app.route("/explore")
 def explore():
-    return render_template('explore.jinja2')
+    return render_template('explore.jinja2', active='percapita', nav='explore')
 
 @app.route("/explore/drug/<bnf>")
 def explore_drug(bnf):
-    return render_template('explore.jinja2')
+    return render_template('explore.jinja2', active='percapita', nav='explore')
 
 
 @app.route("/explore/ratio")
 def explore_ratio():
-    return render_template("explore_ratio.jinja2")
+    return render_template("explore_ratio.jinja2", active='ratio', nav='explore')
 
 @app.route("/explore/ratio/<bucket1>/<bucket2>")
 def explore_ratio_buckets(bucket1, bucket2):
-    return render_template("explore_ratio.jinja2")
+    b1, b2 = urllib.unquote(bucket1).split(','), urllib.unquote(bucket2).split(',')
+    return render_template("explore_ratio.jinja2",
+                           bnfs=BNFS, bucket1=b1, bucket2=b2,
+                           active='ratio', nav='explore')
 
 """
 Downloads
@@ -202,20 +206,44 @@ def practice_api(): pass
 @stream_file("static/data/ccgmetadata.json")
 def ccg_api(): pass
 
+def _sumit(aggregations):
+    summer = collections.defaultdict(int)
+    for drug in aggregations:
+        for area in drug:
+            summer[area] += drug[area]['count']
+    return summer
+
+SHORT_PATHS = {
+    constants.ALL_INHALERS: 'inhalers',
+    constants.ALL_STATINS: 'statins',
+    constants.ALL_NICOTINE: 'nicotine'
+    }
+
 @app.route("/api/v2/prescriptionaggregates/")
 @jsonp
 def prescription_aggregates_api():
     query_type = request.args.get('query_type')
-    bnf_code = request.args.get('bnf_code')
+    raw_codes = urllib.unquote(request.args.get('bnf_codes'))
+    bnf_codes = raw_codes.split(',')
     if query_type not in ['practice', 'ccg']:
         raise UnknownQueryTypeError()
 
-    agg = AGGREGATES / '{0}/bnf.{1}.json'.format(query_type, bnf_code)
-    aggregates = {}
-    if agg:
-        aggregates = agg.json_load()
+    # We cache some queries that we promote on the site.
+    # c.f. scripts/aggregate_short_paths.py
+    if raw_codes in SHORT_PATHS:
+        cachefile = DATA/SHORT_PATHS[raw_codes]/'{0}.aggregate.cache.json'.format(query_type)
+        return dict(objects=cachefile.json_load())
 
-    return dict(objects=aggregates)
+    aggregations = []
+    for code in bnf_codes:
+        agg = AGGREGATES / '{0}/bnf.{1}.json'.format(query_type, code)
+        aggregates = {}
+        if agg:
+            aggregates = agg.json_load()
+        aggregations.append(aggregates)
+
+    result = _sumit(aggregations)
+    return dict(objects=result)
 
 @app.route("/api/v2/prescriptioncomparison/")
 @jsonp
@@ -228,13 +256,6 @@ def prescription_comparison_api():
 
     aggs1 = [_get_aggregates(query_type, b) for b in bnfs1]
     aggs2 = [_get_aggregates(query_type, b) for b in bnfs2]
-
-    def _sumit(aggregations):
-        summer = collections.defaultdict(int)
-        for drug in aggregations:
-            for area in drug:
-                summer[area] += drug[area]['count']
-        return summer
 
     sum1 = _sumit(aggs1)
     sum2 = _sumit(aggs2)
@@ -289,15 +310,33 @@ def apidoc_prescriptioncomparison():
     return json_template("api/prescriptioncomparison.json.js")
 
 """
-Backwards compatibility
+Backwards compatibility - These can't break :)
 """
+
+@app.route('/example-inhalers')
+def example_inhalers():
+    codes = INHALE_CODES.replace('/', '')
+    return redirect('/explore/drug/' + codes)
 
 @app.route("/example-salbutamol")
 def example_salbutamol():
     return redirect("/explore/drug/0301011R0AAAPAP")
 
-from op.constants import INHALE_CODES
-
 @app.route("/example-hfc")
 def example_hfc():
     return redirect("/explore/ratio"+INHALE_CODES)
+
+"""
+Shortcuts
+"""
+@app.route('/explore/inhalers-per-capita')
+def short_inhalers_per_capita():
+    return redirect("/explore/drug/"+constants.ALL_INHALERS)
+
+@app.route('/explore/statins-per-capita')
+def short_statins_per_capita():
+    return redirect("/explore/drug/"+constants.ALL_STATINS)
+
+@app.route('/explore/nicotine-per-capita')
+def short_nicotine_per_capita():
+    return redirect('/explore/drug/'+constants.ALL_NICOTINE)

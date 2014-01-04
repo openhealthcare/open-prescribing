@@ -116,19 +116,12 @@
         question = new OP.views.QuestionView({
 
             filename: 'ratio.zip',
-            question_template: _.template('Bucket 1 vs Bucket 2 prescription ratios per ccg')
+            question_template: _.template('Ratio between prescribing two groups of drugs')
 
         });
 
         controls = new ExControlLayout();
         results = new OP.layouts.ResultLayout();
-
-        // all_drugs = OP.get({
-        //     resource: 'product',
-        //     data: { limit: 0 }
-        // })
-
-        // ExApp.all_drugs = all_drugs;
 
         drug_filter = new OP.layouts.DrugFilter({
             collection: new OP.collections.Pharmacy(),
