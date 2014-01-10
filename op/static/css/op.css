@@ -282,3 +282,10 @@ img.explorer {
     height: 200px;
     width: 200px;
 }
+
+.blue {
+    color: #06799F;
+}
+.clear {
+    clear: both;
+}
