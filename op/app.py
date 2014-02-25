@@ -326,6 +326,12 @@ def example_salbutamol():
 def example_hfc():
     return redirect("/explore/ratio"+INHALE_CODES)
 
+# This is at http://www.bmj.com/content/346/bmj.f3359?tab=responses
+@app.route("/example-hfc")
+def example_hfc():
+    return redirect("/explore/ratio"+INHALE_CODES)
+
+
 """
 Shortcuts
 """
